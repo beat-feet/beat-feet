@@ -39,5 +39,4 @@ dist.dependsOn classes
 eclipse.project.name = appName + "-desktop"
 
 dependencies {
-    implementation "org.quifft:quifft:0.1.1"
 }

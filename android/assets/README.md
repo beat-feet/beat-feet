@@ -1,1 +1,5 @@
-Man Bites Dog - College Rock - How to hold the guitar right - CC-BY-SA - https://freemusicarchive.org/music/manbitesdog/Safe_and_Sound_EP/Man_Bites_Dog_-_Safe_and_Sound_EP_-_04_-_College_Rock
+# Music
+
+* `the_haunted_mansion_*.mp3`: [The Haunted Mansion](https://freemusicarchive.org/search/?quicksearch=the+haunted+mansion) - [<img src="https://licensebuttons.net/l/by-sa/3.0/80x15.png" />](http://creativecommons.org/licenses/by-sa/3.0/)
+* `classical.mp3`: [John Harrison w/ Wichita State University Chamber - Vivaldi Spring mvt 1 Allegro](https://freemusicarchive.org/music/John_Harrison_with_the_Wichita_State_University_Chamber_Players/The_Four_Seasons_Vivaldi/01_-_Vivaldi_Spring_mvt_1_Allegro_-_John_Harrison_violin) [<img src="https://licensebuttons.net/l/by-sa/3.0/80x15.png" />](http://creativecommons.org/licenses/by-sa/3.0/)
+* 1000Hz + 500Hz wave - Created using audacity for this project, to verify fourier transforms were working as expected - [<img src="https://licensebuttons.net/l/by-sa/3.0/80x15.png" />](http://creativecommons.org/licenses/by-sa/3.0/)
