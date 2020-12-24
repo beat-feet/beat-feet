@@ -10,11 +10,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.math.Vector3
 import com.serwylo.beatgame.BeatGame
 
 class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
 
-    private val camera = OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
+    private val camera = OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT).apply {
+        translate((VIEWPORT_WIDTH / 2) - ITEM_HEIGHT * ITEM_SPACING, (VIEWPORT_HEIGHT / 4))
+        update()
+    }
 
     private val spriteBatch = SpriteBatch()
     private val shapeRenderer = ShapeRenderer()
@@ -77,6 +81,18 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
                 return false
             }
 
+            override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+                val location = camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
+                val item = (((location.y - ITEM_HEIGHT) / ITEM_HEIGHT / ITEM_SPACING).toInt())
+
+                if (item > 0 && item < menuItems.size) {
+                    game.startGame(menuItems[item])
+                    return true
+                }
+
+                return false
+            }
+
         }
 
     }
@@ -86,19 +102,17 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        val itemHeight = 10f
-
         shapeRenderer.projectionMatrix = camera.combined
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
         shapeRenderer.color = Color.DARK_GRAY
-        shapeRenderer.rect(-VIEWPORT_WIDTH, (menuItems.size - selectedIndex) * itemHeight, VIEWPORT_WIDTH * 2, itemHeight)
+        shapeRenderer.rect(-VIEWPORT_WIDTH, (menuItems.size - selectedIndex) * ITEM_HEIGHT * ITEM_SPACING, VIEWPORT_WIDTH * 2, ITEM_HEIGHT)
         shapeRenderer.end()
 
         spriteBatch.projectionMatrix = camera.combined
         spriteBatch.begin()
 
         menuItems.forEachIndexed { i, _ ->
-            font.draw(spriteBatch, songs[menuItems[i]], 0f, (menuItems.size - i) * itemHeight + itemHeight)
+            font.draw(spriteBatch, songs[menuItems[i]], 0f, (menuItems.size - i) * ITEM_HEIGHT * ITEM_SPACING + ITEM_HEIGHT)
         }
 
         spriteBatch.end()
@@ -108,5 +122,8 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
     companion object {
         private const val VIEWPORT_WIDTH = 400f
         private const val VIEWPORT_HEIGHT = 200f
+
+        private const val ITEM_HEIGHT = 15f
+        private const val ITEM_SPACING = 1.2f
     }
 }
