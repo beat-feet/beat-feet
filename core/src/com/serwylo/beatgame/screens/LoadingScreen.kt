@@ -8,11 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.analysis.*
-import com.serwylo.beatgame.features.World
-import com.serwylo.beatgame.fft.FFTWindow
-import com.serwylo.beatgame.fft.calculateMp3FFT
-import kotlin.math.ln
+import com.serwylo.beatgame.audio.loadWorldFromMp3
 
 class LoadingScreen(private val game: BeatGame, private val musicFile: FileHandle, private val songName: String) : ScreenAdapter() {
 
@@ -29,22 +25,7 @@ class LoadingScreen(private val game: BeatGame, private val musicFile: FileHandl
     private fun startLoading() {
         Thread {
 
-            val spectogram = calculateMp3FFT(musicFile.read())
-            val featureSeries = seriesFromFFTWindows(spectogram.windows) { it.median() }
-            val smoothFeatureSeries = smoothSeriesMedian(featureSeries, 13)
-            val features = extractFeaturesFromSeries(smoothFeatureSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate)
-
-            val heightMapSeries = seriesFromFFTWindows(spectogram.windows) { it: FFTWindow ->
-                val freq = it.dominantFrequency()
-                if (freq.toInt() == 0) 0.0 else ln(freq)
-            }
-
-            val smoothHeightMapSeries = smoothSeriesMean(heightMapSeries, 15)
-            val heightMap = extractHeightMapFromSeries(smoothHeightMapSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate, 3f)
-
-            val music = Gdx.audio.newMusic(musicFile)
-            val world = World(music, heightMap, features, PlatformGameScreen.SCALE_X)
-
+            val world = loadWorldFromMp3(musicFile)
             game.startGame(world)
 
         }.start()

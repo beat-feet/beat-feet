@@ -17,7 +17,7 @@ import kotlin.math.min
 //   Large sized features need to be destroyed (by using consumed energy)
 //   Items which start above the ground and finish below are no good (and vice verca) as they render weird)
 //
-class World(val music: Music, private val heightMap: Array<Vector2>, private val features: List<Feature>, private val scaleX: Float) {
+class World(val music: Music, val heightMap: Array<Vector2>, val features: List<Feature>, private val scaleX: Float) {
 
     private val platformLine: FloatArray = FloatArray(heightMap.size * 2)
     private val boxes: List<Rectangle> = features.map { feature ->
