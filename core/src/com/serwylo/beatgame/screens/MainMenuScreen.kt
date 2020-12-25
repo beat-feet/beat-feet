@@ -42,7 +42,7 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
     private var selectedIndex = 0
 
     private var font = BitmapFont().apply {
-        data.scale(-0.6f)
+        data.scale(-0.2f)
     }
 
     private fun up() {
@@ -73,7 +73,7 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
 
                 } else if (keycode == Input.Keys.ENTER) {
 
-                    game.startGame(menuItems[selectedIndex])
+                    loadGame(selectedIndex)
                     return true
 
                 }
@@ -85,8 +85,9 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
                 val location = camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
                 val item = (((location.y - ITEM_HEIGHT) / ITEM_HEIGHT / ITEM_SPACING).toInt())
 
-                if (item > 0 && item < menuItems.size) {
-                    game.startGame(menuItems[item])
+                if (item >= 0 && item < menuItems.size) {
+                    val selectedItem = menuItems.size - 1 - item
+                    loadGame(selectedItem)
                     return true
                 }
 
@@ -95,6 +96,10 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
 
         }
 
+    }
+
+    private fun loadGame(menuIndex: Int) {
+        game.loadGame(Gdx.files.internal(menuItems[menuIndex]), songs[menuItems[menuIndex]]!!)
     }
 
     override fun render(delta: Float) {
@@ -123,7 +128,7 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
         private const val VIEWPORT_WIDTH = 400f
         private const val VIEWPORT_HEIGHT = 200f
 
-        private const val ITEM_HEIGHT = 15f
+        private const val ITEM_HEIGHT = 20f
         private const val ITEM_SPACING = 1.2f
     }
 }

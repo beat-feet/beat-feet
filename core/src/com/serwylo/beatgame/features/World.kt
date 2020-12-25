@@ -1,10 +1,12 @@
 package com.serwylo.beatgame.features
 
+import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import com.serwylo.beatgame.Globals
 import kotlin.math.max
 import kotlin.math.min
 
@@ -15,9 +17,8 @@ import kotlin.math.min
 //   Large sized features need to be destroyed (by using consumed energy)
 //   Items which start above the ground and finish below are no good (and vice verca) as they render weird)
 //
-class World(private val heightMap: Array<Vector2>, private val features: List<Feature>, private val scaleX: Float) {
+class World(val music: Music, private val heightMap: Array<Vector2>, private val features: List<Feature>, private val scaleX: Float) {
 
-    private val platform = ShapeRenderer()
     private val platformLine: FloatArray = FloatArray(heightMap.size * 2)
     private val boxes: List<Rectangle> = features.map { feature ->
         val x = feature.startTimeInSeconds * scaleX
@@ -50,6 +51,8 @@ class World(private val heightMap: Array<Vector2>, private val features: List<Fe
 
     fun render(camera: Camera, viewport: Rectangle) {
 
+        val platform = Globals.shapeRenderer
+
         platform.projectionMatrix = camera.combined
         platform.color = Color.GREEN
         platform.begin(ShapeRenderer.ShapeType.Line)
@@ -68,11 +71,12 @@ class World(private val heightMap: Array<Vector2>, private val features: List<Fe
 
     }
 
+    fun dispose() {
+        music.stop()
+        music.dispose()
+    }
+
     companion object {
         private const val MAX_FEATURE_HEIGHT = 3f
-
-        fun generate(heightMap: Array<Vector2>, features: List<Feature>, scrollSpeed: Float): World {
-            return World(heightMap, features, scrollSpeed)
-        }
     }
 }
