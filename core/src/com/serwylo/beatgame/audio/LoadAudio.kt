@@ -6,33 +6,33 @@ import com.badlogic.gdx.math.Vector2
 import com.google.gson.Gson
 import com.serwylo.beatgame.analysis.*
 import com.serwylo.beatgame.features.Feature
-import com.serwylo.beatgame.features.World
+import com.serwylo.beatgame.features.Level
 import com.serwylo.beatgame.fft.FFTWindow
 import com.serwylo.beatgame.fft.calculateMp3FFT
 import com.serwylo.beatgame.screens.PlatformGameScreen
 import java.io.File
 import kotlin.math.ln
 
-private const val TAG = "WorldCache"
+private const val TAG = "LevelCache"
 
-fun loadWorldFromMp3(musicFile: FileHandle): World {
+fun loadLevelFromMp3(musicFile: FileHandle): Level {
 
     val fromCache = loadFromCache(musicFile)
     if (fromCache != null) {
-        Gdx.app.debug(TAG, "Loaded world from cache")
+        Gdx.app.debug(TAG, "Loaded level from cache")
         return fromCache
     }
 
-    Gdx.app.debug(TAG, "No cached version of world, processing MP3 from disk and caching...")
+    Gdx.app.debug(TAG, "No cached version of level, processing MP3 from disk and caching...")
     val fromDisk = loadFromDisk(musicFile)
-    cacheWorld(musicFile, fromDisk)
+    cacheLeve(musicFile, fromDisk)
     return fromDisk
 
 }
 
-private fun loadFromDisk(musicFile: FileHandle): World {
+private fun loadFromDisk(musicFile: FileHandle): Level {
 
-    Gdx.app.debug(TAG, "Generating world from ${musicFile.path()}...")
+    Gdx.app.debug(TAG, "Generating level from ${musicFile.path()}...")
 
     Gdx.app.debug(TAG, "Calculating FFT")
     val spectogram = calculateMp3FFT(musicFile.read())
@@ -53,54 +53,54 @@ private fun loadFromDisk(musicFile: FileHandle): World {
 
     val music = Gdx.audio.newMusic(musicFile)
 
-    Gdx.app.debug(TAG, "Finished generating world")
-    return World(music, heightMap, features, PlatformGameScreen.SCALE_X)
+    Gdx.app.debug(TAG, "Finished generating level")
+    return Level(music, heightMap, features, PlatformGameScreen.SCALE_X)
 
 }
 
-private fun loadFromCache(musicFile: FileHandle): World? {
+private fun loadFromCache(musicFile: FileHandle): Level? {
 
     val file = getCacheFile(musicFile).file()
     if (!file.exists()) {
-        Gdx.app.debug(TAG, "Cache file for world ${musicFile.path()} at ${file.absolutePath} doesn't exist")
+        Gdx.app.debug(TAG, "Cache file for level ${musicFile.path()} at ${file.absolutePath} doesn't exist")
         return null
     }
 
     try {
 
         val json = file.readText()
-        val data = Gson().fromJson(json, CachedWorldData::class.java)
+        val data = Gson().fromJson(json, CacheLevelData::class.java)
 
-        if (data.version != CachedWorldData.currentVersion) {
-            Gdx.app.log(TAG, "Found cached data, but it is version ${data.version} whereas we only know how to handle version ${CachedWorldData.currentVersion} with certainty. Deleting the file and we will refresh the cache.")
+        if (data.version != CacheLevelData.currentVersion) {
+            Gdx.app.log(TAG, "Found cached data, but it is version ${data.version} whereas we only know how to handle version ${CacheLevelData.currentVersion} with certainty. Deleting the file and we will refresh the cache.")
             file.delete()
             return null
         }
 
-        return World(Gdx.audio.newMusic(musicFile), data.heightMap, data.features, PlatformGameScreen.SCALE_X)
+        return Level(Gdx.audio.newMusic(musicFile), data.heightMap, data.features, PlatformGameScreen.SCALE_X)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
         // the data structure if required without having to worry about if this will work or not.
-        Gdx.app.error(TAG, "Error occurred while reading cache file for world ${musicFile.path()} at ${file.absolutePath}. Will remove file so it can be cached anew.", e)
+        Gdx.app.error(TAG, "Error occurred while reading cache file for level ${musicFile.path()} at ${file.absolutePath}. Will remove file so it can be cached anew.", e)
         file.delete()
         return null
     }
 
 }
 
-private fun cacheWorld(musicFile: FileHandle, world: World) {
+private fun cacheLeve(musicFile: FileHandle, level: Level) {
 
     val file = getCacheFile(musicFile)
 
-    Gdx.app.debug(TAG, "Caching world for ${musicFile.path()} to ${file.file().absolutePath}")
+    Gdx.app.debug(TAG, "Caching level for ${musicFile.path()} to ${file.file().absolutePath}")
 
-    val json = Gson().toJson(CachedWorldData(world.features, world.heightMap))
+    val json = Gson().toJson(CacheLevelData(level.features, level.heightMap))
     file.writeString(json, false)
 
 }
 
-private val CACHE_DIR = ".cache${File.separator}world"
+private val CACHE_DIR = ".cache${File.separator}level"
 
 private fun getCacheFile(musicFile: FileHandle): FileHandle {
 
@@ -113,7 +113,7 @@ private fun getCacheFile(musicFile: FileHandle): FileHandle {
 
 }
 
-private data class CachedWorldData(val features: List<Feature>, val heightMap: Array<Vector2>) {
+private data class CacheLevelData(val features: List<Feature>, val heightMap: Array<Vector2>) {
     val version = currentVersion
 
     companion object {

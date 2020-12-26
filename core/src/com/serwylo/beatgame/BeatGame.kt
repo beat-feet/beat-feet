@@ -5,7 +5,8 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.serwylo.beatgame.features.World
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
+import com.serwylo.beatgame.features.Level
 import com.serwylo.beatgame.screens.LoadingScreen
 import com.serwylo.beatgame.screens.MainMenuScreen
 import com.serwylo.beatgame.screens.PlatformGameScreen
@@ -18,6 +19,8 @@ class BeatGame(private val verbose: Boolean) : Game() {
         }
 
         Globals.shapeRenderer = ShapeRenderer()
+        Globals.box2DRenderer = Box2DDebugRenderer()
+
         setScreen(MainMenuScreen(this))
     }
 
@@ -25,7 +28,7 @@ class BeatGame(private val verbose: Boolean) : Game() {
         setScreen(LoadingScreen(this, musicFile, songName))
     }
 
-    fun startGame(world: World) {
+    fun startGame(world: Level) {
         setScreen(PlatformGameScreen(this, world))
     }
 

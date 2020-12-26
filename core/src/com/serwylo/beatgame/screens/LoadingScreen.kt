@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.audio.loadWorldFromMp3
+import com.serwylo.beatgame.audio.loadLevelFromMp3
 
 class LoadingScreen(private val game: BeatGame, private val musicFile: FileHandle, private val songName: String) : ScreenAdapter() {
 
@@ -25,7 +25,7 @@ class LoadingScreen(private val game: BeatGame, private val musicFile: FileHandl
     private fun startLoading() {
         Thread {
 
-            val world = loadWorldFromMp3(musicFile)
+            val world = loadLevelFromMp3(musicFile)
             game.startGame(world)
 
         }.start()

@@ -6,23 +6,34 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Box2D
+import com.badlogic.gdx.physics.box2d.World
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.analysis.*
+import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.entities.Player
-import com.serwylo.beatgame.features.World
+import com.serwylo.beatgame.features.Level
 
 class PlatformGameScreen(
         private val game: BeatGame,
-        private val world: World
+        private val level: Level
 ) : ScreenAdapter() {
 
-    private val camera = OrthographicCamera(20f, 10f)
+    private val camera = OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT).apply {
+        translate(VIEWPORT_X, -VIEWPORT_Y, 0f)
+        update()
+    }
+
     private val player: Player
+    private val world = World(Vector2(0f, -30f), true)
 
     init {
 
-        player = Player { world.heightAtPosition(it) }
+        player = Player(world) { level.heightAtPosition(it) }
+        level.init(world, SCALE_X)
+
+        Box2D.init()
+
     }
 
     override fun show() {
@@ -47,14 +58,11 @@ class PlatformGameScreen(
             }
         }
 
-
-        camera.translate(5f, 2f, 0f)
-        camera.update()
-
-        world.music.play()
+        level.music.play()
     }
 
     override fun hide() {
+        level.dispose()
         world.dispose()
 
         Gdx.input.inputProcessor = null
@@ -65,13 +73,29 @@ class PlatformGameScreen(
         camera.translate(delta * SCALE_X, 0f)
         camera.update()
 
-        player.update(delta)
-
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        world.render(camera, Rectangle(player.getPosition() - 5f, -2f, 20f, 10f))
+        // level.render(camera, Rectangle(player.getPosition() - VIEWPORT_X, -VIEWPORT_Y, VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
         player.render(camera)
+
+        Globals.box2DRenderer.render(world, camera.combined)
+
+        stepPhysics(delta)
+    }
+
+    private var accumulator = 0f
+
+    /**
+     * https://github.com/libgdx/libgdx/wiki/Box2d#stepping-the-simulation
+     */
+    private fun stepPhysics(deltaTime: Float) {
+        val frameTime = Math.min(deltaTime, 0.25f)
+        accumulator += frameTime
+        while (accumulator >= 1f / 60f) {
+            world.step(1f / 60f, 6, 2)
+            accumulator -= 1f / 60f
+        }
     }
 
     companion object {
@@ -91,6 +115,11 @@ class PlatformGameScreen(
          * The final step is to convert seconds into measurements on screen. This is used for that.
          */
         const val SCALE_X = 5f
+
+        const val VIEWPORT_X = -5f
+        const val VIEWPORT_Y = -2f
+        const val VIEWPORT_WIDTH = 20f
+        const val VIEWPORT_HEIGHT = 10f
 
     }
 
