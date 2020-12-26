@@ -7,17 +7,18 @@ import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.Box2D
-import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.physics.box2d.*
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.Globals
+import com.serwylo.beatgame.entities.Ground
 import com.serwylo.beatgame.entities.Player
-import com.serwylo.beatgame.features.Level
+import com.serwylo.beatgame.entities.Level
+import com.serwylo.beatgame.entities.Obstacle
 
 class PlatformGameScreen(
         private val game: BeatGame,
         private val level: Level
-) : ScreenAdapter() {
+) : ScreenAdapter(), ContactListener {
 
     private val camera = OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT).apply {
         translate(VIEWPORT_X, -VIEWPORT_Y, 0f)
@@ -25,14 +26,17 @@ class PlatformGameScreen(
     }
 
     private val player: Player
-    private val world = World(Vector2(0f, -30f), true)
+    private val world = World(Vector2(0f, -10f), true)
 
     init {
 
-        player = Player(world) { level.heightAtPosition(it) }
-        level.init(world, SCALE_X)
-
         Box2D.init()
+
+        player = Player(world)
+        Ground(level.heightMap.size * SCALE_X).init(world)
+        level.features.forEach { Obstacle(it).init(world, SCALE_X) }
+
+        world.setContactListener(this)
 
     }
 
@@ -122,5 +126,24 @@ class PlatformGameScreen(
         const val VIEWPORT_HEIGHT = 10f
 
     }
+
+    override fun beginContact(contact: Contact?) {
+        if (contact == null) {
+            return
+        }
+
+        val a = contact.fixtureA.body.userData
+        val b = contact.fixtureB.body.userData
+
+        if (a is Player) {
+            a.beginContact(contact.fixtureB)
+        } else if (b is Player) {
+            b.beginContact(contact.fixtureA)
+        }
+    }
+
+    override fun endContact(contact: Contact?) {}
+    override fun preSolve(contact: Contact?, oldManifold: Manifold?) {}
+    override fun postSolve(contact: Contact?, impulse: ContactImpulse?) {}
 
 }

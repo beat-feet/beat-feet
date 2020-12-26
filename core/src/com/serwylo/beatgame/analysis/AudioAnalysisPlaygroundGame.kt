@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.serwylo.beatgame.features.Feature
+import com.serwylo.beatgame.audio.AudioFeature
 import com.serwylo.beatgame.fft.*
 import java.lang.Math.max
 import kotlin.math.ln
@@ -19,7 +19,7 @@ import kotlin.math.ln
  */
 class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
     private lateinit var featureSwatch: List<Color>
-    private lateinit var features: List<Feature>
+    private lateinit var features: List<AudioFeature>
     private lateinit var font: BitmapFont
     private lateinit var camera: Camera
     private lateinit var sprite: Sprite

@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
-import com.serwylo.beatgame.features.Level
+import com.serwylo.beatgame.entities.Level
 import com.serwylo.beatgame.screens.LoadingScreen
 import com.serwylo.beatgame.screens.MainMenuScreen
 import com.serwylo.beatgame.screens.PlatformGameScreen
@@ -19,7 +19,7 @@ class BeatGame(private val verbose: Boolean) : Game() {
         }
 
         Globals.shapeRenderer = ShapeRenderer()
-        Globals.box2DRenderer = Box2DDebugRenderer()
+        Globals.box2DRenderer = Box2DDebugRenderer(true, true, false, true, true, true)
 
         setScreen(MainMenuScreen(this))
     }

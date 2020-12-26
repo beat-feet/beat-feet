@@ -5,8 +5,7 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.math.Vector2
 import com.google.gson.Gson
 import com.serwylo.beatgame.analysis.*
-import com.serwylo.beatgame.features.Feature
-import com.serwylo.beatgame.features.Level
+import com.serwylo.beatgame.entities.Level
 import com.serwylo.beatgame.fft.FFTWindow
 import com.serwylo.beatgame.fft.calculateMp3FFT
 import com.serwylo.beatgame.screens.PlatformGameScreen
@@ -113,7 +112,7 @@ private fun getCacheFile(musicFile: FileHandle): FileHandle {
 
 }
 
-private data class CacheLevelData(val features: List<Feature>, val heightMap: Array<Vector2>) {
+private data class CacheLevelData(val features: List<AudioFeature>, val heightMap: Array<Vector2>) {
     val version = currentVersion
 
     companion object {

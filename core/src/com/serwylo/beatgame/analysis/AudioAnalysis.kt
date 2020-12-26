@@ -1,22 +1,22 @@
 package com.serwylo.beatgame.analysis
 
 import com.badlogic.gdx.math.Vector2
-import com.serwylo.beatgame.features.Feature
+import com.serwylo.beatgame.audio.AudioFeature
 import com.serwylo.beatgame.fft.FFTWindow
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 
 /**
- * Given a particular time series, identify and return a list of [Feature]s, representing
+ * Given a particular time series, identify and return a list of [AudioFeature]s, representing
  * interesting parts of the series (e.g. for audio, it may be loud or sudden changes).
  *
  * We need to know the window size + sample rate, in order to convert from the windows used for
  * our FFT to seconds.
  */
-fun extractFeaturesFromSeries(series: DoubleArray, windowSize: Int, sampleRate: Int): List<Feature> {
+fun extractFeaturesFromSeries(series: DoubleArray, windowSize: Int, sampleRate: Int): List<AudioFeature> {
 
     val analysis = analyseSeries(series)
 
-    val features = mutableListOf<Feature>()
+    val features = mutableListOf<AudioFeature>()
     var currentFeatureStart = -1
     var currentFeatureSum = 0.0
     for (i in analysis.indices) {
@@ -30,7 +30,7 @@ fun extractFeaturesFromSeries(series: DoubleArray, windowSize: Int, sampleRate: 
         } else if (currentFeatureStart >= 0) {
             // We just finished a feature, lets account for it.
             val length = i - currentFeatureStart
-            features.add(Feature(
+            features.add(AudioFeature(
                     strength = currentFeatureSum.toFloat() / length,
                     durationInSeconds = (length * windowSize).toFloat() / sampleRate,
                     startTimeInSeconds = (currentFeatureStart * windowSize).toFloat() / sampleRate
@@ -50,7 +50,7 @@ fun extractFeaturesFromSeries(series: DoubleArray, windowSize: Int, sampleRate: 
     }
 
     return features.map {
-        Feature((it.strength - min) / (max - min), it.startTimeInSeconds, it.durationInSeconds)
+        AudioFeature((it.strength - min) / (max - min), it.startTimeInSeconds, it.durationInSeconds)
     }
 }
 
