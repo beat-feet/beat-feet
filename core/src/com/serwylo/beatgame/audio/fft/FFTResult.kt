@@ -1,4 +1,4 @@
-package com.serwylo.beatgame.fft
+package com.serwylo.beatgame.audio.fft
 
 import com.serwylo.beatgame.audio.Mp3Data
 

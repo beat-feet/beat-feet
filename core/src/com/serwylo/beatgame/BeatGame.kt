@@ -5,7 +5,7 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.serwylo.beatgame.features.World
+import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.screens.LoadingScreen
 import com.serwylo.beatgame.screens.MainMenuScreen
 import com.serwylo.beatgame.screens.PlatformGameScreen

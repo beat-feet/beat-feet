@@ -1,4 +1,4 @@
-package com.serwylo.beatgame.features
+package com.serwylo.beatgame.audio.features
 
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Camera

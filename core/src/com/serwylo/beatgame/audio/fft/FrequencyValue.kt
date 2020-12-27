@@ -1,4 +1,4 @@
-package com.serwylo.beatgame.fft
+package com.serwylo.beatgame.audio.fft
 
 data class FrequencyValue(
         val frequency: Double,

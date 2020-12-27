@@ -1,8 +1,8 @@
-package com.serwylo.beatgame.analysis
+package com.serwylo.beatgame.audio.playground
 
 import com.badlogic.gdx.math.Vector2
-import com.serwylo.beatgame.features.Feature
-import com.serwylo.beatgame.fft.FFTWindow
+import com.serwylo.beatgame.audio.features.Feature
+import com.serwylo.beatgame.audio.fft.FFTWindow
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 
 /**

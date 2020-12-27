@@ -1,4 +1,4 @@
-package com.serwylo.beatgame.analysis
+package com.serwylo.beatgame.audio.playground
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
@@ -8,8 +8,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.serwylo.beatgame.features.Feature
-import com.serwylo.beatgame.fft.*
+import com.serwylo.beatgame.audio.features.Feature
+import com.serwylo.beatgame.audio.fft.FFTResult
+import com.serwylo.beatgame.audio.fft.FFTWindow
 import java.lang.Math.max
 import kotlin.math.ln
 
@@ -39,8 +40,8 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         // val musicFile = Gdx.files.internal("classical.mp3")
         val musicFile = Gdx.files.internal("music.mp3")
         music = Gdx.audio.newMusic(musicFile)
-        spectogram = calculateMp3FFT(musicFile.read())
-        spectogramImage = renderSpectogram(spectogram)
+        spectogram = com.serwylo.beatgame.audio.fft.calculateMp3FFT(musicFile.read())
+        spectogramImage = com.serwylo.beatgame.audio.fft.renderSpectogram(spectogram)
         texture = Texture(spectogramImage.width, spectogramImage.height, Pixmap.Format.RGB888)
         sprite = Sprite(texture)
         featureSwatch = listOf(

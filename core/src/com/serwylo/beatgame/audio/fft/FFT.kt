@@ -1,4 +1,4 @@
-package com.serwylo.beatgame.fft
+package com.serwylo.beatgame.audio.fft
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap

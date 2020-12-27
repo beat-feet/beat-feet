@@ -1,11 +1,9 @@
 package com.serwylo.beatgame.desktop
 
-import com.badlogic.gdx.Application
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.analysis.AudioAnalysisPlaygroundGame
+import com.serwylo.beatgame.audio.playground.AudioAnalysisPlaygroundGame
 
 fun main(arg: Array<String>) {
     val config = LwjglApplicationConfiguration()
