@@ -4,11 +4,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.math.Vector2
 import com.google.gson.Gson
-import com.serwylo.beatgame.analysis.*
-import com.serwylo.beatgame.features.Feature
-import com.serwylo.beatgame.features.World
-import com.serwylo.beatgame.fft.FFTWindow
-import com.serwylo.beatgame.fft.calculateMp3FFT
+import com.serwylo.beatgame.audio.features.Feature
+import com.serwylo.beatgame.audio.features.World
+import com.serwylo.beatgame.audio.fft.FFTWindow
+import com.serwylo.beatgame.audio.fft.calculateMp3FFT
 import com.serwylo.beatgame.screens.PlatformGameScreen
 import java.io.File
 import kotlin.math.ln
@@ -38,18 +37,18 @@ private fun loadFromDisk(musicFile: FileHandle): World {
     val spectogram = calculateMp3FFT(musicFile.read())
 
     Gdx.app.debug(TAG, "Extracting and smoothing features")
-    val featureSeries = seriesFromFFTWindows(spectogram.windows) { it.median() }
-    val smoothFeatureSeries = smoothSeriesMedian(featureSeries, 13)
-    val features = extractFeaturesFromSeries(smoothFeatureSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate)
+    val featureSeries = com.serwylo.beatgame.audio.playground.seriesFromFFTWindows(spectogram.windows) { it.median() }
+    val smoothFeatureSeries = com.serwylo.beatgame.audio.playground.smoothSeriesMedian(featureSeries, 13)
+    val features = com.serwylo.beatgame.audio.playground.extractFeaturesFromSeries(smoothFeatureSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate)
 
     Gdx.app.debug(TAG, "Extracting and smoothing height map")
-    val heightMapSeries = seriesFromFFTWindows(spectogram.windows) { it: FFTWindow ->
+    val heightMapSeries = com.serwylo.beatgame.audio.playground.seriesFromFFTWindows(spectogram.windows) { it: FFTWindow ->
         val freq = it.dominantFrequency()
         if (freq.toInt() == 0) 0.0 else ln(freq)
     }
 
-    val smoothHeightMapSeries = smoothSeriesMean(heightMapSeries, 15)
-    val heightMap = extractHeightMapFromSeries(smoothHeightMapSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate, 3f)
+    val smoothHeightMapSeries = com.serwylo.beatgame.audio.playground.smoothSeriesMean(heightMapSeries, 15)
+    val heightMap = com.serwylo.beatgame.audio.playground.extractHeightMapFromSeries(smoothHeightMapSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate, 3f)
 
     val music = Gdx.audio.newMusic(musicFile)
 

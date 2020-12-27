@@ -1,4 +1,4 @@
-package com.serwylo.beatgame.fft
+package com.serwylo.beatgame.audio.fft
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import kotlin.math.sqrt

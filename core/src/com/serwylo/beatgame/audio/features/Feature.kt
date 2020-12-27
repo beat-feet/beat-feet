@@ -1,4 +1,4 @@
-package com.serwylo.beatgame.features
+package com.serwylo.beatgame.audio.features
 
 /**
  * Something of interest found in the music. Has a strength and duration, as well as a point in time.

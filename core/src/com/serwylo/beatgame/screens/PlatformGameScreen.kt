@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Rectangle
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.analysis.*
 import com.serwylo.beatgame.entities.Player
-import com.serwylo.beatgame.features.World
+import com.serwylo.beatgame.audio.features.World
 
 class PlatformGameScreen(
         private val game: BeatGame,
