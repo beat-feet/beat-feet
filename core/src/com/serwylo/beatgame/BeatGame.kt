@@ -12,12 +12,15 @@ import com.serwylo.beatgame.screens.PlatformGameScreen
 
 class BeatGame(private val verbose: Boolean) : Game() {
 
+    private lateinit var shapeRenderer: ShapeRenderer
+
     override fun create() {
         if (verbose) {
             Gdx.app.logLevel = Application.LOG_DEBUG
         }
 
-        Globals.shapeRenderer = ShapeRenderer()
+        shapeRenderer = ShapeRenderer()
+
         setScreen(MainMenuScreen(this))
     }
 
@@ -26,7 +29,7 @@ class BeatGame(private val verbose: Boolean) : Game() {
     }
 
     fun startGame(world: World) {
-        setScreen(PlatformGameScreen(this, world))
+        setScreen(PlatformGameScreen(this, world, shapeRenderer))
     }
 
     fun showMenu() {

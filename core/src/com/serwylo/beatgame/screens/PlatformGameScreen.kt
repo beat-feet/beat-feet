@@ -1,77 +1,59 @@
 package com.serwylo.beatgame.screens
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.ScreenAdapter
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.analysis.*
-import com.serwylo.beatgame.entities.Player
 import com.serwylo.beatgame.audio.features.World
+import com.serwylo.beatgame.game.entities.makeCamera
+import com.serwylo.beatgame.game.entities.makeGround
+import com.serwylo.beatgame.game.entities.makeObstacle
+import com.serwylo.beatgame.game.entities.makePlayer
+import com.serwylo.beatgame.game.systems.*
 
 class PlatformGameScreen(
         private val game: BeatGame,
-        private val world: World
+        private val world: World,
+        private val shapeRenderer: ShapeRenderer
 ) : ScreenAdapter() {
 
-    private val camera = OrthographicCamera(20f, 10f)
-    private val player: Player
-
-    init {
-
-        player = Player { world.heightAtPosition(it) }
-    }
+    private val engine = Engine()
+    private var initialised = false
 
     override fun show() {
 
-        Gdx.input.setCatchKey(Input.Keys.BACK, true)
-        Gdx.input.inputProcessor = object : InputAdapter() {
+        engine.addEntity(makeCamera(engine))
+        engine.addEntity(makeGround(engine))
+        engine.addEntity(makePlayer(engine))
 
-            override fun keyDown(keycode: Int): Boolean {
-                if (keycode == Input.Keys.SPACE) {
-                    player.performJump()
-                    return true
-                } else if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
-                    game.showMenu()
-                }
-
-                return false
-            }
-
-            override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-                player.performJump()
-                return true
-            }
+        world.features.forEach {
+            engine.addEntity(makeObstacle(engine, it, SCALE_X))
         }
 
+        engine.addSystem(GravitySystem())
+        engine.addSystem(ScrollingSystem())
+        engine.addSystem(MovementSystem())
+        engine.addSystem(RenderingSystem(shapeRenderer))
+        engine.addSystem(PlayerControlSystem())
+        engine.addSystem(CollisionSystem())
+        engine.addSystem(CollisionResolutionSystem())
 
-        camera.translate(5f, 2f, 0f)
-        camera.update()
+        initialised = true
 
-        world.music.play()
+        // world.music.play()
     }
 
     override fun hide() {
         world.dispose()
-
-        Gdx.input.inputProcessor = null
-        Gdx.input.setCatchKey(Input.Keys.BACK, false)
     }
 
     override fun render(delta: Float) {
-        camera.translate(delta * SCALE_X, 0f)
-        camera.update()
-
-        player.update(delta)
-
-        Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-        world.render(camera, Rectangle(player.getPosition() - 5f, -2f, 20f, 10f))
-        player.render(camera)
+        if (initialised) {
+            engine.update(delta)
+        }
     }
 
     companion object {
@@ -90,7 +72,7 @@ class PlatformGameScreen(
          *
          * The final step is to convert seconds into measurements on screen. This is used for that.
          */
-        const val SCALE_X = 5f
+        const val SCALE_X = 15f
 
     }
 

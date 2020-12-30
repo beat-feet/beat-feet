@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import com.serwylo.beatgame.Globals
 import kotlin.math.max
 import kotlin.math.min
 
@@ -19,64 +18,9 @@ import kotlin.math.min
 //
 class World(val music: Music, val heightMap: Array<Vector2>, val features: List<Feature>, private val scaleX: Float) {
 
-    private val platformLine: FloatArray = FloatArray(heightMap.size * 2)
-    private val boxes: List<Rectangle> = features.map { feature ->
-        val x = feature.startTimeInSeconds * scaleX
-        val width = feature.durationInSeconds * scaleX
-        val height = feature.strength * MAX_FEATURE_HEIGHT
-
-        val y = heightAtTime(feature.startTimeInSeconds)
-
-        Rectangle(x, y, width, height)
-    }
-
-    init {
-        heightMap.forEachIndexed { i, pos ->
-            platformLine[i * 2] = pos.x * scaleX
-            platformLine[i * 2 + 1] = pos.y
-        }
-    }
-
-    fun heightAtTime(timeInSeconds: Float) =
-            heightMap.findLast { it.x < timeInSeconds }?.y ?: 0f
-
-    fun heightAtPosition(xPosition: Float) =
-            heightAtTime(xPosition / scaleX)
-
-    private fun renderVisiblePlatform(viewport: Rectangle): FloatArray {
-        val startX = max(0, heightMap.indexOfLast { it.x * scaleX < viewport.x }) * 2
-        val endX = min(heightMap.size - 1, heightMap.indexOfFirst { it.x * scaleX > viewport.x + viewport.width }) * 2
-        return platformLine.sliceArray(IntRange(startX, endX + 1 + 6))
-    }
-
-    fun render(camera: Camera, viewport: Rectangle) {
-
-        val platform = Globals.shapeRenderer
-
-        platform.projectionMatrix = camera.combined
-        platform.color = Color.GREEN
-        platform.begin(ShapeRenderer.ShapeType.Line)
-        platform.polyline(renderVisiblePlatform(viewport))
-
-        platform.color = Color.WHITE
-        boxes.filter { it.x < viewport.x + viewport.width && it.x + it.width > viewport.x }.forEach {
-            val startHeight = heightAtPosition(it.x)
-            val endHeight = heightAtPosition(it.x + it.width)
-            platform.line(it.x, startHeight, it.x, startHeight + it.height)
-            platform.line(it.x, startHeight + it.height, it.x + it.width, startHeight + it.height)
-            platform.line(it.x + it.width, startHeight + it.height, it.x + it.width, endHeight)
-        }
-
-        platform.end()
-
-    }
-
     fun dispose() {
         music.stop()
         music.dispose()
     }
 
-    companion object {
-        private const val MAX_FEATURE_HEIGHT = 3f
-    }
 }

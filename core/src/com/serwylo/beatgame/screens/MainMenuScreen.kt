@@ -98,6 +98,12 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
 
     }
 
+    override fun hide() {
+        super.hide()
+
+        Gdx.input.inputProcessor = null
+    }
+
     private fun loadGame(menuIndex: Int) {
         game.loadGame(Gdx.files.internal(menuItems[menuIndex]), songs[menuItems[menuIndex]]!!)
     }
