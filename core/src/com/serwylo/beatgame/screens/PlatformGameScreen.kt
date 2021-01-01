@@ -28,7 +28,7 @@ class PlatformGameScreen(
 ) : ScreenAdapter() {
 
     private val camera = OrthographicCamera(20f, 10f)
-    private lateinit var hudCamera: OrthographicCamera
+    private lateinit var hud: HUD
     private val obstacles = generateObstacles(world.features)
 
     private val ground = Ground()
@@ -36,9 +36,13 @@ class PlatformGameScreen(
 
     private var isInitialised = false
 
+    private var atlas: TextureAtlas? = null
+
     override fun show() {
 
         isInitialised = false
+
+        atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         Gdx.input.inputProcessor = object : InputAdapter() {
@@ -49,6 +53,7 @@ class PlatformGameScreen(
                     return true
                 } else if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
                     game.showMenu()
+                    return true
                 }
 
                 return false
@@ -60,29 +65,26 @@ class PlatformGameScreen(
             }
         }
 
+        hud = HUD(atlas!!)
 
         camera.translate(5f, 2f, 0f)
         camera.update()
 
-        hudCamera = OrthographicCamera(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-        hudCamera.update()
-
-        val atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
-
-        player = Player(
-                velocity = Vector2(SCALE_X, 0f),
-                atlas = atlas
-        )
+        player = Player(Vector2(SCALE_X, 0f), atlas!!)
 
         Globals.animationTimer = 0f
 
         isInitialised = true
 
-        world.music.play()
+        // world.music.play()
     }
 
     override fun hide() {
+
         world.dispose()
+
+        atlas?.dispose()
+        atlas = null
 
         Gdx.input.inputProcessor = null
         Gdx.input.setCatchKey(Input.Keys.BACK, false)
@@ -98,7 +100,7 @@ class PlatformGameScreen(
         processInput()
         updateEntities(delta)
         renderEntities(delta)
-        HUD.render(player)
+        hud.render(player)
     }
 
     private fun processInput() {

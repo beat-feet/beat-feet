@@ -1,12 +1,9 @@
 package com.serwylo.beatgame.entities
 
 import com.badlogic.gdx.graphics.Camera
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Globals
@@ -24,8 +21,6 @@ class Player(
      * visual feedback as to how frequently we get hit.
      */
     private var hitAnimation = -1f
-
-    private var colour: Color = Color.BLUE
 
     private var jumpCount = 0
 
@@ -88,23 +83,10 @@ class Player(
         batch.draw(sprite(), position.x, position.y, WIDTH, HEIGHT)
         batch.end()
 
-        val player = Globals.shapeRenderer
-        player.projectionMatrix = camera.combined
-        player.color = colour
-        player.begin(ShapeRenderer.ShapeType.Line)
-        player.rect(position.x, position.y, WIDTH, HEIGHT)
-        player.end()
-
     }
 
     override fun update(delta: Float) {
         hitAnimation -= delta
-        if (hitAnimation < 0f) {
-            colour.set(0f, 0f, 1f, 1f)
-        } else {
-            val hitRange = hitAnimation / HIT_ANIMATION_DURATION
-            colour.set(hitRange, 0f, 1f - hitRange, 1f)
-        }
 
         velocity.y += GRAVITY_CONSTANT * delta
 
@@ -142,13 +124,33 @@ class Player(
     }
 
     fun hit(obstacle: Obstacle) {
+
         hitAnimation = HIT_ANIMATION_DURATION
-        colour.set(1f, 0f, 0f, 1f)
 
         if (!hitObstacles.contains(obstacle)) {
+
             hitObstacles.add(obstacle)
-            health -= 5 // TODO: Change this based on the size of the obstacle.
+
+            // Bigger obstacles cause more damage.
+            val damage = (obstacle.rect.area() * AREA_TO_DAMAGE).toInt()
+
+            // If we are jumping upward and hit the obstacle above half way then we can visually
+            // it doesn't look like such a big deal when you hit it, so reduce the damage accordingly.
+            if (velocity.y > 0) {
+
+                val scale = 1 -  (position.y - obstacle.rect.y) / obstacle.rect.height
+                health -= (damage * scale).toInt()
+                println("Hit obstacle, but going upward so scaling damage from $damage to $damage * $scale")
+
+            } else {
+
+                health -= damage
+                println("Hit obstacle flush, reducing health by $damage")
+
+            }
+
         }
+
     }
 
     companion object {
@@ -171,6 +173,11 @@ class Player(
         const val GRAVITY_CONSTANT = -9.8f * 2f
 
         const val JUMP_VELOCITY = 5f
+
+        /**
+         * When hitting an obstacle, multiply the area by this in order to figure out how much damage to do.
+         */
+        const val AREA_TO_DAMAGE = 20f
     }
 
 }
