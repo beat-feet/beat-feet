@@ -71,7 +71,7 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
                     down()
                     return true
 
-                } else if (keycode == Input.Keys.ENTER) {
+                } else if (keycode == Input.Keys.ENTER || keycode == Input.Keys.SPACE) {
 
                     loadGame(selectedIndex)
                     return true

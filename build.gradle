@@ -39,6 +39,16 @@ allprojects {
     }
 }
 
+project(":texture-packer") {
+    apply plugin: "kotlin"
+
+    dependencies {
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    }
+}
+
 project(":desktop") {
     apply plugin: "kotlin"
 

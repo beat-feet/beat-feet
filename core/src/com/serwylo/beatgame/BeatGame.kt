@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.screens.LoadingScreen
@@ -18,19 +19,26 @@ class BeatGame(private val verbose: Boolean) : Game() {
         }
 
         Globals.shapeRenderer = ShapeRenderer()
+        Globals.spriteBatch = SpriteBatch()
         setScreen(MainMenuScreen(this))
     }
 
     fun loadGame(musicFile: FileHandle, songName: String) {
-        setScreen(LoadingScreen(this, musicFile, songName))
+        Gdx.app.postRunnable {
+            setScreen(LoadingScreen(this, musicFile, songName))
+        }
     }
 
     fun startGame(world: World) {
-        setScreen(PlatformGameScreen(this, world))
+        Gdx.app.postRunnable {
+            setScreen(PlatformGameScreen(this, world))
+        }
     }
 
     fun showMenu() {
-        setScreen(MainMenuScreen(this))
+        Gdx.app.postRunnable {
+            setScreen(MainMenuScreen(this))
+        }
     }
 
 }

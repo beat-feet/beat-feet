@@ -1,0 +1,13 @@
+
+rougelike-modern-city.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+roguelikeCity_transparent
+  rotate: false
+  xy: 2, 2
+  size: 628, 475
+  orig: 628, 475
+  offset: 0, 0
+  index: -1

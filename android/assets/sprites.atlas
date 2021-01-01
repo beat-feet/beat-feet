@@ -1,0 +1,34 @@
+
+sprites.png
+size: 128,32
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+character_a_hit
+  rotate: false
+  xy: 2, 2
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+character_a_jump
+  rotate: false
+  xy: 25, 2
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+character_a_walk
+  rotate: false
+  xy: 48, 2
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: 1
+character_a_walk
+  rotate: false
+  xy: 71, 2
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: 2

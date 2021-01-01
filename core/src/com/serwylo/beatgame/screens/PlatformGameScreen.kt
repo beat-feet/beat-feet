@@ -4,13 +4,23 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.analysis.*
-import com.serwylo.beatgame.entities.Player
+import com.serwylo.beatgame.Globals
+import com.serwylo.beatgame.HUD
+import com.serwylo.beatgame.audio.features.Feature
 import com.serwylo.beatgame.audio.features.World
+import com.serwylo.beatgame.entities.Ground
+import com.serwylo.beatgame.entities.Obstacle
+import com.serwylo.beatgame.entities.Player
+
 
 class PlatformGameScreen(
         private val game: BeatGame,
@@ -18,14 +28,17 @@ class PlatformGameScreen(
 ) : ScreenAdapter() {
 
     private val camera = OrthographicCamera(20f, 10f)
-    private val player: Player
+    private lateinit var hudCamera: OrthographicCamera
+    private val obstacles = generateObstacles(world.features)
 
-    init {
+    private val ground = Ground()
+    private lateinit var player: Player
 
-        player = Player { world.heightAtPosition(it) }
-    }
+    private var isInitialised = false
 
     override fun show() {
+
+        isInitialised = false
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         Gdx.input.inputProcessor = object : InputAdapter() {
@@ -51,6 +64,20 @@ class PlatformGameScreen(
         camera.translate(5f, 2f, 0f)
         camera.update()
 
+        hudCamera = OrthographicCamera(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+        hudCamera.update()
+
+        val atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
+
+        player = Player(
+                velocity = Vector2(SCALE_X, 0f),
+                atlas = atlas
+        )
+
+        Globals.animationTimer = 0f
+
+        isInitialised = true
+
         world.music.play()
     }
 
@@ -62,16 +89,55 @@ class PlatformGameScreen(
     }
 
     override fun render(delta: Float) {
-        camera.translate(delta * SCALE_X, 0f)
-        camera.update()
+        if (!isInitialised) {
+            return
+        }
+
+        Globals.animationTimer += delta
+
+        processInput()
+        updateEntities(delta)
+        renderEntities(delta)
+        HUD.render(player)
+    }
+
+    private fun processInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            player.performJump()
+        }
+    }
+
+    private fun updateEntities(delta: Float) {
+        checkCollisions()
 
         player.update(delta)
 
+        camera.translate(delta * SCALE_X, 0f)
+        camera.update()
+    }
+
+    private fun renderEntities(delta: Float) {
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        world.render(camera, Rectangle(player.getPosition() - 5f, -2f, 20f, 10f))
+        ground.render(camera)
+        obstacles.forEach { it.render(camera) }
         player.render(camera)
+
+        val r = Globals.shapeRenderer
+        r.projectionMatrix = camera.combined
+        r.color = Color.RED
+        r.begin(ShapeRenderer.ShapeType.Filled)
+        r.rect(10f, 0f, OBSTACLE_GAP_THRESHOLD, 3f)
+        r.end()
+    }
+
+    private fun checkCollisions() {
+        obstacles.forEach {
+            if (player.isColliding(it.rect)) {
+                player.hit(it)
+            }
+        }
     }
 
     companion object {
@@ -91,6 +157,45 @@ class PlatformGameScreen(
          * The final step is to convert seconds into measurements on screen. This is used for that.
          */
         const val SCALE_X = 5f
+
+        /**
+         * Less than this distance between obstacles, and we will merge them together (i.e. increase
+         * the size of the one on the left until it reaches the one on the right).
+         */
+        const val OBSTACLE_GAP_THRESHOLD = 0.175f
+
+        private fun makeObstacle(feature: Feature): Obstacle {
+            return Obstacle(Rectangle(
+                    feature.startTimeInSeconds * SCALE_X,
+                    0f,
+                    feature.durationInSeconds * SCALE_X,
+                    feature.strength * Obstacle.STRENGTH_TO_HEIGHT
+            ))
+        }
+
+        private fun generateObstacles(features: List<Feature>): List<Obstacle> {
+            val rects = features.map {
+                Rectangle(
+                        it.startTimeInSeconds * SCALE_X,
+                        0f,
+                        it.durationInSeconds * SCALE_X,
+                        it.strength * Obstacle.STRENGTH_TO_HEIGHT
+                )
+            }
+            .filter { true } // Exclude tall but narrow items (they will become something else.
+
+            for (i in rects.indices) {
+                if (i < rects.size - 1 ) {
+                    val distanceToNext = rects[i + 1].x - rects[i].x - rects[i].width
+                    if (distanceToNext < OBSTACLE_GAP_THRESHOLD) {
+                        rects[i].width += distanceToNext
+                    }
+                }
+            }
+
+            return rects.map { Obstacle(it) }
+
+        }
 
     }
 
