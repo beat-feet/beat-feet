@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.serwylo.beatgame.graphics.makeCamera
 
-abstract class MenuScreen(): ScreenAdapter() {
+abstract class MenuScreen: ScreenAdapter() {
 
     protected val camera = makeCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
 

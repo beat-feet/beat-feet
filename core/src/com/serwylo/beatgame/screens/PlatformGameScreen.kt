@@ -20,6 +20,7 @@ import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.entities.Ground
 import com.serwylo.beatgame.entities.Obstacle
 import com.serwylo.beatgame.entities.Player
+import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.graphics.makeCamera
 
 
@@ -28,7 +29,7 @@ class PlatformGameScreen(
         private val world: World
 ) : ScreenAdapter() {
 
-    private val camera = makeCamera(20, 10)
+    private val camera = makeCamera(20, 10, calcDensityScaleFactor())
     private lateinit var hud: HUD
     private val obstacles = generateObstacles(world.features)
 
@@ -80,7 +81,7 @@ class PlatformGameScreen(
 
         hud = HUD(atlas!!)
 
-        camera.translate(5f, 2f, 0f)
+        camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 5, 0f)
         camera.update()
 
         player = Player(Vector2(SCALE_X, 0f), atlas!!)
@@ -153,7 +154,7 @@ class PlatformGameScreen(
 
         player.update(delta)
 
-        if (player.getHealth() <= 0) {
+        if (player.getHealth() <= 0 && state != State.DEAD) {
 
             state = State.DEAD
             deathTimeTime = Globals.animationTimer
@@ -223,6 +224,10 @@ class PlatformGameScreen(
         private const val WARM_UP_TIME = 3f
 
 
+        /**
+         * How long after dying before we move onto the game end screen.
+         * The animation of death is handled differently, managed by the [Player] class.
+         */
         private const val DEATH_TIME = 5f
 
         private fun generateObstacles(features: List<Feature>): List<Obstacle> {
