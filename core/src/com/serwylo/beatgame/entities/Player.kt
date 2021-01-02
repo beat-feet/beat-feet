@@ -153,6 +153,10 @@ class Player(
 
     }
 
+    fun getScore(): Int {
+        return 1000
+    }
+
     companion object {
         const val WIDTH = 0.8f
         const val HEIGHT = 0.8f

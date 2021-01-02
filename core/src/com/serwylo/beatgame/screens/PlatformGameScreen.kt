@@ -76,7 +76,7 @@ class PlatformGameScreen(
 
         isInitialised = true
 
-        // world.music.play()
+        world.music.play()
     }
 
     override fun hide() {

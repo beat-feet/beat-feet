@@ -46,3 +46,10 @@ character_a_walk
   orig: 21, 21
   offset: 0, 0
   index: 2
+score
+  rotate: false
+  xy: 140, 2
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
