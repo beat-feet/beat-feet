@@ -41,6 +41,7 @@ class PlatformGameScreen(
 
     private var state = State.PENDING
     private var startTime = 0f
+    private var deathTimeTime = 0f
 
     enum class State {
         PENDING,
@@ -118,6 +119,13 @@ class PlatformGameScreen(
 
             updateEntities(delta)
 
+        } else if (state == State.DEAD) {
+
+            if (Globals.animationTimer - deathTimeTime > DEATH_TIME) {
+                world.music.stop()
+                game.endGame(player.getScore())
+            }
+
         } else if (state == State.PLAYING) {
 
             updateEntities(delta)
@@ -140,15 +148,23 @@ class PlatformGameScreen(
     }
 
     private fun updateEntities(delta: Float) {
+
         checkCollisions()
 
         player.update(delta)
+
         if (player.getHealth() <= 0) {
-            game.endGame(player.getScore())
+
+            state = State.DEAD
+            deathTimeTime = Globals.animationTimer
+
+        } else {
+
+            camera.translate(delta * SCALE_X, 0f)
+            camera.update()
+
         }
 
-        camera.translate(delta * SCALE_X, 0f)
-        camera.update()
     }
 
     private fun renderEntities(delta: Float) {
@@ -205,6 +221,9 @@ class PlatformGameScreen(
          * time. After that, wait this long before starting the song.
          */
         private const val WARM_UP_TIME = 3f
+
+
+        private const val DEATH_TIME = 5f
 
         private fun generateObstacles(features: List<Feature>): List<Obstacle> {
             val rects = features.map {

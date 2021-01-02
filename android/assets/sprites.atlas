@@ -4,51 +4,72 @@ size: 256,32
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-character_a_face
+character_a_duck
   rotate: false
   xy: 2, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-character_a_face_small
+character_a_face
   rotate: false
   xy: 25, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-character_a_hit
+character_a_face_small
   rotate: false
   xy: 48, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-character_a_jump
+character_a_hit
   rotate: false
   xy: 71, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
-character_a_walk
+character_a_jump
   rotate: false
   xy: 94, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
-  index: 1
+  index: -1
 character_a_walk
   rotate: false
   xy: 117, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
-  index: 2
-score
+  index: 1
+character_a_walk
   rotate: false
   xy: 140, 2
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: 2
+ghost
+  rotate: false
+  xy: 163, 2
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+ghost_x
+  rotate: false
+  xy: 186, 2
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+score
+  rotate: false
+  xy: 209, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0

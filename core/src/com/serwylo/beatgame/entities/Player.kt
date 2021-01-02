@@ -25,6 +25,7 @@ class Player(
     private var jumpCount = 0
 
     private var walkAnimation: Animation<TextureAtlas.AtlasRegion>
+    private var deathAnimation: Animation<TextureRegion>
     private var textureJump: TextureRegion
     private var textureHit: TextureRegion
 
@@ -36,12 +37,15 @@ class Player(
 
     enum class State {
         RUNNING,
-        JUMPING
+        JUMPING,
+        DEAD
     }
 
     private var state: State = State.RUNNING
 
     private val hitObstacles = mutableSetOf<Obstacle>()
+
+    private var deathTime = 0f
 
     init {
         textureJump = atlas.findRegion("character_a_jump")
@@ -49,6 +53,14 @@ class Player(
 
         val texturesWalk = atlas.findRegions("character_a_walk")
         walkAnimation = Animation(0.2f, texturesWalk)
+
+        deathAnimation = Animation(
+                0.5f,
+                textureHit,
+                atlas.findRegion("character_a_duck"),
+                atlas.findRegion("ghost"),
+                atlas.findRegion("ghost_x")
+        )
     }
 
     fun performJump() {
@@ -64,6 +76,10 @@ class Player(
     }
 
     private fun sprite(): TextureRegion {
+
+        if (state == State.DEAD) {
+            return deathAnimation.getKeyFrame(Globals.animationTimer - deathTime, false)
+        }
 
         if (hitAnimation > 0) {
             return textureHit
@@ -88,6 +104,10 @@ class Player(
     }
 
     override fun update(delta: Float) {
+        if (state == State.DEAD) {
+            return
+        }
+
         hitAnimation -= delta
 
         velocity.y += GRAVITY_CONSTANT * delta
@@ -149,6 +169,13 @@ class Player(
 
                 health -= damage
 
+            }
+
+            if (health <= 0) {
+                health = 0
+                deathTime = Globals.animationTimer
+                velocity.set(0f, 0f)
+                state = State.DEAD
             }
 
         }
