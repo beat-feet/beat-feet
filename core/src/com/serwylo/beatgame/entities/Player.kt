@@ -142,20 +142,18 @@ class Player(
             hitObstacles.add(obstacle)
 
             // Bigger obstacles cause more damage.
-            val damage = (obstacle.rect.area() * AREA_TO_DAMAGE).toInt()
+            val damage = (obstacle.rect.area() * AREA_TO_DAMAGE).toInt().coerceAtLeast(MIN_DAMAGE)
 
             // If we are jumping upward and hit the obstacle above half way then we can visually
             // it doesn't look like such a big deal when you hit it, so reduce the damage accordingly.
             if (velocity.y > 0) {
 
                 val scale = 1 -  (position.y - obstacle.rect.y) / obstacle.rect.height
-                health -= (damage * scale).toInt()
-                println("Hit obstacle, but going upward so scaling damage from $damage to $damage * $scale")
+                health -= (damage * scale).toInt().coerceAtLeast(MIN_DAMAGE)
 
             } else {
 
                 health -= damage
-                println("Hit obstacle flush, reducing health by $damage")
 
             }
 
@@ -192,6 +190,8 @@ class Player(
          * When hitting an obstacle, multiply the area by this in order to figure out how much damage to do.
          */
         const val AREA_TO_DAMAGE = 30f
+
+        const val MIN_DAMAGE = 1
 
         const val SCORE_PER_SECOND = 50
         const val SCORE_PER_SECOND_JUMPING = 25
