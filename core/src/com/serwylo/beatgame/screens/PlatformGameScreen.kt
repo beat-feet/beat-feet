@@ -20,6 +20,7 @@ import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.entities.Ground
 import com.serwylo.beatgame.entities.Obstacle
 import com.serwylo.beatgame.entities.Player
+import com.serwylo.beatgame.graphics.makeCamera
 
 
 class PlatformGameScreen(
@@ -27,7 +28,7 @@ class PlatformGameScreen(
         private val world: World
 ) : ScreenAdapter() {
 
-    private val camera = OrthographicCamera(20f, 10f)
+    private val camera = makeCamera(20, 10)
     private lateinit var hud: HUD
     private val obstacles = generateObstacles(world.features)
 

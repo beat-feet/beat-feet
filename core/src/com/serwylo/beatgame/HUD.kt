@@ -1,20 +1,16 @@
 package com.serwylo.beatgame
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.serwylo.beatgame.entities.Player
+import com.serwylo.beatgame.graphics.makeCamera
 
 class HUD(atlas: TextureAtlas) {
 
-    private val viewportHeight: Float
-    private val viewportWidth: Float
-
-    private val camera: Camera
+    private val camera: OrthographicCamera = makeCamera(400, 300)
 
     private val padding: Float
 
@@ -26,15 +22,10 @@ class HUD(atlas: TextureAtlas) {
 
     init {
 
-        val aspectRatio = Gdx.graphics.height.toFloat() / Gdx.graphics.width
-        viewportWidth = 400f
-        viewportHeight = viewportWidth * aspectRatio
-
-        padding = viewportWidth / 50
-
-        camera = OrthographicCamera(viewportWidth, viewportHeight)
-        camera.translate(viewportWidth / 2, viewportHeight / 2)
+        camera.translate(camera.viewportWidth / 2, camera.viewportHeight / 2)
         camera.update()
+
+        padding = camera.viewportWidth / 50
 
         batch.projectionMatrix = camera.combined
 

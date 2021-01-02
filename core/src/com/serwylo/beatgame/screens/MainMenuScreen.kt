@@ -3,12 +3,8 @@ package com.serwylo.beatgame.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
-import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 import com.serwylo.beatgame.BeatGame
@@ -100,7 +96,7 @@ class MainMenuScreen(private val game: BeatGame): MenuScreen() {
         r.projectionMatrix = camera.combined
         r.begin(ShapeRenderer.ShapeType.Filled)
         r.color = Color.DARK_GRAY
-        r.rect(-VIEWPORT_WIDTH, (menuItems.size - selectedIndex) * ITEM_HEIGHT * ITEM_SPACING, VIEWPORT_WIDTH * 2, ITEM_HEIGHT)
+        r.rect(-camera.viewportWidth, (menuItems.size - selectedIndex) * ITEM_HEIGHT * ITEM_SPACING, camera.viewportWidth * 2, ITEM_HEIGHT)
         r.end()
 
         val b = Globals.spriteBatch
