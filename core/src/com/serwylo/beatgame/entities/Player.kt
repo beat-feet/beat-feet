@@ -99,13 +99,7 @@ class Player(
             landOnSurface(0f)
         }
 
-        val rate = when {
-            state == State.JUMPING -> SCORE_PER_SECOND_JUMPING
-            position.y > 0 -> SCORE_PER_SECOND_ON_ROOF
-            else -> SCORE_PER_SECOND
-        }
-
-        score += rate * delta
+        score += SCORE_PER_SECOND * (position.y * SCORE_HEIGHT_MULTIPLIER) * delta
     }
 
     fun isColliding(rect: Rectangle): Boolean {
@@ -193,9 +187,9 @@ class Player(
 
         const val MIN_DAMAGE = 1
 
-        const val SCORE_PER_SECOND = 50
-        const val SCORE_PER_SECOND_JUMPING = 25
-        const val SCORE_PER_SECOND_ON_ROOF = 200
+        const val SCORE_PER_SECOND = 100
+
+        const val SCORE_HEIGHT_MULTIPLIER = 2f
     }
 
 }
