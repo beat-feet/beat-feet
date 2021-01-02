@@ -39,6 +39,17 @@ class PlatformGameScreen(
 
     private var atlas: TextureAtlas? = null
 
+    private var state = State.PENDING
+    private var startTime = 0f
+
+    enum class State {
+        PENDING,
+        WARMING_UP,
+        PLAYING,
+        DEAD,
+        FINISHED,
+    }
+
     override fun show() {
 
         isInitialised = false
@@ -76,8 +87,6 @@ class PlatformGameScreen(
         Globals.animationTimer = 0f
 
         isInitialised = true
-
-        world.music.play()
     }
 
     override fun hide() {
@@ -99,14 +108,34 @@ class PlatformGameScreen(
         Globals.animationTimer += delta
 
         processInput()
-        updateEntities(delta)
+
+        if (state == State.WARMING_UP) {
+
+            if (Globals.animationTimer - startTime > WARM_UP_TIME) {
+                state = State.PLAYING
+                world.music.play()
+            }
+
+            updateEntities(delta)
+
+        } else if (state == State.PLAYING) {
+
+            updateEntities(delta)
+
+        }
+
         renderEntities(delta)
         hud.render(player)
     }
 
     private fun processInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            player.performJump()
+            if (state == State.PENDING) {
+                state = State.WARMING_UP
+                startTime = Globals.animationTimer
+            } else if (state == State.PLAYING || state == State.WARMING_UP) {
+                player.performJump()
+            }
         }
     }
 
@@ -171,19 +200,16 @@ class PlatformGameScreen(
          */
         private const val FEATURE_START_TIME_OFFSET = -0.1f
 
-        private fun makeObstacle(feature: Feature): Obstacle {
-            return Obstacle(Rectangle(
-                    feature.startTimeInSeconds * SCALE_X,
-                    0f,
-                    feature.durationInSeconds * SCALE_X,
-                    feature.strength * Obstacle.STRENGTH_TO_HEIGHT
-            ))
-        }
+        /**
+         * Once the game starts, the player runs infinitely until the player jumps for the first
+         * time. After that, wait this long before starting the song.
+         */
+        private const val WARM_UP_TIME = 3f
 
         private fun generateObstacles(features: List<Feature>): List<Obstacle> {
             val rects = features.map {
                 Rectangle(
-                        (it.startTimeInSeconds + FEATURE_START_TIME_OFFSET) * SCALE_X,
+                        (it.startTimeInSeconds + FEATURE_START_TIME_OFFSET + WARM_UP_TIME) * SCALE_X,
                         0f,
                         it.durationInSeconds * SCALE_X,
                         (it.strength * Obstacle.STRENGTH_TO_HEIGHT).coerceAtLeast(Obstacle.MIN_HEIGHT)

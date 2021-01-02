@@ -160,8 +160,10 @@ class Player(
     }
 
     companion object {
+
         const val WIDTH = 0.8f
         const val HEIGHT = 0.8f
+
         const val HIT_ANIMATION_DURATION = 0.1f
 
         /**
