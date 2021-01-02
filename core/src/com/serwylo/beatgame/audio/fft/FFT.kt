@@ -25,14 +25,31 @@ fun calculateMp3FFT(mp3InputStream: InputStream): FFTResult {
     val windows = ArrayList<FFTWindow>(numWindows)
     for (windowIndex in 0..numWindows) {
         val frequencyValues = calculateFFTWindow(mp3Data, windowIndex, windowSize)
-        windows.add(FFTWindow(windowIndex, frequencyValues))
+        windows.add(FFTWindow.create(windowIndex, frequencyValues))
     }
 
     return FFTResult(mp3Data, windowSize, windows)
 
 }
 
-fun renderSpectogram(fftResult: FFTResult): Pixmap {
+fun calculateMp3FFTWithValues(mp3InputStream: InputStream): FFTResultWithValues {
+
+    val mp3Data = readPcm(mp3InputStream)
+
+    val windowSize = 1024 // 4096 // 8192
+
+    val numWindows = mp3Data.pcmSamples.size / windowSize
+    val windows = ArrayList<FFTWindowWithValues>(numWindows)
+    for (windowIndex in 0..numWindows) {
+        val frequencyValues = calculateFFTWindow(mp3Data, windowIndex, windowSize)
+        windows.add(FFTWindowWithValues.create(windowIndex, frequencyValues))
+    }
+
+    return FFTResultWithValues(mp3Data, windowSize, windows)
+
+}
+
+fun renderSpectogram(fftResult: FFTResultWithValues): Pixmap {
 
     val pixmap = Pixmap(
             fftResult.windows[0].values.size,
@@ -90,37 +107,58 @@ fun renderSpectogram(fftResult: FFTResult): Pixmap {
 
 private fun translateX(x: Float) = ln(x) * 20
 
+private val buffers = HashMap<Int, DoubleArray>()
+
+/**
+ * GC friendly way of making [DoubleArray]s available without having to constantly recreate
+ * for every window of the MP3 we are processing.
+ */
+private fun getBuffer(size: Int): DoubleArray {
+    val existingBuffer = buffers[size]
+    if (existingBuffer != null) {
+        return existingBuffer
+    }
+
+    val newBuffer = DoubleArray(size)
+    buffers[size] = newBuffer
+    return newBuffer
+}
+
 private fun calculateFFTWindow(mp3Data: Mp3Data, windowIndex: Int, windowSize: Int): List<FrequencyValue> {
 
     val startSample = windowIndex * windowSize
     val endSample = min(mp3Data.pcmSamples.size, startSample + windowSize)
 
-    val samples = ArrayList<Short>(windowSize)
-    samples.addAll(mp3Data.pcmSamples.slice(IntRange(startSample, endSample - 1)))
+    val samples = DoubleArray(windowSize)
+    val samplesToCast = mp3Data.pcmSamples.slice(IntRange(startSample, endSample - 1))
+
+    for (i in samplesToCast.indices) {
+        samples[i] = samplesToCast[i].toDouble()
+    }
 
     // For the case where we ran up against the end of the music file, and we didn't fill
     // the buffer. We still require the data to be a power of two, so continue filling 0's
     // as per the commons-math documentation suggests.
-    while (samples.size < windowSize) {
-        samples.add(0)
+    for (i in samplesToCast.size until windowSize) {
+        samples[i] = 0.0
     }
 
     // Interpreting the x axis of FFT results.
     // https://stackoverflow.com/a/4371627
     val fft = FastFourierTransformer(DftNormalization.STANDARD)
-    val fftResult = fft.transform(samples.map { it.toDouble() }.toDoubleArray(), TransformType.FORWARD)
+    val fftResult = fft.transform(samples, TransformType.FORWARD)
 
     // The second half of the results are the mirror image of the first half
-    return fftResult.slice(IntRange(0, samples.size / 2 + 1))
-            .mapIndexed { i, complex ->
-                val abs = complex.abs()
-                val log = ln(abs)
-                FrequencyValue(
-                        frequency = i.toDouble() * mp3Data.sampleRate / windowSize,
-                        absValue = complex.abs(),
-                        logAbsValue = if (log == Double.NEGATIVE_INFINITY) 0.0 else log
-                )
-            }
+    val size = samples.size / 2 + 1
+    val values = ArrayList<FrequencyValue>(size)
+    for (i in 0 until size) {
+        values.add(FrequencyValue(
+                frequency = i.toDouble() * mp3Data.sampleRate / windowSize,
+                absValue = fftResult[i].abs()
+        ))
+    }
+
+    return values
 
 }
 

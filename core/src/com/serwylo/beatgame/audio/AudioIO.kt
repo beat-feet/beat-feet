@@ -37,13 +37,13 @@ private fun loadFromDisk(musicFile: FileHandle): World {
     val spectogram = calculateMp3FFT(musicFile.read())
 
     Gdx.app.debug(TAG, "Extracting and smoothing features")
-    val featureSeries = com.serwylo.beatgame.audio.playground.seriesFromFFTWindows(spectogram.windows) { it.median() }
+    val featureSeries = com.serwylo.beatgame.audio.playground.seriesFromFFTWindows(spectogram.windows) { it.median }
     val smoothFeatureSeries = com.serwylo.beatgame.audio.playground.smoothSeriesMedian(featureSeries, 13)
     val features = com.serwylo.beatgame.audio.playground.extractFeaturesFromSeries(smoothFeatureSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate)
 
     Gdx.app.debug(TAG, "Extracting and smoothing height map")
     val heightMapSeries = com.serwylo.beatgame.audio.playground.seriesFromFFTWindows(spectogram.windows) { it: FFTWindow ->
-        val freq = it.dominantFrequency()
+        val freq = it.dominantFrequency
         if (freq.toInt() == 0) 0.0 else ln(freq)
     }
 

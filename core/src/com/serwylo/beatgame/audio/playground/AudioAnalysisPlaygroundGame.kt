@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.audio.features.Feature
 import com.serwylo.beatgame.audio.fft.FFTResult
+import com.serwylo.beatgame.audio.fft.FFTResultWithValues
 import com.serwylo.beatgame.audio.fft.FFTWindow
 import java.lang.Math.max
 import kotlin.math.ln
@@ -26,7 +27,7 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
     private lateinit var sprite: Sprite
     private lateinit var batch: SpriteBatch
     private lateinit var texture: Texture
-    private lateinit var spectogram: FFTResult
+    private lateinit var spectogram: FFTResultWithValues
     private lateinit var spectogramImage: Pixmap
     private lateinit var music: Music
     private val statsWidth = 30f
@@ -40,7 +41,7 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         // val musicFile = Gdx.files.internal("classical.mp3")
         val musicFile = Gdx.files.internal("music.mp3")
         music = Gdx.audio.newMusic(musicFile)
-        spectogram = com.serwylo.beatgame.audio.fft.calculateMp3FFT(musicFile.read())
+        spectogram = com.serwylo.beatgame.audio.fft.calculateMp3FFTWithValues(musicFile.read())
         spectogramImage = com.serwylo.beatgame.audio.fft.renderSpectogram(spectogram)
         texture = Texture(spectogramImage.width, spectogramImage.height, Pixmap.Format.RGB888)
         sprite = Sprite(texture)
@@ -65,13 +66,13 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         camera.translate((Gdx.graphics.width / 2).toFloat(), (Gdx.graphics.height / 2).toFloat(), 0f)
 
         // Loud (energy) is good, indicates things are happening.
-        series["energy"] = seriesFromFFTWindows(spectogram.windows) { it.energy() }
+        series["energy"] = seriesFromFFTWindows(spectogram.windows) { it.energy }
         series["energy13"] = smoothSeriesMedian(series["energy"]!!, 13)
 
         // When it is loud, is it high or low pitched? Loud drums seem to go down, whereas lout
         // other instruments go higher (as does voice)
         val domFreq = { it: FFTWindow ->
-            val freq = it.dominantFrequency()
+            val freq = it.dominantFrequency
             if (freq.toInt() == 0) 0.0 else ln(freq)
         }
 

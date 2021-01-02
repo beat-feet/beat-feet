@@ -3,24 +3,25 @@ package com.serwylo.beatgame.audio.fft
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import kotlin.math.sqrt
 
-open class FFTWindow(
-        val windowIndex: Int,
-        val energy: Double,
-        val mean: Double,
-        val stdDev: Double,
-        val min: Double,
-        val max: Double,
-        val q1: Double,
-        val median: Double,
-        val q3: Double,
-        val kurtosis: Double,
-        val skewness: Double,
-        val dominantFrequency: Double,
-        val rmse: Double
-) {
+class FFTWindowWithValues(
+        windowIndex: Int,
+        val values: List<FrequencyValue>,
+        energy: Double,
+        mean: Double,
+        stdDev: Double,
+        min: Double,
+        max: Double,
+        q1: Double,
+        median: Double,
+        q3: Double,
+        kurtosis: Double,
+        skewness: Double,
+        dominantFrequency: Double,
+        rmse: Double
+): FFTWindow(windowIndex, energy, mean, stdDev, min, max, q1, median, q3, kurtosis, skewness, dominantFrequency, rmse) {
 
     companion object {
-        fun create(windowIndex: Int, values: List<FrequencyValue>): FFTWindow {
+        fun create(windowIndex: Int, values: List<FrequencyValue>): FFTWindowWithValues {
 
             val stats = DescriptiveStatistics(values.size)
 
@@ -28,8 +29,9 @@ open class FFTWindow(
                 stats.addValue(it.absValue)
             }
 
-            return FFTWindow(
+            return FFTWindowWithValues(
                     windowIndex,
+                    values,
 
                     // https://maelfabien.github.io/machinelearning/Speech9/#2-energy
                     energy = values.map { it.absValue * it.absValue }.sum(),
