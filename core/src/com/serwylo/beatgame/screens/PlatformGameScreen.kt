@@ -177,7 +177,7 @@ class PlatformGameScreen(
                         it.startTimeInSeconds * SCALE_X,
                         0f,
                         it.durationInSeconds * SCALE_X,
-                        it.strength * Obstacle.STRENGTH_TO_HEIGHT
+                        (it.strength * Obstacle.STRENGTH_TO_HEIGHT).coerceAtLeast(Obstacle.MIN_HEIGHT)
                 )
             }
             .filter { true } // Exclude tall but narrow items (they will become something else.

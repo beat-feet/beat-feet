@@ -23,6 +23,7 @@ class Obstacle(val rect: Rectangle) : Entity {
     companion object {
 
         const val STRENGTH_TO_HEIGHT = 2f
+        const val MIN_HEIGHT = 0.05f
 
     }
 

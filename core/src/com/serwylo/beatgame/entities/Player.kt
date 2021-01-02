@@ -191,7 +191,7 @@ class Player(
         /**
          * When hitting an obstacle, multiply the area by this in order to figure out how much damage to do.
          */
-        const val AREA_TO_DAMAGE = 20f
+        const val AREA_TO_DAMAGE = 30f
 
         const val SCORE_PER_SECOND = 50
         const val SCORE_PER_SECOND_JUMPING = 25
