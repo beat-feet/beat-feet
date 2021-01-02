@@ -18,6 +18,7 @@ class EndGameScreen(private val game: BeatGame, private val score: Int): MenuScr
 
     override fun show() {
 
+        Gdx.input.setCatchKey(Input.Keys.BACK, true)
         Gdx.input.inputProcessor = object : InputAdapter() {
 
             override fun keyDown(keycode: Int): Boolean {
@@ -29,8 +30,18 @@ class EndGameScreen(private val game: BeatGame, private val score: Int): MenuScr
                 return false
             }
 
+            override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+                game.showMenu()
+                return true
+            }
+
         }
 
+    }
+
+    override fun hide() {
+        Gdx.input.inputProcessor = null
+        Gdx.input.setCatchKey(Input.Keys.BACK, false)
     }
 
     override fun render(delta: Float) {
