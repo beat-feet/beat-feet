@@ -114,7 +114,7 @@ class PlatformGameScreen(
 
         player.update(delta)
         if (player.getHealth() <= 0) {
-            game.endGame(0)
+            game.endGame(player.getScore())
         }
 
         camera.translate(delta * SCALE_X, 0f)

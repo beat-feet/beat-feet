@@ -30,6 +30,8 @@ class Player(
 
     private var health = 100
 
+    private var score: Float = 0f
+
     fun getHealth(): Int { return health }
 
     enum class State {
@@ -96,6 +98,14 @@ class Player(
         if (position.y < 0) {
             landOnSurface(0f)
         }
+
+        val rate = when {
+            state == State.JUMPING -> SCORE_PER_SECOND_JUMPING
+            position.y > 0 -> SCORE_PER_SECOND_ON_ROOF
+            else -> SCORE_PER_SECOND
+        }
+
+        score += rate * delta
     }
 
     fun isColliding(rect: Rectangle): Boolean {
@@ -154,7 +164,7 @@ class Player(
     }
 
     fun getScore(): Int {
-        return 1000
+        return score.toInt()
     }
 
     companion object {
@@ -182,6 +192,10 @@ class Player(
          * When hitting an obstacle, multiply the area by this in order to figure out how much damage to do.
          */
         const val AREA_TO_DAMAGE = 20f
+
+        const val SCORE_PER_SECOND = 50
+        const val SCORE_PER_SECOND_JUMPING = 25
+        const val SCORE_PER_SECOND_ON_ROOF = 200
     }
 
 }
