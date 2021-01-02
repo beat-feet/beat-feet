@@ -113,6 +113,9 @@ class PlatformGameScreen(
         checkCollisions()
 
         player.update(delta)
+        if (player.getHealth() <= 0) {
+            game.endGame(0)
+        }
 
         camera.translate(delta * SCALE_X, 0f)
         camera.update()
@@ -125,13 +128,6 @@ class PlatformGameScreen(
         ground.render(camera)
         obstacles.forEach { it.render(camera) }
         player.render(camera)
-
-        val r = Globals.shapeRenderer
-        r.projectionMatrix = camera.combined
-        r.color = Color.RED
-        r.begin(ShapeRenderer.ShapeType.Filled)
-        r.rect(10f, 0f, OBSTACLE_GAP_THRESHOLD, 3f)
-        r.end()
     }
 
     private fun checkCollisions() {

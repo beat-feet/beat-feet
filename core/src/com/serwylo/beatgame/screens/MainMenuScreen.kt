@@ -12,16 +12,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.Globals
 
-class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
-
-    private val camera = OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT).apply {
-        translate((VIEWPORT_WIDTH / 2) - ITEM_HEIGHT * ITEM_SPACING, (VIEWPORT_HEIGHT / 4))
-        update()
-    }
-
-    private val spriteBatch = SpriteBatch()
-    private val shapeRenderer = ShapeRenderer()
+class MainMenuScreen(private val game: BeatGame): MenuScreen() {
 
     private val menuItems = listOf(
             "the_haunted_mansion_the_courtyard.mp3",
@@ -40,10 +33,6 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
     )
 
     private var selectedIndex = 0
-
-    private var font = BitmapFont().apply {
-        data.scale(-0.2f)
-    }
 
     private fun up() {
         selectedIndex --
@@ -107,28 +96,22 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        shapeRenderer.projectionMatrix = camera.combined
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
-        shapeRenderer.color = Color.DARK_GRAY
-        shapeRenderer.rect(-VIEWPORT_WIDTH, (menuItems.size - selectedIndex) * ITEM_HEIGHT * ITEM_SPACING, VIEWPORT_WIDTH * 2, ITEM_HEIGHT)
-        shapeRenderer.end()
+        val r = Globals.shapeRenderer
+        r.projectionMatrix = camera.combined
+        r.begin(ShapeRenderer.ShapeType.Filled)
+        r.color = Color.DARK_GRAY
+        r.rect(-VIEWPORT_WIDTH, (menuItems.size - selectedIndex) * ITEM_HEIGHT * ITEM_SPACING, VIEWPORT_WIDTH * 2, ITEM_HEIGHT)
+        r.end()
 
-        spriteBatch.projectionMatrix = camera.combined
-        spriteBatch.begin()
+        val b = Globals.spriteBatch
+        b.projectionMatrix = camera.combined
+        b.begin()
 
         menuItems.forEachIndexed { i, _ ->
-            font.draw(spriteBatch, songs[menuItems[i]], 0f, (menuItems.size - i) * ITEM_HEIGHT * ITEM_SPACING + ITEM_HEIGHT)
+            mediumFont.draw(b, songs[menuItems[i]], 0f, (menuItems.size - i) * ITEM_HEIGHT * ITEM_SPACING + ITEM_HEIGHT)
         }
-
-        spriteBatch.end()
+        b.end()
 
     }
 
-    companion object {
-        private const val VIEWPORT_WIDTH = 400f
-        private const val VIEWPORT_HEIGHT = 200f
-
-        private const val ITEM_HEIGHT = 20f
-        private const val ITEM_SPACING = 1.2f
-    }
 }
