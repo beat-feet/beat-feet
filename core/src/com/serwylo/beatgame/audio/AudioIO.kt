@@ -8,6 +8,7 @@ import com.serwylo.beatgame.audio.features.Feature
 import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.audio.fft.FFTWindow
 import com.serwylo.beatgame.audio.fft.calculateMp3FFT
+import com.serwylo.beatgame.audio.playground.*
 import com.serwylo.beatgame.screens.PlatformGameScreen
 import java.io.File
 import kotlin.math.ln
@@ -37,23 +38,23 @@ private fun loadFromDisk(musicFile: FileHandle): World {
     val spectogram = calculateMp3FFT(musicFile.read())
 
     Gdx.app.debug(TAG, "Extracting and smoothing features")
-    val featureSeries = com.serwylo.beatgame.audio.playground.seriesFromFFTWindows(spectogram.windows) { it.median }
-    val smoothFeatureSeries = com.serwylo.beatgame.audio.playground.smoothSeriesMedian(featureSeries, 13)
-    val features = com.serwylo.beatgame.audio.playground.extractFeaturesFromSeries(smoothFeatureSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate)
+    val featureSeries = seriesFromFFTWindows(spectogram.windows) { it.median }
+    val smoothFeatureSeries = smoothSeriesMedian(featureSeries, 13)
+    val features = extractFeaturesFromSeries(smoothFeatureSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate)
 
     Gdx.app.debug(TAG, "Extracting and smoothing height map")
-    val heightMapSeries = com.serwylo.beatgame.audio.playground.seriesFromFFTWindows(spectogram.windows) { it: FFTWindow ->
+    val heightMapSeries = seriesFromFFTWindows(spectogram.windows) { it: FFTWindow ->
         val freq = it.dominantFrequency
         if (freq.toInt() == 0) 0.0 else ln(freq)
     }
 
-    val smoothHeightMapSeries = com.serwylo.beatgame.audio.playground.smoothSeriesMean(heightMapSeries, 15)
-    val heightMap = com.serwylo.beatgame.audio.playground.extractHeightMapFromSeries(smoothHeightMapSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate, 3f)
+    val smoothHeightMapSeries = smoothSeriesMean(heightMapSeries, 15)
+    val heightMap = extractHeightMapFromSeries(smoothHeightMapSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate, 3f)
 
     val music = Gdx.audio.newMusic(musicFile)
 
     Gdx.app.debug(TAG, "Finished generating world")
-    return World(music, heightMap, features, PlatformGameScreen.SCALE_X)
+    return World(music, heightMap, features)
 
 }
 
@@ -76,7 +77,7 @@ private fun loadFromCache(musicFile: FileHandle): World? {
             return null
         }
 
-        return World(Gdx.audio.newMusic(musicFile), data.heightMap, data.features, PlatformGameScreen.SCALE_X)
+        return World(Gdx.audio.newMusic(musicFile), data.heightMap, data.features)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change

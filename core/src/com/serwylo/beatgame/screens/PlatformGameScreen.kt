@@ -160,7 +160,15 @@ class PlatformGameScreen(
          * Less than this distance between obstacles, and we will merge them together (i.e. increase
          * the size of the one on the left until it reaches the one on the right).
          */
-        const val OBSTACLE_GAP_THRESHOLD = 0.175f
+        private const val OBSTACLE_GAP_THRESHOLD = 0.175f
+
+        /**
+         * The features extracted from audio line up with exactly when a particular feature of the
+         * music is detected. The game is more fun when this lines up with when you'd expect the
+         * player to have to jump in order to avoid the feature (more rhythmic that way), so we
+         * offset each feature by this many seconds.
+         */
+        private const val FEATURE_START_TIME_OFFSET = -0.1f
 
         private fun makeObstacle(feature: Feature): Obstacle {
             return Obstacle(Rectangle(
@@ -174,7 +182,7 @@ class PlatformGameScreen(
         private fun generateObstacles(features: List<Feature>): List<Obstacle> {
             val rects = features.map {
                 Rectangle(
-                        it.startTimeInSeconds * SCALE_X,
+                        (it.startTimeInSeconds + FEATURE_START_TIME_OFFSET) * SCALE_X,
                         0f,
                         it.durationInSeconds * SCALE_X,
                         (it.strength * Obstacle.STRENGTH_TO_HEIGHT).coerceAtLeast(Obstacle.MIN_HEIGHT)
