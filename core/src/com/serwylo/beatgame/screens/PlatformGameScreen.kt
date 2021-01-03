@@ -17,6 +17,7 @@ import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.HUD
 import com.serwylo.beatgame.audio.features.Feature
 import com.serwylo.beatgame.audio.features.World
+import com.serwylo.beatgame.entities.DeadPlayer
 import com.serwylo.beatgame.entities.Ground
 import com.serwylo.beatgame.entities.Obstacle
 import com.serwylo.beatgame.entities.Player
@@ -35,6 +36,7 @@ class PlatformGameScreen(
 
     private val ground = Ground()
     private lateinit var player: Player
+    private lateinit var deadPlayer: DeadPlayer
 
     private var isInitialised = false
 
@@ -48,8 +50,7 @@ class PlatformGameScreen(
         PENDING,
         WARMING_UP,
         PLAYING,
-        DEAD,
-        FINISHED,
+        DYING,
     }
 
     override fun show() {
@@ -85,6 +86,7 @@ class PlatformGameScreen(
         camera.update()
 
         player = Player(Vector2(SCALE_X, 0f), atlas!!)
+        deadPlayer = DeadPlayer(atlas!!)
 
         Globals.animationTimer = 0f
 
@@ -110,29 +112,7 @@ class PlatformGameScreen(
         Globals.animationTimer += delta
 
         processInput()
-
-        if (state == State.WARMING_UP) {
-
-            if (Globals.animationTimer - startTime > WARM_UP_TIME) {
-                state = State.PLAYING
-                world.music.play()
-            }
-
-            updateEntities(delta)
-
-        } else if (state == State.DEAD) {
-
-            if (Globals.animationTimer - deathTimeTime > DEATH_TIME) {
-                world.music.stop()
-                game.endGame(player.getScore())
-            }
-
-        } else if (state == State.PLAYING) {
-
-            updateEntities(delta)
-
-        }
-
+        updateEntities(delta)
         renderEntities(delta)
         hud.render(player)
     }
@@ -152,20 +132,54 @@ class PlatformGameScreen(
 
         checkCollisions()
 
-        player.update(delta)
+        if (state == State.PENDING) {
 
-        if (player.getHealth() <= 0 && state != State.DEAD) {
-
-            state = State.DEAD
-            deathTimeTime = Globals.animationTimer
-
-        } else {
-
-            camera.translate(delta * SCALE_X, 0f)
-            camera.update()
+            // Do nothing, we just need to animate the running player (which happens in the render loop).
+            return
 
         }
 
+        if (state == State.PLAYING || state == State.WARMING_UP) {
+
+            player.update(delta)
+            scrollCamera(delta)
+
+            if (state == State.WARMING_UP && Globals.animationTimer - startTime > WARM_UP_TIME) {
+                startGame()
+            }
+
+            if (player.getHealth() <= 0) {
+
+                state = State.DYING
+                deadPlayer.setup(player.position)
+                deathTimeTime = Globals.animationTimer
+                println("Was playing, now marking as dead.")
+
+            }
+
+        } else if (state == State.DYING) {
+
+            if (Globals.animationTimer - deathTimeTime < DEATH_TIME) {
+
+                println("Dying animation (and scrolling up and zooming in a bit).")
+                camera.translate(0f, delta * DeadPlayer.FLOAT_SPEED / 8)
+                camera.zoom += DEATH_ZOOM_RATE * delta
+                camera.update()
+
+            } else {
+
+                println("Death animation finished, ending game.")
+                endGame()
+
+            }
+
+        }
+
+    }
+
+    private fun scrollCamera(delta: Float) {
+        camera.translate(delta * SCALE_X, 0f)
+        camera.update()
     }
 
     private fun renderEntities(delta: Float) {
@@ -174,7 +188,22 @@ class PlatformGameScreen(
 
         ground.render(camera)
         obstacles.forEach { it.render(camera) }
-        player.render(camera)
+
+        if (state == State.DYING) {
+            deadPlayer.render(camera)
+        } else {
+            player.render(camera)
+        }
+    }
+
+    private fun startGame() {
+        state = State.PLAYING
+        world.music.play()
+    }
+
+    private fun endGame() {
+        world.music.stop()
+        game.endGame(player.getScore())
     }
 
     private fun checkCollisions() {
@@ -229,6 +258,8 @@ class PlatformGameScreen(
          * The animation of death is handled differently, managed by the [Player] class.
          */
         private const val DEATH_TIME = 5f
+
+        private const val DEATH_ZOOM_RATE = -0.015f
 
         private fun generateObstacles(features: List<Feature>): List<Obstacle> {
             val rects = features.map {

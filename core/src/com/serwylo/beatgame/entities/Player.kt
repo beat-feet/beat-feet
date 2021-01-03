@@ -14,7 +14,7 @@ class Player(
         atlas: TextureAtlas
 ) : Entity {
 
-    private val position = Vector2()
+    val position = Vector2()
 
     /**
      * For animation purposes, record the last time we hit an obstacle. Use this to show some
