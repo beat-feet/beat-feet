@@ -197,17 +197,17 @@ class Player(
          * Be a little bit generous. If there are many obstacles that are almost the same height,
          * just let the player climb onto the next one if it is more or less a similar height.
          */
-        const val CLIMB_THRESHOLD = 0.2f
+        const val CLIMB_THRESHOLD = 0.4f
 
         /**
          * Only allow double jumps when you are close to the top of your first jump. Seems to
          * offer a nice experience.
          */
-        const val DOUBLE_JUMP_THRESHOLD = 3f
+        const val DOUBLE_JUMP_THRESHOLD = 6f
 
-        const val GRAVITY_CONSTANT = -9.8f * 2f
+        const val GRAVITY_CONSTANT = -9.8f * 4f
 
-        const val JUMP_VELOCITY = 5f
+        const val JUMP_VELOCITY = 10f
 
         /**
          * When hitting an obstacle, multiply the area by this in order to figure out how much damage to do.

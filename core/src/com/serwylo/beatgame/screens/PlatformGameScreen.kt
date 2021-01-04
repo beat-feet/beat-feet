@@ -17,10 +17,7 @@ import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.HUD
 import com.serwylo.beatgame.audio.features.Feature
 import com.serwylo.beatgame.audio.features.World
-import com.serwylo.beatgame.entities.DeadPlayer
-import com.serwylo.beatgame.entities.Ground
-import com.serwylo.beatgame.entities.Obstacle
-import com.serwylo.beatgame.entities.Player
+import com.serwylo.beatgame.entities.*
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.graphics.makeCamera
 
@@ -32,7 +29,7 @@ class PlatformGameScreen(
 
     private val camera = makeCamera(20, 10, calcDensityScaleFactor())
     private lateinit var hud: HUD
-    private val obstacles = generateObstacles(world.features)
+    private lateinit var obstacles: List<Obstacle>
 
     private val ground = Ground()
     private lateinit var player: Player
@@ -58,6 +55,8 @@ class PlatformGameScreen(
         isInitialised = false
 
         atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
+
+        obstacles = generateObstacles(atlas!!, world.features)
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         Gdx.input.inputProcessor = object : InputAdapter() {
@@ -250,7 +249,7 @@ class PlatformGameScreen(
          * Once the game starts, the player runs infinitely until the player jumps for the first
          * time. After that, wait this long before starting the song.
          */
-        private const val WARM_UP_TIME = 3f
+        private const val WARM_UP_TIME = 0.1f
 
 
         /**
@@ -261,7 +260,7 @@ class PlatformGameScreen(
 
         private const val DEATH_ZOOM_RATE = -0.015f
 
-        private fun generateObstacles(features: List<Feature>): List<Obstacle> {
+        private fun generateObstacles(atlas: TextureAtlas, features: List<Feature>): List<Obstacle> {
             val rects = features.map {
                 Rectangle(
                         (it.startTimeInSeconds + FEATURE_START_TIME_OFFSET + WARM_UP_TIME) * SCALE_X,
@@ -281,7 +280,7 @@ class PlatformGameScreen(
                 }
             }
 
-            return rects.map { Obstacle(it) }
+            return rects.map { ObstacleBuilder.makeObstacle(it, atlas) }
 
         }
 
