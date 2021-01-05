@@ -4,12 +4,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.ScreenAdapter
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.BeatGame
@@ -43,8 +39,11 @@ class PlatformGameScreen(
     private var startTime = 0f
     private var deathTimeTime = 0f
 
+    private var prePauseState: State = state
+
     enum class State {
         PENDING,
+        PAUSED,
         WARMING_UP,
         PLAYING,
         DYING,
@@ -63,10 +62,21 @@ class PlatformGameScreen(
 
             override fun keyDown(keycode: Int): Boolean {
                 if (keycode == Input.Keys.SPACE) {
-                    player.performJump()
+                    if (state == State.PAUSED) {
+                        resume()
+                    } else {
+                        player.performJump()
+                    }
                     return true
                 } else if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
                     game.showMenu()
+                    return true
+                } else if (keycode == Input.Keys.P) {
+                    if (state == State.PAUSED) {
+                        resume()
+                    } else {
+                        pause()
+                    }
                     return true
                 }
 
@@ -131,7 +141,7 @@ class PlatformGameScreen(
 
         checkCollisions()
 
-        if (state == State.PENDING) {
+        if (state == State.PENDING || state == State.PAUSED) {
 
             // Do nothing, we just need to animate the running player (which happens in the render loop).
             return
@@ -152,7 +162,6 @@ class PlatformGameScreen(
                 state = State.DYING
                 deadPlayer.setup(player.position)
                 deathTimeTime = Globals.animationTimer
-                println("Was playing, now marking as dead.")
 
             }
 
@@ -160,14 +169,12 @@ class PlatformGameScreen(
 
             if (Globals.animationTimer - deathTimeTime < DEATH_TIME) {
 
-                println("Dying animation (and scrolling up and zooming in a bit).")
                 camera.translate(0f, delta * DeadPlayer.FLOAT_SPEED / 8)
                 camera.zoom += DEATH_ZOOM_RATE * delta
                 camera.update()
 
             } else {
 
-                println("Death animation finished, ending game.")
                 endGame()
 
             }
@@ -185,13 +192,13 @@ class PlatformGameScreen(
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        ground.render(camera)
-        obstacles.forEach { it.render(camera) }
+        ground.render(camera, state == State.PAUSED)
+        obstacles.forEach { it.render(camera, state == State.PAUSED) }
 
         if (state == State.DYING) {
-            deadPlayer.render(camera)
+            deadPlayer.render(camera, state == State.PAUSED)
         } else {
-            player.render(camera)
+            player.render(camera, state == State.PAUSED)
         }
     }
 
@@ -203,6 +210,21 @@ class PlatformGameScreen(
     private fun endGame() {
         world.music.stop()
         game.endGame(player.getScore())
+    }
+
+    override fun pause() {
+        super.pause()
+
+        prePauseState = state
+        world.music.pause()
+        state = State.PAUSED
+    }
+
+    override fun resume() {
+        super.resume()
+
+        world.music.play()
+        state = prePauseState
     }
 
     private fun checkCollisions() {
@@ -249,7 +271,7 @@ class PlatformGameScreen(
          * Once the game starts, the player runs infinitely until the player jumps for the first
          * time. After that, wait this long before starting the song.
          */
-        private const val WARM_UP_TIME = 0.1f
+        private const val WARM_UP_TIME = 3f
 
 
         /**
@@ -269,18 +291,41 @@ class PlatformGameScreen(
                         (it.strength * Obstacle.STRENGTH_TO_HEIGHT).coerceAtLeast(Obstacle.MIN_HEIGHT)
                 )
             }
-            .filter { true } // Exclude tall but narrow items (they will become something else.
 
-            for (i in rects.indices) {
-                if (i < rects.size - 1 ) {
-                    val distanceToNext = rects[i + 1].x - rects[i].x - rects[i].width
-                    if (distanceToNext < OBSTACLE_GAP_THRESHOLD) {
-                        rects[i].width += distanceToNext
+            val toRemove = mutableSetOf<Rectangle>()
+            var i = 0
+            while (i < rects.size - 1) {
+
+                val current = rects[i]
+
+                // Continue merging subsequent items in succession if they are of the same height
+                // and close enough x distance.
+                var nextIndex = i + 1
+                while (nextIndex < rects.size) {
+
+                    val next = rects[nextIndex]
+
+                    val distanceToNext = next.x - current.x - current.width
+                    if (distanceToNext < OBSTACLE_GAP_THRESHOLD && current.height == next.height) {
+                        current.width += distanceToNext + next.width
+
+                        // Don't start processing this obstacle in the next high level loop, because
+                        // it has been merged into the current one.
+                        i ++
+
+                        // Also completely remove it later on.
+                        toRemove.add(next)
                     }
+
+                    nextIndex ++
+
                 }
+
+                i ++
             }
 
-            return rects.map { ObstacleBuilder.makeObstacle(it, atlas) }
+            return rects.filter { !toRemove.contains(it) }
+                    .map { ObstacleBuilder.makeObstacle(it, atlas) }
 
         }
 

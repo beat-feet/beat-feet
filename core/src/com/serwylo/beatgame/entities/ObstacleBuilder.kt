@@ -5,9 +5,34 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.graphics.TiledSprite
+import com.sun.xml.internal.fastinfoset.util.StringArray
+import kotlin.math.abs
 import kotlin.math.ceil
+import kotlin.math.sqrt
 
 object ObstacleBuilder {
+
+    /**
+     * If it is less than a tile high, then just leave the size as is.
+     * However, if it is above a tile high, then only deal in tile sizes. This will make it much
+     * easier to merge obstacles together for large and interesting buildings.
+     */
+    fun roundShapeToNearestObstacle(rect: Rectangle): Rectangle {
+        if (rect.height <= TILE_SIZE) {
+            return rect
+        }
+
+        val height = (rect.height / TILE_SIZE).toInt() * TILE_SIZE + TILE_SIZE
+        return Rectangle(0f, 0f, rect.width, height)
+    }
+
+    /**
+     * In pixels, each tile is 16x16 pixels in size.
+     * In game units, they are each [TILE_SIZE]x[TILE_SIZE] units large.
+     */
+    fun px2Unit(tilePixels: Int): Float {
+        return tilePixels.toFloat() * (TILE_SIZE) / 16f
+    }
 
     fun makeObstacle(rect: Rectangle, atlas: TextureAtlas): Obstacle {
 
@@ -15,7 +40,7 @@ object ObstacleBuilder {
         val short = rect.height < TILE_SIZE
 
         return if (narrow && short) {
-            makeSmallObstacle(atlas, rect.x)
+            makeSmallObstacle(atlas, rect)
         } else if (short) {
             makeShortObstacle(atlas, rect.x, rect.width)
         } else if (narrow) {
@@ -35,27 +60,28 @@ object ObstacleBuilder {
         val tilesHigh = sizeToTileCount(rect.height)
 
         val sprites = Array(tilesHigh) { arrayOfNulls<TextureRegion?>(tilesWide) }
+        val buildingSprites = BuildingSprites.random()
 
         for (x in 0 until tilesWide) {
             for (y in 0 until tilesHigh) {
                 val spriteName: String = if (x == 0 && y == 0) {
-                    BUILDING_BRICK_BOTTOM_LEFT
+                    buildingSprites.bottomLeft
                 } else if (x == 0 && y == tilesHigh - 1) {
-                    BUILDING_BRICK_TOP_LEFT
+                    buildingSprites.topLeft
                 } else if (x == 0) {
-                    BUILDING_BRICK_LEFT
+                    buildingSprites.left
                 } else if (x == tilesWide - 1 && y == 0) {
-                    BUILDING_BRICK_BOTTOM_RIGHT
+                    buildingSprites.bottomRight
                 } else if (x == tilesWide - 1 && y == tilesHigh - 1) {
-                    BUILDING_BRICK_TOP_RIGHT
+                    buildingSprites.topRight
                 } else if (x == tilesWide - 1) {
-                    BUILDING_BRICK_RIGHT
+                    buildingSprites.right
                 } else if (y == 0) {
-                    BUILDING_BRICK_BOTTOM
+                    buildingSprites.bottom
                 } else if (y == tilesHigh - 1) {
-                    BUILDING_BRICK_TOP
+                    buildingSprites.top
                 } else {
-                    BUILDING_BRICK_INNER
+                    buildingSprites.inner
                 }
 
                 sprites[y][x] = atlas.findRegion(spriteName)
@@ -68,59 +94,148 @@ object ObstacleBuilder {
 
     private fun makeNarrowObstacle(atlas: TextureAtlas, x: Float, height: Float): Obstacle {
         // Light poles, trees, etc.
-        val boundingBox = Rectangle(x, 0f, TILE_SIZE, height)
         val tilesHigh = sizeToTileCount(height)
-        val sprites = Array<Array<TextureRegion?>>(tilesHigh) { arrayOf( atlas.findRegion(BARREL_C) ) }
-        return Obstacle(boundingBox, TiledSprite(Vector2(x, 0f), sprites))
-    }
-
-    private fun makeShortObstacle(atlas: TextureAtlas, x: Float, width: Float): Obstacle {
-        // Fence or row of cars or seats, etc.
-        val boundingBox = Rectangle(x, 0f, width, TILE_SIZE)
-        val tilesWide = sizeToTileCount(width)
-        val sprites = Array<Array<TextureRegion?>>(1) {
-            Array<TextureRegion?>(tilesWide) { atlas.findRegion( FENCE_A ) }
+        val boundingBox = Rectangle(x, 0f, TILE_SIZE, tilesHigh * TILE_SIZE)
+        val streetlight = StreetlightSprites.random()
+        val sprites = Array<Array<TextureRegion?>>(tilesHigh) { index ->
+            when (index) {
+                0 -> arrayOf( atlas.findRegion(streetlight.base))
+                (tilesHigh - 1) -> arrayOf(atlas.findRegion(streetlight.top))
+                else -> arrayOf( atlas.findRegion(streetlight.post))
+            }
         }
         return Obstacle(boundingBox, TiledSprite(Vector2(x, 0f), sprites))
     }
 
-    private fun makeSmallObstacle(atlas: TextureAtlas, x: Float): Obstacle {
+    class BuildingSprites(val topLeft: String, val top: String, val topRight: String, val right: String, val bottomRight: String, val bottom: String, val bottomLeft: String, val left: String, val inner: String) {
+        companion object {
+            private val all = arrayOf("a", "b", "c").map {
+                val prefix = "building_${it}"
+                BuildingSprites(
+                        "${prefix}_top_left",
+                        "${prefix}_top",
+                        "${prefix}_top_right",
+                        "${prefix}_right",
+                        "${prefix}_bottom_right",
+                        "${prefix}_bottom",
+                        "${prefix}_bottom_left",
+                        "${prefix}_left",
+                        "${prefix}_inner"
+                )
+            }
+
+            fun random(): BuildingSprites {
+                return all.random()
+            }
+        }
+    }
+
+    class StreetlightSprites(val base: String, val post: String, val top: String) {
+        companion object {
+            private val all = arrayOf("a", "b", "c", "d", "e", "f").map {
+                StreetlightSprites("streetlight_${it}_base", "streetlight_${it}_post", "streetlight_${it}_top")
+            }
+
+            fun random(): StreetlightSprites {
+                return all.random()
+            }
+        }
+    }
+
+    class WallSprites(val left: String, val inner: Array<String>, val right: String) {
+
+        constructor(left: String, inner: String, right: String):
+                this(left, arrayOf(inner), right)
+
+        companion object {
+            private val all = arrayOf(
+                WallSprites("wall_a_left", "wall_a_inner", "wall_a_right"),
+                WallSprites("wall_b_left", "wall_b_inner", "wall_b_right"),
+                WallSprites("wall_c_left", "wall_c_inner", "wall_c_right"),
+                WallSprites(
+                        "fence_left",
+                        arrayOf("fence_inner", "fence_inner", "fence_inner", "fence_inner", "fence_inner_broken_a", "fence_inner_broken_b"),
+                        "fence_right"
+                )
+            )
+
+            fun random(): WallSprites {
+                return all.random()
+            }
+        }
+    }
+
+    class SmallObstacle(val sprite: String, val width: Float, val height: Float, val offsetX: Float = 0f, val offsetY: Float = 0f) {
+
+        private var diagnoal = sqrt(width * width + height * height)
+
+        companion object {
+            private val all = arrayOf(
+                    SmallObstacle("barrel_a", px2Unit(8), px2Unit(12), px2Unit(4), px2Unit(2)),
+                    SmallObstacle("barrier_a", px2Unit(16), px2Unit(11)),
+                    SmallObstacle("box_small", px2Unit(10), px2Unit(10), px2Unit(3), px2Unit(2)),
+                    SmallObstacle("box_medium", px2Unit(12), px2Unit(12), px2Unit(2), px2Unit(2)),
+                    SmallObstacle("hydrant", px2Unit(8), px2Unit(13), px2Unit(4), px2Unit(2)),
+                    SmallObstacle("tyres_small", px2Unit(8), px2Unit(10), px2Unit(4), px2Unit(2)),
+                    SmallObstacle("tyres_medium", px2Unit(8), px2Unit(11), px2Unit(4), px2Unit(2)),
+                    SmallObstacle("tyres_large", px2Unit(12), px2Unit(14), px2Unit(2), px2Unit(1))
+            )
+
+            /**
+             * Not sure the best way to do this, but my intuition tells me that a check of the diagonal
+             * distance is the best way to proceed at this point.
+             *
+             * +-----+   +---+
+             * |  /  |   |  /|
+             * +-----+   |/  |
+             *           +---+
+             */
+            fun closest(rect: Rectangle): SmallObstacle {
+
+                val toCompareDiagonal = sqrt(rect.width * rect.width + rect.height * rect.height)
+
+                var best: SmallObstacle = all[0]
+                var bestDifference = abs(best.diagnoal - toCompareDiagonal)
+
+                for (i in 1 until all.size) {
+
+                    val difference = abs(all[i].diagnoal - toCompareDiagonal)
+                    if (difference < bestDifference) {
+                        bestDifference = difference
+                        best = all[i]
+                    }
+
+                }
+
+                return best
+
+            }
+
+        }
+    }
+
+    private fun makeShortObstacle(atlas: TextureAtlas, x: Float, width: Float): Obstacle {
+        // Fence or row of cars or seats, etc.
+        val tilesWide = sizeToTileCount(width)
+        val boundingBox = Rectangle(x, 0f, tilesWide * TILE_SIZE, TILE_SIZE)
+        val wallSprites = WallSprites.random()
+        val sprites = Array<TextureRegion?>(tilesWide) {
+            when (it) {
+                0 -> atlas.findRegion(wallSprites.left)
+                (tilesWide - 1) -> atlas.findRegion(wallSprites.right)
+                else -> atlas.findRegion(wallSprites.inner.random())
+            }
+        }
+        return Obstacle(boundingBox, TiledSprite(Vector2(x, 0f), arrayOf(sprites)))
+    }
+
+    private fun makeSmallObstacle(atlas: TextureAtlas, rect: Rectangle): Obstacle {
         // Barrel or barrier, etc.
-        val boundingBox = Rectangle(x, 0f, TILE_SIZE, TILE_SIZE)
-        return Obstacle(boundingBox, TiledSprite(Vector2(x, 0f), atlas.findRegion(BARRIER_A)))
+        val smallThing = SmallObstacle.closest(rect)
+        val boundingBox = Rectangle(rect.x, rect.y, smallThing.width, smallThing.height)
+        return Obstacle(boundingBox, TiledSprite(Vector2(rect.x, 0f), atlas.findRegion(smallThing.sprite), Vector2(smallThing.offsetX, smallThing.offsetY)))
     }
 
     private const val TILE_SIZE = TiledSprite.TILE_SIZE
-
-    private const val BUILDING_BRICK_INNER = "building_inner_brick"
-    private const val BUILDING_BRICK_TOP_LEFT = "building_top_left_brick"
-    private const val BUILDING_BRICK_TOP = "building_top_brick"
-    private const val BUILDING_BRICK_TOP_RIGHT = "building_top_right_brick"
-    private const val BUILDING_BRICK_RIGHT = "building_right_brick"
-    private const val BUILDING_BRICK_BOTTOM_RIGHT = "building_bottom_right_brick"
-    private const val BUILDING_BRICK_BOTTOM = "building_bottom_brick"
-    private const val BUILDING_BRICK_BOTTOM_LEFT = "building_bottom_left_brick"
-    private const val BUILDING_BRICK_LEFT = "building_left_brick"
-
-    private const val DOOR_A = "door_a"
-    private const val DOOR_B = "door_b"
-    private const val DOOR_C = "door_c"
-    private const val DOOR_D = "door_d"
-    private val DOORS = arrayOf(DOOR_A, DOOR_B, DOOR_C, DOOR_D)
-
-    private const val BARREL_A = "barrel_a"
-    private const val BARREL_B = "barrel_b"
-    private const val BARREL_C = "barrel_c"
-    private val BARRELS = arrayOf(BARREL_A, BARREL_B, BARREL_C)
-
-    private const val FENCE_A = "fence_a"
-    private const val FENCE_B = "fence_b"
-    private val FENcES = arrayOf(FENCE_A, FENCE_B)
-
-    private const val BARRIER_A = "barrier_a"
-    private const val BARRIER_B = "barrier_b"
-    private const val BARRIER_C = "barrier_c"
-    private const val BARRIER_D = "barrier_d"
-    private val BARRIERS = arrayOf(BARRIER_A, BARRIER_B, BARRIER_C, BARRIER_D)
 
 }

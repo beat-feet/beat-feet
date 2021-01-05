@@ -4,10 +4,8 @@ import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Globals
-import kotlin.math.abs
 
 class DeadPlayer(
         atlas: TextureAtlas
@@ -29,7 +27,7 @@ class DeadPlayer(
         this.deathTime = Globals.animationTimer
     }
 
-    override fun render(camera: Camera) {
+    override fun render(camera: Camera, isPaused: Boolean) {
 
         val sprite = animation.getKeyFrame(Globals.animationTimer - deathTime, false)
 

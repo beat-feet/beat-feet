@@ -12,18 +12,16 @@ class Obstacle(val rect: Rectangle, private val sprite: TiledSprite) : Entity {
     override fun update(delta: Float) {
     }
 
-    override fun render(camera: Camera) {
+    override fun render(camera: Camera, isPaused: Boolean) {
 
         sprite.render()
 
-        /*
-        val r = Globals.shapeRenderer
+        /*val r = Globals.shapeRenderer
         r.projectionMatrix = camera.combined
-        r.color = Color.GREEN
+        r.color = Color.WHITE
         r.begin(ShapeRenderer.ShapeType.Line)
         r.rect(rect.x, rect.y, rect.width, rect.height)
-        r.end()
-         */
+        r.end()*/
 
     }
 

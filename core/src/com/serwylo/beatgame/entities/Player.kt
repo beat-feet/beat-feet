@@ -75,7 +75,7 @@ class Player(
 
     }
 
-    private fun sprite(): TextureRegion {
+    private fun sprite(isPaused: Boolean): TextureRegion {
 
         if (state == State.DEAD) {
             return deathAnimation.getKeyFrame(Globals.animationTimer - deathTime, false)
@@ -86,19 +86,23 @@ class Player(
         }
 
         if (state == State.RUNNING) {
-            return walkAnimation.getKeyFrame(Globals.animationTimer, true)
+            if (isPaused) {
+                return walkAnimation.getKeyFrame(0f)
+            } else {
+                return walkAnimation.getKeyFrame(Globals.animationTimer, true)
+            }
         }
 
         return textureJump
 
     }
 
-    override fun render(camera: Camera) {
+    override fun render(camera: Camera, isPaused: Boolean) {
 
         val batch = Globals.spriteBatch
         batch.projectionMatrix = camera.combined
         batch.begin()
-        batch.draw(sprite(), position.x, position.y, WIDTH, HEIGHT)
+        batch.draw(sprite(isPaused), position.x, position.y, WIDTH, HEIGHT)
         batch.end()
 
     }
@@ -212,7 +216,7 @@ class Player(
         /**
          * When hitting an obstacle, multiply the area by this in order to figure out how much damage to do.
          */
-        const val AREA_TO_DAMAGE = 30f
+        const val AREA_TO_DAMAGE = 15f
 
         const val MIN_DAMAGE = 1
 

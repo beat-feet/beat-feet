@@ -10,7 +10,7 @@ class Ground : Entity {
     override fun update(delta: Float) {
     }
 
-    override fun render(camera: Camera) {
+    override fun render(camera: Camera, isPaused: Boolean) {
         val r = Globals.shapeRenderer
 
         r.projectionMatrix = camera.combined
