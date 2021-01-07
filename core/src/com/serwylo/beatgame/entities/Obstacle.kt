@@ -1,13 +1,10 @@
 package com.serwylo.beatgame.entities
 
 import com.badlogic.gdx.graphics.Camera
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
-import com.serwylo.beatgame.Globals
-import com.serwylo.beatgame.graphics.TiledSprite
+import com.serwylo.beatgame.graphics.SpriteRenderer
 
-class Obstacle(val rect: Rectangle, private val sprite: TiledSprite) : Entity {
+class Obstacle(val rect: Rectangle, private val sprite: SpriteRenderer) : Entity {
 
     override fun update(delta: Float) {
     }

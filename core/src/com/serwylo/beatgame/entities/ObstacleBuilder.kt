@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import com.serwylo.beatgame.graphics.LayeredTiledSprite
 import com.serwylo.beatgame.graphics.TiledSprite
-import com.sun.xml.internal.fastinfoset.util.StringArray
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.sqrt
@@ -59,7 +59,7 @@ object ObstacleBuilder {
         val tilesWide = sizeToTileCount(rect.width)
         val tilesHigh = sizeToTileCount(rect.height)
 
-        val sprites = Array(tilesHigh) { arrayOfNulls<TextureRegion?>(tilesWide) }
+        val baseSprites = Array(tilesHigh) { arrayOfNulls<TextureRegion?>(tilesWide) }
         val buildingSprites = BuildingSprites.random()
 
         for (x in 0 until tilesWide) {
@@ -84,12 +84,46 @@ object ObstacleBuilder {
                     buildingSprites.inner
                 }
 
-                sprites[y][x] = atlas.findRegion(spriteName)
+                baseSprites[y][x] = atlas.findRegion(spriteName)
+            }
+        }
+
+        val featureSprites = Array(tilesHigh) { arrayOfNulls<TextureRegion?>(tilesWide) }
+
+        val doorSprite = DoorSprite.random()
+        val doorPosition = (Math.random() * tilesWide).toInt().coerceAtMost(tilesWide - 1 /* In case Math.random() returns 1.0... can it do this?*/)
+        featureSprites[0][doorPosition] = atlas.findRegion(doorSprite.closed)
+
+        val woodenWindowTexture = atlas.findRegion(WoodenWindowSprite.random().sprite)
+
+        if (tilesHigh == 2) {
+            if (tilesWide == 2) {
+                // Small square building, make the image appear in the opposite corner to the door.
+                featureSprites[1][(doorPosition + 1) % 2] = woodenWindowTexture
+            } else {
+                // Low building, put windows everywhere except above the door (seems to look okay).
+                for (i in 0 until tilesWide) {
+                    if (i != doorPosition) {
+                        featureSprites[1][i] = woodenWindowTexture
+                    }
+                }
+            }
+        } else {
+            for (i in 1 until tilesHigh) {
+                if (i % 2 != tilesHigh % 2) {
+                    for (j in 0 until tilesWide) {
+                        featureSprites[i][j] = woodenWindowTexture
+                    }
+                }
             }
         }
 
         val boundingBox = Rectangle(rect.x, rect.y, tilesWide * TILE_SIZE, tilesHigh * TILE_SIZE)
-        return Obstacle(boundingBox, TiledSprite(Vector2(boundingBox.x, boundingBox.y), sprites))
+
+        val baseLayer = TiledSprite(Vector2(boundingBox.x, boundingBox.y), baseSprites)
+        val featureLayer = TiledSprite(Vector2(boundingBox.x, boundingBox.y), featureSprites)
+
+        return Obstacle(boundingBox, LayeredTiledSprite(arrayOf(baseLayer, featureLayer)))
     }
 
     private fun makeNarrowObstacle(atlas: TextureAtlas, x: Float, height: Float): Obstacle {
@@ -165,6 +199,48 @@ object ObstacleBuilder {
         }
     }
 
+    class BushSprite(val sprite: String) {
+        companion object {
+            private val all = arrayOf(
+                    BushSprite("bush_small_a"),
+                    BushSprite("bush_small_a"),
+                    BushSprite("bush_small_b"),
+                    BushSprite("bush_small_c"),
+                    BushSprite("bush_medium_a"),
+                    BushSprite("bush_medium_b"),
+                    BushSprite("bush_medium_c")
+            )
+
+            fun random(): BushSprite {
+                return all.random()
+            }
+        }
+    }
+
+    class DoorSprite(val closed: String, val open: String, val covered: String) {
+        companion object {
+            private val all = arrayOf("a", "b", "c", "d", "e", "f").map {
+                DoorSprite("door_${it}_closed", "door_${it}_open", "door_${it}_covered")
+            }
+
+            fun random(): DoorSprite {
+                return all.random()
+            }
+        }
+    }
+
+    class WoodenWindowSprite(val sprite: String) {
+        companion object {
+            private val all = arrayOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j").map {
+                WoodenWindowSprite("window_wood_${it}")
+            }
+
+            fun random(): WoodenWindowSprite {
+                return all.random()
+            }
+        }
+    }
+
     class SmallObstacle(val sprite: String, val width: Float, val height: Float, val offsetX: Float = 0f, val offsetY: Float = 0f) {
 
         private var diagnoal = sqrt(width * width + height * height)
@@ -219,14 +295,30 @@ object ObstacleBuilder {
         val tilesWide = sizeToTileCount(width)
         val boundingBox = Rectangle(x, 0f, tilesWide * TILE_SIZE, TILE_SIZE)
         val wallSprites = WallSprites.random()
-        val sprites = Array<TextureRegion?>(tilesWide) {
+        val baseLayerSprites = Array<TextureRegion?>(tilesWide) {
             when (it) {
                 0 -> atlas.findRegion(wallSprites.left)
                 (tilesWide - 1) -> atlas.findRegion(wallSprites.right)
                 else -> atlas.findRegion(wallSprites.inner.random())
             }
         }
-        return Obstacle(boundingBox, TiledSprite(Vector2(x, 0f), arrayOf(sprites)))
+
+        val flourishLayerSprites = Array<TextureRegion?>(tilesWide) {
+            if (Math.random() < 0.25) {
+                atlas.findRegion(BushSprite.random().sprite)
+            } else {
+                null
+            }
+        }
+
+        val position = Vector2(x, 0f)
+
+        val layers = LayeredTiledSprite(arrayOf(
+                TiledSprite(position, arrayOf(baseLayerSprites)),
+                TiledSprite(position, arrayOf(flourishLayerSprites))
+        ))
+
+        return Obstacle(boundingBox, layers)
     }
 
     private fun makeSmallObstacle(atlas: TextureAtlas, rect: Rectangle): Obstacle {

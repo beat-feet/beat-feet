@@ -1,8 +1,6 @@
 package com.serwylo.beatgame.graphics
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Globals
 
@@ -10,7 +8,7 @@ class TiledSprite(
         private val position: Vector2,
         private val sprites: Array<Array<TextureRegion?>>,
         private val offset: Vector2 = Vector2(0f, 0f)
-) {
+): SpriteRenderer {
 
     constructor(
             position: Vector2,
@@ -22,7 +20,7 @@ class TiledSprite(
             offset
     )
 
-    fun render() {
+    override fun render() {
         val batch = Globals.spriteBatch
         batch.begin()
         sprites.forEachIndexed { y, rows ->
