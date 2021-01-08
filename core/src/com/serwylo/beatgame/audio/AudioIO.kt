@@ -9,7 +9,6 @@ import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.audio.fft.FFTWindow
 import com.serwylo.beatgame.audio.fft.calculateMp3FFT
 import com.serwylo.beatgame.audio.playground.*
-import com.serwylo.beatgame.screens.PlatformGameScreen
 import java.io.File
 import kotlin.math.ln
 
@@ -51,10 +50,12 @@ private fun loadFromDisk(musicFile: FileHandle): World {
     val smoothHeightMapSeries = smoothSeriesMean(heightMapSeries, 15)
     val heightMap = extractHeightMapFromSeries(smoothHeightMapSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate, 3f)
 
+    println("Samples: ${spectogram.mp3Data.pcmSamples.size} @ ${spectogram.mp3Data.sampleRate}Hz (duration: ${spectogram.mp3Data.pcmSamples.size / spectogram.mp3Data.sampleRate})")
+    val duration = spectogram.mp3Data.pcmSamples.size / spectogram.mp3Data.sampleRate
     val music = Gdx.audio.newMusic(musicFile)
 
     Gdx.app.debug(TAG, "Finished generating world")
-    return World(music, heightMap, features)
+    return World(music, duration, heightMap, features)
 
 }
 
@@ -77,7 +78,7 @@ private fun loadFromCache(musicFile: FileHandle): World? {
             return null
         }
 
-        return World(Gdx.audio.newMusic(musicFile), data.heightMap, data.features)
+        return World(Gdx.audio.newMusic(musicFile), data.duration, data.heightMap, data.features)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
@@ -95,7 +96,7 @@ private fun cacheWorld(musicFile: FileHandle, world: World) {
 
     Gdx.app.debug(TAG, "Caching world for ${musicFile.path()} to ${file.file().absolutePath}")
 
-    val json = Gson().toJson(CachedWorldData(world.features, world.heightMap))
+    val json = Gson().toJson(CachedWorldData(world.duration, world.features, world.heightMap))
     file.writeString(json, false)
 
 }
@@ -113,13 +114,17 @@ private fun getCacheFile(musicFile: FileHandle): FileHandle {
 
 }
 
-private data class CachedWorldData(val features: List<Feature>, val heightMap: Array<Vector2>) {
+private data class CachedWorldData(val duration: Int, val features: List<Feature>, val heightMap: Array<Vector2>) {
+
     val version = currentVersion
 
     companion object {
+
         // Change this every time we modify the signature of this class, to ensure we don't accidentally
         // try to process a legacy .json file of a different format after upgrading the game.
         // Bumping the version will just result in such old cache files being removed, and thus regenerated.
         const val currentVersion = 1
+
     }
+
 }

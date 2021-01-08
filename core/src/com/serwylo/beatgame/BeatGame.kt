@@ -42,9 +42,9 @@ class BeatGame(private val verbose: Boolean) : Game() {
         }
     }
 
-    fun endGame(score: Int) {
+    fun endGame(score: Int, distancePercent: Float) {
         Gdx.app.postRunnable {
-            setScreen(EndGameScreen(this, score))
+            setScreen(EndGameScreen(this, score, distancePercent))
         }
     }
 

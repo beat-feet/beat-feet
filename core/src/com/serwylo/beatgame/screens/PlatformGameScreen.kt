@@ -37,6 +37,7 @@ class PlatformGameScreen(
 
     private var state = State.PENDING
     private var startTime = 0f
+    private var playTime = 0f
     private var deathTimeTime = 0f
 
     private var prePauseState: State = state
@@ -121,11 +122,15 @@ class PlatformGameScreen(
         }
 
         Globals.animationTimer += delta
+        if (state == State.PLAYING) {
+            playTime += delta
+        }
 
         processInput()
         updateEntities(delta)
         renderEntities(delta)
-        hud.render(player)
+
+        hud.render(playTime / world.duration, player)
     }
 
     private fun processInput() {
@@ -255,7 +260,7 @@ class PlatformGameScreen(
 
     private fun endGame() {
         world.music.stop()
-        game.endGame(player.getScore())
+        game.endGame(player.getScore(), playTime / world.duration)
     }
 
     override fun pause() {

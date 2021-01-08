@@ -4,10 +4,11 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.Globals
 
-class EndGameScreen(private val game: BeatGame, private val score: Int): MenuScreen() {
+class EndGameScreen(private val game: BeatGame, private val score: Int, private val distancePercent: Float): MenuScreen() {
 
     override fun show() {
 
@@ -47,7 +48,7 @@ class EndGameScreen(private val game: BeatGame, private val score: Int): MenuScr
         batch.begin()
 
         bigFont.draw(batch, "The End", 0f, 25f)
-        smallFont.draw(batch, score.toString(), 0f, 0f)
+        smallFont.draw(batch, "${(distancePercent * 100).toInt()}% / ${score}", 0f, 0f)
 
         batch.end()
 
