@@ -23,5 +23,5 @@ fun makeCamera(maxWidth: Int, maxHeight: Int, scaleFactor: Float = 1f): Orthogra
 }
 
 fun calcDensityScaleFactor(): Float {
-    return (Gdx.graphics.density - 1).coerceAtLeast(1f)
+    return ((Gdx.graphics.density - 1) * 0.8f).coerceAtLeast(1f)
 }

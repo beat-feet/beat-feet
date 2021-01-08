@@ -328,6 +328,22 @@ object ObstacleBuilder {
         return Obstacle(boundingBox, TiledSprite(Vector2(rect.x, 0f), atlas.findRegion(smallThing.sprite), Vector2(smallThing.offsetX, smallThing.offsetY)))
     }
 
-    private const val TILE_SIZE = TiledSprite.TILE_SIZE
+    fun makeGround(atlas: TextureAtlas): Ground {
+        return Ground(atlas.findRegion(GroundSprite.random().sprite))
+    }
+
+    class GroundSprite(val sprite: String) {
+        companion object {
+            private val all = arrayOf("a", "b", "c", "d", "e", "f").map {
+                GroundSprite("ground_${it}")
+            }
+
+            fun random(): GroundSprite {
+                return all.random()
+            }
+        }
+    }
+
+    const val TILE_SIZE = TiledSprite.TILE_SIZE
 
 }

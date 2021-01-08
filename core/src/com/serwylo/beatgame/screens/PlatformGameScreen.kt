@@ -27,7 +27,7 @@ class PlatformGameScreen(
     private lateinit var hud: HUD
     private lateinit var obstacles: List<Obstacle>
 
-    private val ground = Ground()
+    private lateinit var ground: Ground
     private lateinit var player: Player
     private lateinit var deadPlayer: DeadPlayer
 
@@ -96,6 +96,8 @@ class PlatformGameScreen(
 
         player = Player(Vector2(SCALE_X, 0f), atlas!!)
         deadPlayer = DeadPlayer(atlas!!)
+
+        ground = ObstacleBuilder.makeGround(atlas!!)
 
         Globals.animationTimer = 0f
 
