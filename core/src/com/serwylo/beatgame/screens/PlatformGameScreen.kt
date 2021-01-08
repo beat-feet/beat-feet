@@ -154,6 +154,7 @@ class PlatformGameScreen(
 
             player.update(delta)
             scrollCamera(delta)
+            shakeCamera(delta)
 
             if (state == State.WARMING_UP && Globals.animationTimer - startTime > WARM_UP_TIME) {
                 startGame()
@@ -183,6 +184,49 @@ class PlatformGameScreen(
 
         }
 
+    }
+
+    private var cameraShakeYPosition = 0f
+    private var cameraShakeTotalDuration = 0f
+    private var cameraShakeCurrentDuration = 0f
+    private var cameraShakeAmplitude = 0f
+
+    private fun shakeCamera(delta: Float) {
+
+        if (player.justHitDamage > 0 && cameraShakeTotalDuration <= 0) {
+            println("Starting camera shake for 0.1 seconds")
+            cameraShakeTotalDuration = CAMERA_SHAKE_DURATION
+            cameraShakeAmplitude = player.justHitDamage.coerceAtMost(CAMERA_SHAKE_MAX_DAMAGE).toFloat() / CAMERA_SHAKE_MAX_DAMAGE * CAMERA_SHAKE_MAX_DISTANCE
+        }
+
+        if (cameraShakeTotalDuration <= 0) {
+            return
+        }
+
+        cameraShakeCurrentDuration += delta
+
+        if (cameraShakeCurrentDuration >= cameraShakeTotalDuration) {
+
+            println("Finished shaking (camera shakeY is $cameraShakeYPosition - will shift back this much to return to normal)")
+            camera.translate(0f, -cameraShakeYPosition)
+            cameraShakeTotalDuration = 0f
+            cameraShakeCurrentDuration = 0f
+            cameraShakeYPosition = 0f
+
+        } else {
+
+            val factor = cameraShakeCurrentDuration / cameraShakeTotalDuration
+            val radians = factor * Math.PI * 2
+            val desiredPosition = (Math.sin(radians) * cameraShakeAmplitude - cameraShakeAmplitude / 2).toFloat()
+            val shift = desiredPosition - cameraShakeYPosition
+
+            println("Shaking (percent through sine wave: $factor, desired position: $desiredPosition, currentY: $cameraShakeYPosition, shift required: $shift)")
+            camera.translate(0f, shift.toFloat())
+            cameraShakeYPosition += shift
+
+        }
+
+        camera.update()
     }
 
     private fun scrollCamera(delta: Float) {
@@ -283,6 +327,19 @@ class PlatformGameScreen(
         private const val DEATH_TIME = 5f
 
         private const val DEATH_ZOOM_RATE = -0.015f
+
+        /**
+         * When you hit a really big obstacle, shake the camera this many units up and down.
+         */
+        private const val CAMERA_SHAKE_MAX_DISTANCE = 0.1f
+
+        /**
+         * This amount of damage in one go will result in the maximum shake, anything above will
+         * still cause the same amount of shaking, anything below will result in a smaller shake.
+         */
+        private const val CAMERA_SHAKE_MAX_DAMAGE = 15
+
+        private const val CAMERA_SHAKE_DURATION = 0.12f
 
         private fun generateObstacles(atlas: TextureAtlas, features: List<Feature>): List<Obstacle> {
             val rects = features.map {

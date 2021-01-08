@@ -20,7 +20,13 @@ class Player(
      * For animation purposes, record the last time we hit an obstacle. Use this to show some
      * visual feedback as to how frequently we get hit.
      */
-    private var hitAnimation = -1f
+    var hitAnimation = -1f
+
+    /**
+     * For one frame, we will record a hit has been performed. This allows the main game to interrotage
+     * and respond (e.g. by starting particle effects, shaking camera, vibrating, etc.
+     */
+    var justHitDamage = 0
 
     private var jumpCount = 0
 
@@ -153,6 +159,7 @@ class Player(
 
     fun hit(obstacle: Obstacle) {
 
+        justHitDamage = 0
         hitAnimation = HIT_ANIMATION_DURATION
 
         if (!hitObstacles.contains(obstacle)) {
@@ -164,16 +171,15 @@ class Player(
 
             // If we are jumping upward and hit the obstacle above half way then we can visually
             // it doesn't look like such a big deal when you hit it, so reduce the damage accordingly.
-            if (velocity.y > 0) {
-
+            val scaledDamage = if (velocity.y > 0) {
                 val scale = 1 -  (position.y - obstacle.rect.y) / obstacle.rect.height
-                health -= (damage * scale).toInt().coerceAtLeast(MIN_DAMAGE)
-
+                (damage * scale).toInt().coerceAtLeast(MIN_DAMAGE)
             } else {
-
-                health -= damage
-
+                damage
             }
+
+            health -= scaledDamage
+            justHitDamage = scaledDamage
 
             if (health <= 0) {
                 health = 0
