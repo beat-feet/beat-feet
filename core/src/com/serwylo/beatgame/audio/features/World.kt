@@ -10,7 +10,13 @@ import com.serwylo.beatgame.Globals
 import kotlin.math.max
 import kotlin.math.min
 
-class World(val music: Music, val duration: Int, val heightMap: Array<Vector2>, val features: List<Feature>) {
+class World(
+        val music: Music,
+        val musicFileName: String,
+        val duration: Int,
+        val heightMap: Array<Vector2>,
+        val features: List<Feature>
+) {
 
     fun dispose() {
         music.stop()

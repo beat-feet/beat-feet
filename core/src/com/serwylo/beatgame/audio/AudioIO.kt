@@ -55,7 +55,7 @@ private fun loadFromDisk(musicFile: FileHandle): World {
     val music = Gdx.audio.newMusic(musicFile)
 
     Gdx.app.debug(TAG, "Finished generating world")
-    return World(music, duration, heightMap, features)
+    return World(music, musicFile.name(), duration, heightMap, features)
 
 }
 
@@ -78,7 +78,7 @@ private fun loadFromCache(musicFile: FileHandle): World? {
             return null
         }
 
-        return World(Gdx.audio.newMusic(musicFile), data.duration, data.heightMap, data.features)
+        return World(Gdx.audio.newMusic(musicFile), musicFile.name(), data.duration, data.heightMap, data.features)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change

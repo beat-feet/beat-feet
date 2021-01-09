@@ -257,7 +257,7 @@ class PlatformGameScreen(
 
     private fun endGame() {
         world.music.stop()
-        game.endGame(player.getScore(), playTime / world.duration)
+        game.endGame(world, player.getScore(), playTime / world.duration)
     }
 
     override fun pause() {
