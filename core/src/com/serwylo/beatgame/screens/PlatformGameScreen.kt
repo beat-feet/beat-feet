@@ -199,7 +199,6 @@ class PlatformGameScreen(
     private fun shakeCamera(delta: Float) {
 
         if (player.justHitDamage > 0 && cameraShakeTotalDuration <= 0) {
-            println("Starting camera shake for 0.1 seconds")
             cameraShakeTotalDuration = CAMERA_SHAKE_DURATION
             cameraShakeAmplitude = player.justHitDamage.coerceAtMost(CAMERA_SHAKE_MAX_DAMAGE).toFloat() / CAMERA_SHAKE_MAX_DAMAGE * CAMERA_SHAKE_MAX_DISTANCE
         }
@@ -212,7 +211,6 @@ class PlatformGameScreen(
 
         if (cameraShakeCurrentDuration >= cameraShakeTotalDuration) {
 
-            println("Finished shaking (camera shakeY is $cameraShakeYPosition - will shift back this much to return to normal)")
             camera.translate(0f, -cameraShakeYPosition)
             cameraShakeTotalDuration = 0f
             cameraShakeCurrentDuration = 0f
@@ -225,7 +223,6 @@ class PlatformGameScreen(
             val desiredPosition = (Math.sin(radians) * cameraShakeAmplitude - cameraShakeAmplitude / 2).toFloat()
             val shift = desiredPosition - cameraShakeYPosition
 
-            println("Shaking (percent through sine wave: $factor, desired position: $desiredPosition, currentY: $cameraShakeYPosition, shift required: $shift)")
             camera.translate(0f, shift.toFloat())
             cameraShakeYPosition += shift
 
@@ -279,6 +276,7 @@ class PlatformGameScreen(
     }
 
     private fun checkCollisions() {
+        player.clearHit()
         obstacles.forEach {
             if (player.isColliding(it.rect)) {
                 player.hit(it)

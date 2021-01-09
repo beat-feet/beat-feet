@@ -7,10 +7,7 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.audio.features.World
-import com.serwylo.beatgame.screens.EndGameScreen
-import com.serwylo.beatgame.screens.LoadingScreen
-import com.serwylo.beatgame.screens.MainMenuScreen
-import com.serwylo.beatgame.screens.PlatformGameScreen
+import com.serwylo.beatgame.screens.*
 
 class BeatGame(private val verbose: Boolean) : Game() {
 
@@ -21,6 +18,7 @@ class BeatGame(private val verbose: Boolean) : Game() {
 
         Globals.shapeRenderer = ShapeRenderer()
         Globals.spriteBatch = SpriteBatch()
+
         setScreen(MainMenuScreen(this))
     }
 
@@ -45,6 +43,12 @@ class BeatGame(private val verbose: Boolean) : Game() {
     fun endGame(score: Int, distancePercent: Float) {
         Gdx.app.postRunnable {
             setScreen(EndGameScreen(this, score, distancePercent))
+        }
+    }
+
+    fun showLevelSelectMenu() {
+        Gdx.app.postRunnable {
+            setScreen(LevelSelectScreen(this))
         }
     }
 

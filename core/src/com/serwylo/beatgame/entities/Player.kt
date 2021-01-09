@@ -159,7 +159,6 @@ class Player(
 
     fun hit(obstacle: Obstacle) {
 
-        justHitDamage = 0
         hitAnimation = HIT_ANIMATION_DURATION
 
         if (!hitObstacles.contains(obstacle)) {
@@ -194,6 +193,10 @@ class Player(
 
     fun getScore(): Int {
         return score.toInt()
+    }
+
+    fun clearHit() {
+        justHitDamage = 0
     }
 
     companion object {

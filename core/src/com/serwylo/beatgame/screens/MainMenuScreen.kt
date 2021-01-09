@@ -1,112 +1,33 @@
 package com.serwylo.beatgame.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputAdapter
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.math.Vector3
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.Globals
 
-class MainMenuScreen(private val game: BeatGame): MenuScreen() {
+class MainMenuScreen(private val game: BeatGame): MenuScreen(keys, labels) {
 
-    private val menuItems = listOf(
-            "the_haunted_mansion_the_courtyard.mp3",
-            "the_haunted_mansion_the_exercise_room.mp3",
-            "the_haunted_mansion_the_laundry_room.mp3",
-            "the_haunted_mansion_the_ballroom.mp3",
-            "vivaldi.mp3"
-    )
+    override fun onMenuItemSelected(selectedIndex: Int) {
 
-    private val songs = sortedMapOf(
-            Pair("the_haunted_mansion_the_courtyard.mp3", "The Courtyard"),
-            Pair("the_haunted_mansion_the_exercise_room.mp3", "The Exercise Room"),
-            Pair("the_haunted_mansion_the_laundry_room.mp3", "The Laundry Room"),
-            Pair("the_haunted_mansion_the_ballroom.mp3", "The Ballroom"),
-            Pair("vivaldi.mp3", "Vivaldi")
-    )
-
-    private var selectedIndex = 0
-
-    private fun up() {
-        selectedIndex --
-        if (selectedIndex == -1) {
-            selectedIndex = songs.size - 1
-        }
-    }
-
-    private fun down() {
-        selectedIndex = (selectedIndex + 1) % songs.size
-    }
-
-    override fun show() {
-
-        Gdx.input.inputProcessor = object : InputAdapter() {
-
-            override fun keyDown(keycode: Int): Boolean {
-                if (keycode == Input.Keys.UP) {
-
-                    up()
-                    return true
-
-                } else if (keycode == Input.Keys.DOWN) {
-
-                    down()
-                    return true
-
-                } else if (keycode == Input.Keys.ENTER || keycode == Input.Keys.SPACE) {
-
-                    loadGame(selectedIndex)
-                    return true
-
-                }
-
-                return false
-            }
-
-            override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-                val location = camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
-                val item = (((location.y - ITEM_HEIGHT) / ITEM_HEIGHT / ITEM_SPACING).toInt())
-
-                if (item >= 0 && item < menuItems.size) {
-                    val selectedItem = menuItems.size - 1 - item
-                    loadGame(selectedItem)
-                    return true
-                }
-
-                return false
-            }
-
+        when (keys[selectedIndex]) {
+            "play" -> game.showLevelSelectMenu()
+            "about" -> println("About")
+            "quit" -> Gdx.app.exit()
         }
 
     }
 
-    private fun loadGame(menuIndex: Int) {
-        game.loadGame(Gdx.files.internal(menuItems[menuIndex]), songs[menuItems[menuIndex]]!!)
-    }
+    companion object {
 
-    override fun render(delta: Float) {
+        private val keys = listOf(
+                "play",
+                "about",
+                "quit"
+        )
 
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-        val r = Globals.shapeRenderer
-        r.projectionMatrix = camera.combined
-        r.begin(ShapeRenderer.ShapeType.Filled)
-        r.color = Color.DARK_GRAY
-        r.rect(-camera.viewportWidth, (menuItems.size - selectedIndex) * ITEM_HEIGHT * ITEM_SPACING, camera.viewportWidth * 2, ITEM_HEIGHT)
-        r.end()
-
-        val b = Globals.spriteBatch
-        b.projectionMatrix = camera.combined
-        b.begin()
-
-        menuItems.forEachIndexed { i, _ ->
-            mediumFont.draw(b, songs[menuItems[i]], 0f, (menuItems.size - i) * ITEM_HEIGHT * ITEM_SPACING + ITEM_HEIGHT)
-        }
-        b.end()
+        private val labels = listOf(
+                "Play",
+                "About",
+                "Quit"
+        )
 
     }
 
