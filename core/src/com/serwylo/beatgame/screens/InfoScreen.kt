@@ -5,21 +5,21 @@ import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
 
 abstract class InfoScreen(
         private val heading: String,
-        private val subheading: String
+        private val subheading: String? = null
 ): ScreenAdapter() {
 
     private val stage = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
+    private val areaBelow: WidgetGroup = VerticalGroup()
 
-    private var bigFont = BitmapFont().apply { data.scale(0.5f) }
-    private var smallFont = BitmapFont().apply { data.scale(-0.5f) }
+    protected var bigFont = BitmapFont().apply { data.scale(0.5f) }
+    protected var mediumFont = BitmapFont().apply { data.scale(-0.2f) }
+    protected var smallFont = BitmapFont().apply { data.scale(-0.5f) }
 
     override fun show() {
 
@@ -37,14 +37,25 @@ abstract class InfoScreen(
         headingLabel.setPosition(20f, 0f)
         group.addActor(headingLabel)
 
-        val smallLabel = Label.LabelStyle()
-        smallLabel.font = smallFont
+        if (subheading != null && subheading.isNotEmpty()) {
+            val smallLabel = Label.LabelStyle()
+            smallLabel.font = smallFont
 
-        val subheadingLabel = Label(subheading, smallLabel)
-        subheadingLabel.setPosition(0f, 0f)
-        group.addActor(subheadingLabel)
+            val subheadingLabel = Label(subheading, smallLabel)
+            subheadingLabel.setPosition(0f, 0f)
+            group.addActor(subheadingLabel)
+        }
+
+        areaBelow.width = stage.width
+        val other = otherActor()
+        if (other != null) {
+            areaBelow.addActor(other)
+        }
+        group.addActor(areaBelow)
 
     }
+
+    protected open fun otherActor(): WidgetGroup? = null
 
     override fun render(delta: Float) {
 

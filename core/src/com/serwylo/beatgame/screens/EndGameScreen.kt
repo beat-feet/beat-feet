@@ -3,10 +3,10 @@ package com.serwylo.beatgame.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
-import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.Score
 import com.serwylo.beatgame.audio.features.World
 
@@ -15,10 +15,9 @@ class EndGameScreen(
         private val world: World,
         private val score: Int,
         private val distancePercent: Float
-): InfoScreen(
-        "The End",
-        "${(distancePercent * 100).toInt()}% / ${score}"
-) {
+): InfoScreen("The End") {
+
+    private val atlas: TextureAtlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
 
     override fun show() {
         super.show()
@@ -49,6 +48,63 @@ class EndGameScreen(
     override fun hide() {
         Gdx.input.inputProcessor = null
         Gdx.input.setCatchKey(Input.Keys.BACK, false)
+    }
+
+    override fun otherActor(): WidgetGroup {
+
+        val distanceLabelStyle = Label.LabelStyle()
+        distanceLabelStyle.font = mediumFont
+
+        val scoreLabelStyle = Label.LabelStyle()
+        scoreLabelStyle.font = mediumFont
+
+        val verticalGroup = VerticalGroup()
+        verticalGroup.space(SPACING)
+
+        var record = false
+        val highScore = Score.load(world.musicFileName)
+        if ((distancePercent * 100).toInt() > (highScore.distancePercent * 100).toInt()) {
+            distanceLabelStyle.fontColor = Color.GREEN
+            record = true
+        }
+
+        if (score > highScore.score) {
+            scoreLabelStyle.fontColor = Color.GREEN
+            record = true
+        }
+
+        if (record) {
+            val recordLabelStyle = Label.LabelStyle()
+            recordLabelStyle.font = mediumFont
+
+            val recordLabel = Label("New Record!", recordLabelStyle)
+            verticalGroup.addActor(recordLabel)
+        }
+
+        val horizontalGroup = HorizontalGroup()
+        horizontalGroup.space(SPACING)
+
+        val distanceLabel = Label("${(distancePercent * 100).toInt()}%", distanceLabelStyle)
+        val scoreLabel = Label("${score}", scoreLabelStyle)
+
+        val distanceImage = Image(atlas.findRegion("right_sign"))
+        val scoreImage = Image(atlas.findRegion("score"))
+
+        horizontalGroup.addActor(distanceImage)
+        horizontalGroup.addActor(distanceLabel)
+        horizontalGroup.addActor(scoreImage)
+        horizontalGroup.addActor(scoreLabel)
+
+        verticalGroup.addActor(horizontalGroup)
+
+        return verticalGroup
+
+    }
+
+    companion object {
+
+        private const val SPACING = 10f
+
     }
 
 }
