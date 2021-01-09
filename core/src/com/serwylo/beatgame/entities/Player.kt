@@ -129,7 +129,9 @@ class Player(
             landOnSurface(0f)
         }
 
-        score += SCORE_PER_SECOND * (position.y * SCORE_HEIGHT_MULTIPLIER) * delta
+        if (position.y > 0) {
+            score += SCORE_PER_SECOND * delta
+        }
     }
 
     fun isColliding(rect: Rectangle): Boolean {
@@ -231,7 +233,6 @@ class Player(
 
         const val SCORE_PER_SECOND = 100
 
-        const val SCORE_HEIGHT_MULTIPLIER = 2f
     }
 
 }
