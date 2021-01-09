@@ -39,6 +39,8 @@ class Player(
 
     private var score: Float = 0f
 
+    var scoreMultiplier = 1f
+
     fun getHealth(): Int { return health }
 
     enum class State {
@@ -127,10 +129,8 @@ class Player(
 
         if (position.y < 0) {
             landOnSurface(0f)
-        }
-
-        if (position.y > 0) {
-            score += SCORE_PER_SECOND * delta
+        } else if (state == State.JUMPING){
+            score += SCORE_PER_SECOND * delta * scoreMultiplier
         }
     }
 
@@ -153,6 +153,12 @@ class Player(
     }
 
     private fun landOnSurface(height: Float) {
+        if (height <= 0f) {
+            scoreMultiplier = 1f
+        } else if (state == State.JUMPING) {
+            scoreMultiplier += 0.5f
+        }
+
         state = State.RUNNING
         velocity.y = 0f
         position.y = height
@@ -166,6 +172,8 @@ class Player(
         if (!hitObstacles.contains(obstacle)) {
 
             hitObstacles.add(obstacle)
+
+            scoreMultiplier = 1f
 
             // Bigger obstacles cause more damage.
             val damage = (obstacle.rect.area() * AREA_TO_DAMAGE).toInt().coerceAtLeast(MIN_DAMAGE)

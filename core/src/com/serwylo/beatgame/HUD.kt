@@ -50,8 +50,10 @@ class HUD(atlas: TextureAtlas) {
         batch.draw(textureDistance, padding * 8, padding, padding * 1.5f, padding * 1.5f)
         font.draw(batch, (distancePercent * 100).toInt().toString() + "%", padding * 10, padding + 12f)
 
+        val multiplier = if (player.scoreMultiplier <= 1) "" else " x ${player.scoreMultiplier}"
+
         batch.draw(textureScore, padding * 15, padding, padding * 1.5f, padding * 1.5f)
-        font.draw(batch, player.getScore().toString(), padding * 17, padding + 12f)
+        font.draw(batch, "${player.getScore()}$multiplier", padding * 17, padding + 12f)
 
         batch.end()
     }
