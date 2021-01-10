@@ -30,6 +30,7 @@ class PlatformGameScreen(
     private lateinit var ground: Ground
     private lateinit var player: Player
     private lateinit var deadPlayer: DeadPlayer
+    private lateinit var successPlayer: SuccessPlayer
 
     private var isInitialised = false
 
@@ -38,7 +39,8 @@ class PlatformGameScreen(
     private var state = State.PENDING
     private var startTime = 0f
     private var playTime = 0f
-    private var deathTimeTime = 0f
+    private var deathTime = 0f
+    private var winTime = 0f
 
     private var prePauseState: State = state
 
@@ -48,6 +50,7 @@ class PlatformGameScreen(
         WARMING_UP,
         PLAYING,
         DYING,
+        WINNING,
     }
 
     override fun show() {
@@ -97,6 +100,7 @@ class PlatformGameScreen(
 
         player = Player(Vector2(SCALE_X, 0f), atlas!!)
         deadPlayer = DeadPlayer(atlas!!)
+        successPlayer = SuccessPlayer(atlas!!)
 
         ground = ObstacleBuilder.makeGround(atlas!!)
 
@@ -130,7 +134,7 @@ class PlatformGameScreen(
         updateEntities(delta)
         renderEntities(delta)
 
-        hud.render(playTime / world.duration, player)
+        hud.render((playTime / world.duration).coerceAtMost(1f), player)
     }
 
     private fun processInput() {
@@ -169,13 +173,21 @@ class PlatformGameScreen(
 
                 state = State.DYING
                 deadPlayer.setup(player.position)
-                deathTimeTime = Globals.animationTimer
+                deathTime = Globals.animationTimer
+
+            }
+
+            if (player.position.x >= (world.duration + WARM_UP_TIME + END_LEVEL_WALK_TIME) * SCALE_X) {
+
+                state = State.WINNING
+                successPlayer.setup(player.position)
+                winTime = Globals.animationTimer
 
             }
 
         } else if (state == State.DYING) {
 
-            if (Globals.animationTimer - deathTimeTime < DEATH_TIME) {
+            if (Globals.animationTimer - deathTime < DEATH_TIME) {
 
                 camera.translate(0f, delta * DeadPlayer.FLOAT_SPEED / 8)
                 camera.zoom += DEATH_ZOOM_RATE * delta
@@ -187,6 +199,13 @@ class PlatformGameScreen(
 
             }
 
+        } else if (state == State.WINNING) {
+
+            if (Globals.animationTimer - winTime > WINNING_TIME) {
+
+                endGame()
+
+            }
         }
 
     }
@@ -245,6 +264,8 @@ class PlatformGameScreen(
 
         if (state == State.DYING) {
             deadPlayer.render(camera, state == State.PAUSED)
+        } else if (state == State.WINNING) {
+            successPlayer.render(camera, state == State.PAUSED)
         } else {
             player.render(camera, state == State.PAUSED)
         }
@@ -257,7 +278,7 @@ class PlatformGameScreen(
 
     private fun endGame() {
         world.music.stop()
-        game.endGame(world, player.getScore(), playTime / world.duration)
+        game.endGame(world, player.getScore(), (playTime / world.duration).coerceAtMost(1f))
     }
 
     override fun pause() {
@@ -328,6 +349,16 @@ class PlatformGameScreen(
          * The animation of death is handled differently, managed by the [Player] class.
          */
         private const val DEATH_TIME = 5f
+
+        /**
+         * Play a celebration animation for this long.
+         */
+        private const val WINNING_TIME = 3f
+
+        /**
+         * After reaching 100% of the level, walk for this much longer before stopping, celebrating, then ending the level.
+         */
+        private const val END_LEVEL_WALK_TIME = 2f
 
         private const val DEATH_ZOOM_RATE = -0.015f
 
