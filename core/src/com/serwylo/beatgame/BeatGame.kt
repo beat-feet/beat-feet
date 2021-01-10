@@ -52,4 +52,10 @@ class BeatGame(private val verbose: Boolean) : Game() {
         }
     }
 
+    fun explainCustomSongs() {
+        Gdx.app.postRunnable {
+            setScreen(ExplainCustomSongsScreen(this))
+        }
+    }
+
 }

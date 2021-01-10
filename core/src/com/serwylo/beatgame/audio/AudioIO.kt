@@ -29,6 +29,10 @@ fun loadWorldFromMp3(musicFile: FileHandle): World {
 
 }
 
+fun customMp3(): FileHandle {
+    return Gdx.files.external("BeatChange${File.separator}custom.mp3")
+}
+
 private fun loadFromDisk(musicFile: FileHandle): World {
 
     Gdx.app.debug(TAG, "Generating world from ${musicFile.path()}...")
@@ -110,7 +114,13 @@ private fun getCacheFile(musicFile: FileHandle): FileHandle {
         dir.mkdirs()
     }
 
-    return Gdx.files.local("${CACHE_DIR}${File.separator}${musicFile.nameWithoutExtension()}.json")
+    val name = if (musicFile.nameWithoutExtension() == "custom") {
+        "custom-${musicFile.lastModified()}"
+    } else {
+        musicFile.nameWithoutExtension()
+    }
+
+    return Gdx.files.local("${CACHE_DIR}${File.separator}$name.json")
 
 }
 

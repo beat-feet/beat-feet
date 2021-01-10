@@ -35,6 +35,7 @@ abstract class InfoScreen(
 
         val headingLabel = Label(heading, largeLabel)
         headingLabel.setPosition(20f, 0f)
+        headingLabel.setAlignment(Align.center)
         group.addActor(headingLabel)
 
         if (subheading != null && subheading.isNotEmpty()) {
@@ -43,6 +44,7 @@ abstract class InfoScreen(
 
             val subheadingLabel = Label(subheading, smallLabel)
             subheadingLabel.setPosition(0f, 0f)
+            subheadingLabel.setAlignment(Align.center)
             group.addActor(subheadingLabel)
         }
 
