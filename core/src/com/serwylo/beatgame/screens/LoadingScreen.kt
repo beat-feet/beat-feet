@@ -14,7 +14,8 @@ class LoadingScreen(
         private val songName: String
 ) : InfoScreen(
         songName,
-        "Loading..."
+        "Loading...",
+        "logo"
 ) {
 
     private val atlas: TextureAtlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))

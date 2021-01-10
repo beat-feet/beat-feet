@@ -3,22 +3,27 @@ package com.serwylo.beatgame.screens
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.TextureArray
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Button
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
 
-abstract class MenuScreen(protected val keys: List<String>, protected val values: List<String>): ScreenAdapter() {
+abstract class MenuScreen(
+        protected val keys: List<String>,
+        protected val values: List<String>,
+        private val title: String? = null,
+        private val titleSprite: String? = null
+): ScreenAdapter() {
 
     private val stage = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
 
@@ -83,6 +88,27 @@ abstract class MenuScreen(protected val keys: List<String>, protected val values
         stage.addActor(group)
 
         group.addActor(selectedBackground)
+
+        if (title != null) {
+            val horizontalGroup = HorizontalGroup()
+            horizontalGroup.space(10f)
+
+            if (titleSprite != null) {
+                val atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
+                val texture = atlas.findRegion(titleSprite)
+                val image = Image(texture)
+                horizontalGroup.addActor(image)
+            }
+
+            val titleStyle = Label.LabelStyle()
+            titleStyle.font = bigFont
+
+            val title = Label(title, titleStyle)
+            horizontalGroup.addActor(title)
+
+            group.addActor(horizontalGroup)
+
+        }
 
         val labelStyle = TextButton.TextButtonStyle()
         labelStyle.font = mediumFont

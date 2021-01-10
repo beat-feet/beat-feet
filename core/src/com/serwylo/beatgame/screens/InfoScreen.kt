@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
@@ -11,7 +12,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 
 abstract class InfoScreen(
         private val heading: String,
-        private val subheading: String? = null
+        private val subheading: String? = null,
+        private val headingSprite: String? = null
 ): ScreenAdapter() {
 
     private val stage = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
@@ -33,10 +35,22 @@ abstract class InfoScreen(
         val largeLabel = Label.LabelStyle()
         largeLabel.font = bigFont
 
+        val headingGroup = HorizontalGroup()
+        headingGroup.space(10f)
+
+        if (headingSprite != null) {
+            val atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
+            val texture = atlas.findRegion(headingSprite)
+            val image = Image(texture)
+            headingGroup.addActor(image)
+        }
+
         val headingLabel = Label(heading, largeLabel)
         headingLabel.setPosition(20f, 0f)
         headingLabel.setAlignment(Align.center)
-        group.addActor(headingLabel)
+
+        headingGroup.addActor(headingLabel)
+        group.addActor(headingGroup)
 
         if (subheading != null && subheading.isNotEmpty()) {
             val smallLabel = Label.LabelStyle()
