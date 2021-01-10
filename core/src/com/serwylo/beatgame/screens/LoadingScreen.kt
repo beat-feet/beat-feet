@@ -49,18 +49,17 @@ class LoadingScreen(
         val verticalGroup = VerticalGroup()
         verticalGroup.space(SPACING)
 
-        val bestLabel = Label("Best", labelStyle)
-        verticalGroup.addActor(bestLabel)
-
         val horizontalGroup = HorizontalGroup()
         horizontalGroup.space(SPACING)
 
+        val bestLabel = Label("Best", labelStyle)
         val distanceLabel = Label("${(topScore.distancePercent * 100).toInt()}%", labelStyle)
         val scoreLabel = Label("${topScore.score}", labelStyle)
 
         val distanceImage = Image(atlas.findRegion("right_sign"))
         val scoreImage = Image(atlas.findRegion("score"))
 
+        horizontalGroup.addActor(bestLabel)
         horizontalGroup.addActor(distanceImage)
         horizontalGroup.addActor(distanceLabel)
         horizontalGroup.addActor(scoreImage)
