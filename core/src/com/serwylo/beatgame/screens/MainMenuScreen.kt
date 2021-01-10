@@ -9,7 +9,7 @@ class MainMenuScreen(private val game: BeatGame): MenuScreen(keys, labels, "Beat
 
         when (keys[selectedIndex]) {
             "play" -> game.showLevelSelectMenu()
-            "about" -> println("About")
+            "about" -> game.showAboutScreen()
             "quit" -> Gdx.app.exit()
         }
 

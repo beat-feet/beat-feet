@@ -58,4 +58,10 @@ class BeatGame(private val verbose: Boolean) : Game() {
         }
     }
 
+    fun showAboutScreen() {
+        Gdx.app.postRunnable {
+            setScreen(AboutScreen(this))
+        }
+    }
+
 }
