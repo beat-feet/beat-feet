@@ -6,10 +6,11 @@ Play through five techno or classical levels, or use your own MP3 files to gener
 
 Each level consists of obstacles that correspond to the music playing in the background. Every time you play the same level, the size of the obstacles will be the same, but they will be regenerated with a different style. No two sessions will look the same.
 
-This is still in an early stage and experimental, so any feedback is very welcome at https://github.com/pserwylo/beat-game/issues.
+This is still in an early stage and experimental, so any feedback is very welcome at https://github.com/pserwylo/beat-game/discussions.
 
 Some of the things we'd particularly like feedback on:
 - What would be a better name for the game?
+- Anyone with skills in DSP -  How can we more accurately turn audio into game obstacles (right now it is almost good, but still not quite right)?
 - Are the mechanics too difficult? too easy?
 - What other obstacles (or bonuses) would make sense to add?
 - How best to jazz it up with little flourishes (without making it seem obnoxious)?
