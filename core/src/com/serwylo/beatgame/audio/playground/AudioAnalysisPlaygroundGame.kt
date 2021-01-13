@@ -30,16 +30,15 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
     private lateinit var spectogram: FFTResultWithValues
     private lateinit var spectogramImage: Pixmap
     private lateinit var music: Music
-    private val statsWidth = 30f
+    private val statsWidth = 25f
     private val statsOffset = 130f
     private val series = mutableMapOf<String, DoubleArray>()
     private val seriesVertices = mutableMapOf<String, FloatArray>()
 
     override fun create() {
         // val musicFile = Gdx.files.internal("sine_1000Hz_plus_500Hz.mp3")
-        // val musicFile = Gdx.files.internal("Man_Bites_Dog.mp3")
-        // val musicFile = Gdx.files.internal("classical.mp3")
-        val musicFile = Gdx.files.internal("music.mp3")
+        // val musicFile = Gdx.files.internal("vivaldi.mp3")
+        val musicFile = Gdx.files.internal("the_haunted_mansion_the_courtyard.mp3")
         music = Gdx.audio.newMusic(musicFile)
         spectogram = com.serwylo.beatgame.audio.fft.calculateMp3FFTWithValues(musicFile.read())
         spectogramImage = com.serwylo.beatgame.audio.fft.renderSpectogram(spectogram)
@@ -63,10 +62,12 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         }
         batch = SpriteBatch(1)
         camera = OrthographicCamera(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-        camera.translate((Gdx.graphics.width / 2).toFloat(), (Gdx.graphics.height / 2).toFloat(), 0f)
+        camera.translate((Gdx.graphics.width / 2).toFloat(), (Gdx.graphics.height / 4).toFloat(), 0f)
 
         // Loud (energy) is good, indicates things are happening.
         series["energy"] = seriesFromFFTWindows(spectogram.windows) { it.energy }
+        series["energyU3"] = smoothSeriesMean(series["energy"]!!, 3)
+        series["energy3"] = smoothSeriesMedian(series["energy"]!!, 3)
         series["energy13"] = smoothSeriesMedian(series["energy"]!!, 13)
 
         // When it is loud, is it high or low pitched? Loud drums seem to go down, whereas lout
@@ -77,11 +78,28 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         }
 
         series["domFreq"] = seriesFromFFTWindows(spectogram.windows, domFreq)
-        series["domFreq11"] = smoothSeriesMedian(series["domFreq"]!!, 11)
+        series["domFreqU3"] = smoothSeriesMean(series["domFreq"]!!, 3)
+        series["domFreq3"] = smoothSeriesMedian(series["domFreq"]!!, 3)
+        series["domFreq13"] = smoothSeriesMedian(series["domFreq"]!!, 13)
 
-        series.keys.toSet().forEach {
-            series["$it*"] = analyseSeries(series[it]!!)
-        }
+        // When it is loud, is it loud across a bunch of different frequencies? If there is a small
+        // standard deviation then it is really just a loud noise at one frequency most likely.
+        series["stdDev"] = seriesFromFFTWindows(spectogram.windows) { it.stdDev }
+        series["rmse"] = seriesFromFFTWindows(spectogram.windows) { it.rmse }
+        series["min"] = seriesFromFFTWindows(spectogram.windows) { it.min }
+        series["median"] = seriesFromFFTWindows(spectogram.windows) { it.median }
+        series["max"] = seriesFromFFTWindows(spectogram.windows) { it.max }
+        series["kurtosis"] = seriesFromFFTWindows(spectogram.windows) { it.kurtosis }
+        series["skewness"] = seriesFromFFTWindows(spectogram.windows) { it.skewness }
+
+        /* No intuition for these yet after observing for some time.
+        */
+
+        val toExtractFeatures = setOf("energy13", "domFreq13")
+        series.keys
+                .filter { toExtractFeatures.contains(it) }
+                .toSet()
+                .forEach { series["$it*"] = analyseSeries(series[it]!!) }
 
         features = extractFeaturesFromSeries(series["energy13"]!!, spectogram.windowSize, spectogram.mp3Data.sampleRate)
 
@@ -89,21 +107,8 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
             seriesVertices[it.key] = renderSeries(it.value, statsWidth)
         }
 
-        // When it is loud, is it loud across a bunch of different frequencies? If there is a small
-        // standard deviation then it is really just a loud noise at one frequency most likely.
-        // series["stdDev"] = calcStatistic(spectogram.windows) { it.stdDev() }
-
-        /* No intuition for these yet after observing for some time.
-        stats["rmse"] = renderStatistic(spectogram.windows, statsWidth) { it.rmse() }
-        stats["min"] = renderStatistic(spectogram.windows, statsWidth) { it.min() }
-        stats["median"] = renderStatistic(spectogram.windows, statsWidth) { it.median() }
-        stats["max"] = renderStatistic(spectogram.windows, statsWidth) { it.max() }
-        stats["kurtosis"] = renderStatistic(spectogram.windows, statsWidth) { it.kurtosis() }
-        stats["skewness"] = renderStatistic(spectogram.windows, statsWidth) { it.skewness() }
-        */
-
         music.play()
-        music.volume = 0f
+        music.volume = 1f
     }
 
     override fun render() {
@@ -153,7 +158,7 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         }
         stats.end()
 
-        val blobs = ShapeRenderer(1000)
+        /*val blobs = ShapeRenderer(1000)
         blobs.begin(ShapeRenderer.ShapeType.Filled)
 
         features
@@ -166,7 +171,7 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
                             (music.position - it.startTimeInSeconds) * 50 + (50 * it.strength))
                 }
 
-        blobs.end()
+        blobs.end()*/
 
     }
 
