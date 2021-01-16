@@ -5,6 +5,9 @@ import kotlin.math.max
 
 class Score(val distancePercent: Float, val score: Int, val timestamp: Long) {
 
+    fun distancePercentString() = "${(distancePercent * 100).toInt()}%"
+    fun exists() = distancePercent > 0 || score > 0
+
     companion object {
         fun load(musicFileName: String): Score {
             val prefs = prefs()
