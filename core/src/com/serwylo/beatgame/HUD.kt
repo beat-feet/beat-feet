@@ -1,61 +1,107 @@
 package com.serwylo.beatgame
 
-import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.entities.Player
-import com.serwylo.beatgame.graphics.makeCamera
 
 class HUD(atlas: TextureAtlas) {
 
-    private val camera: OrthographicCamera = makeCamera(400, 300)
+    private val stage = Stage(ExtendViewport(400f, 300f))
 
     private val padding: Float
 
-    private val batch = SpriteBatch()
     private val font = BitmapFont()
 
-    private val textureHeartFull: TextureRegion
-    private val textureHeartHalf: TextureRegion
-    private val textureHeartEmpty: TextureRegion
+    private val textureHeartFull: TextureRegionDrawable
+    private val textureHeartHalf: TextureRegionDrawable
+    private val textureHeartEmpty: TextureRegionDrawable
     private val textureScore: TextureRegion
     private val textureDistance: TextureRegion
 
+    private val heartImages: MutableList<Image> = mutableListOf()
+
+    private val distanceLabel: Label
+    private val scoreLabel: Label
+    private val healthLabel: Label
+
     init {
 
-        camera.translate(camera.viewportWidth / 2, camera.viewportHeight / 2)
-        camera.update()
+        padding = stage.width / 50
 
-        padding = camera.viewportWidth / 50
+        textureHeartFull = TextureRegionDrawable(atlas.findRegion("heart"))
+        textureHeartHalf = TextureRegionDrawable(atlas.findRegion("heart_half"))
+        textureHeartEmpty = TextureRegionDrawable(atlas.findRegion("heart_empty"))
 
-        batch.projectionMatrix = camera.combined
-
-        textureHeartFull = atlas.findRegion("heart")
-        textureHeartHalf = atlas.findRegion("heart_half")
-        textureHeartEmpty = atlas.findRegion("heart_empty")
         textureScore = atlas.findRegion("score")
         textureDistance = atlas.findRegion("right_sign")
 
+        val labelStyle = Label.LabelStyle(font, Color.WHITE)
+
+        val healthWidget = HorizontalGroup()
+        healthWidget.space(padding / 2)
+
+        healthLabel = Label("", labelStyle)
+        healthWidget.addActor(healthLabel)
+
+        val heartContainer = HorizontalGroup()
+        for (i in 1..5) {
+            val heart = Image(textureHeartFull)
+            heartImages.add(heart)
+            heartContainer.addActor(heart)
+        }
+        healthWidget.addActor(heartContainer)
+
+        distanceLabel = Label("", labelStyle)
+        scoreLabel = Label("", labelStyle)
+
+        val bottomWidget = HorizontalGroup()
+        bottomWidget.space(padding / 2)
+        bottomWidget.addActor(Image(textureDistance))
+        bottomWidget.addActor(distanceLabel)
+        bottomWidget.addActor(Image(textureScore))
+        bottomWidget.addActor(scoreLabel)
+
+        val table = Table()
+        table.setFillParent(true)
+        table.pad(padding)
+        table.add(healthWidget).top().right().expand()
+        table.row()
+        table.add(bottomWidget).bottom().left()
+
+        stage.addActor(table)
     }
 
     fun render(distancePercent: Float, player: Player) {
-        batch.begin()
-
-        val heart = if (player.getHealth() > 50) textureHeartFull else if (player.getHealth() > 20) textureHeartHalf else textureHeartEmpty
-        batch.draw(heart, padding, padding, padding * 1.5f, padding * 1.5f)
-        font.draw(batch, player.getHealth().toString(), padding * 3, padding + 12f)
-
-        batch.draw(textureDistance, padding * 8, padding, padding * 1.5f, padding * 1.5f)
-        font.draw(batch, (distancePercent * 100).toInt().toString() + "%", padding * 10, padding + 12f)
-
+        val distance = (distancePercent * 100).toInt().toString() + "%"
         val multiplier = if (player.scoreMultiplier <= 1) "" else " x ${player.scoreMultiplier}"
+        val score = "${player.getScore()}$multiplier"
 
-        batch.draw(textureScore, padding * 15, padding, padding * 1.5f, padding * 1.5f)
-        font.draw(batch, "${player.getScore()}$multiplier", padding * 17, padding + 12f)
+        healthLabel.setText(player.getHealth())
+        distanceLabel.setText(distance)
+        scoreLabel.setText(score)
 
-        batch.end()
+        heartImages.forEachIndexed { i, image ->
+            val fullThreshold = (i + 1) * 20
+            val halfThreshold = fullThreshold - 10
+
+            image.drawable = if (player.getHealth() >= fullThreshold) {
+                textureHeartFull
+            } else if (player.getHealth() >= halfThreshold) {
+                textureHeartHalf
+            } else {
+                textureHeartEmpty
+            }
+        }
+
+        stage.act()
+        stage.draw()
     }
 
 }
