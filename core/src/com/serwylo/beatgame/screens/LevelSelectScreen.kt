@@ -94,9 +94,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
     }
 
     override fun dispose() {
-
         stage.dispose()
-
     }
 
     private fun makeButton(level: Level): WidgetGroup {

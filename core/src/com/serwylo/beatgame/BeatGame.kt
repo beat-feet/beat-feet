@@ -11,6 +11,7 @@ import com.serwylo.beatgame.screens.*
 
 class BeatGame(private val verbose: Boolean) : Game() {
 
+    @Suppress("LibGDXLogLevel") // Optional flag to make more verbose.
     override fun create() {
         if (verbose) {
             Gdx.app.logLevel = Application.LOG_DEBUG

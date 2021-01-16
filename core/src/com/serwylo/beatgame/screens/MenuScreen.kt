@@ -32,7 +32,8 @@ abstract class MenuScreen(
     protected var smallFont = BitmapFont().apply { data.scale(-0.5f) }
 
     private val shapeRenderer = ShapeRenderer(50)
-    private lateinit var labels: List<TextButton>
+    private val labels: List<TextButton>
+    private val inputProcessor: InputProcessor
 
     private val selectedBackground = object: Actor() {
         override fun draw(batch: Batch?, parentAlpha: Float) {
@@ -79,8 +80,7 @@ abstract class MenuScreen(
         stage.viewport.update(width, height)
     }
 
-    override fun show() {
-
+    init {
         val group = VerticalGroup()
         group.setFillParent(true)
         group.pad(PADDING)
@@ -120,7 +120,7 @@ abstract class MenuScreen(
             label.height = ITEM_HEIGHT
             label.width = stage.width
             label.pad(ITEM_SPACE)
-            label.addListener(object: ChangeListener() {
+            label.addListener(object : ChangeListener() {
                 override fun changed(event: ChangeEvent?, actor: Actor?) {
                     onMenuItemSelected(i)
                 }
@@ -132,10 +132,7 @@ abstract class MenuScreen(
 
         }
 
-        stage.draw() // Do this to force a layout calculation, so that we can set the background to the right place.
-        updateSelectedBackground()
-
-        Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
+        inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
 
             override fun keyDown(keycode: Int): Boolean {
                 if (keycode == Input.Keys.UP) {
@@ -159,7 +156,17 @@ abstract class MenuScreen(
             }
 
         })
+    }
 
+    override fun show() {
+        Gdx.input.inputProcessor = inputProcessor
+
+        stage.draw() // Do this to force a layout calculation, so that we can set the background to the right place.
+        updateSelectedBackground()
+    }
+
+    override fun hide() {
+        Gdx.input.inputProcessor = null
     }
 
     override fun render(delta: Float) {
@@ -174,7 +181,6 @@ abstract class MenuScreen(
 
     override fun dispose() {
         stage.dispose()
-        Gdx.input.inputProcessor = null
     }
 
     companion object {

@@ -23,7 +23,7 @@ abstract class InfoScreen(
     protected var mediumFont = BitmapFont().apply { data.scale(-0.2f) }
     protected var smallFont = BitmapFont().apply { data.scale(-0.5f) }
 
-    override fun show() {
+    init {
 
         val group = VerticalGroup()
         group.align(Align.center)
