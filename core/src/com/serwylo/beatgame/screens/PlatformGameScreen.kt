@@ -220,6 +220,7 @@ class PlatformGameScreen(
         if (player.justHitDamage > 0 && cameraShakeTotalDuration <= 0) {
             cameraShakeTotalDuration = CAMERA_SHAKE_DURATION
             cameraShakeAmplitude = player.justHitDamage.coerceAtMost(CAMERA_SHAKE_MAX_DAMAGE).toFloat() / CAMERA_SHAKE_MAX_DAMAGE * CAMERA_SHAKE_MAX_DISTANCE
+            Gdx.input.vibrate((CAMERA_SHAKE_DURATION * 1000 * cameraShakeAmplitude * 2).toInt())
         }
 
         if (cameraShakeTotalDuration <= 0) {

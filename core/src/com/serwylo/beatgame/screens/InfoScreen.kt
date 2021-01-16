@@ -23,7 +23,11 @@ abstract class InfoScreen(
     protected var mediumFont = BitmapFont().apply { data.scale(-0.2f) }
     protected var smallFont = BitmapFont().apply { data.scale(-0.5f) }
 
-    init {
+    private var isInitialised = false
+
+    fun initialise() {
+
+        isInitialised = true
 
         val group = VerticalGroup()
         group.align(Align.center)
@@ -81,6 +85,18 @@ abstract class InfoScreen(
         stage.act(delta)
         stage.draw()
 
+    }
+
+    override fun show() {
+        if (!isInitialised) {
+            initialise()
+        }
+
+        Gdx.input.inputProcessor = stage
+    }
+
+    override fun hide() {
+        Gdx.input.inputProcessor = null
     }
 
     override fun dispose() {
