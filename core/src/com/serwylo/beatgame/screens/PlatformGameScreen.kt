@@ -31,6 +31,7 @@ class PlatformGameScreen(
     private lateinit var player: Player
     private lateinit var deadPlayer: DeadPlayer
     private lateinit var successPlayer: SuccessPlayer
+    private val background = Background(world.heightMap)
 
     private var isInitialised = false
 
@@ -260,6 +261,7 @@ class PlatformGameScreen(
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
+        background.render(camera, state == State.PAUSED)
         ground.render(camera, state == State.PAUSED)
         obstacles.forEach { it.render(camera, state == State.PAUSED) }
 
@@ -342,7 +344,7 @@ class PlatformGameScreen(
          * Once the game starts, the player runs infinitely until the player jumps for the first
          * time. After that, wait this long before starting the song.
          */
-        private const val WARM_UP_TIME = 3f
+        const val WARM_UP_TIME = 3f
 
 
         /**

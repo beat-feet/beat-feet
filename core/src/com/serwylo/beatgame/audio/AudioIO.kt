@@ -51,8 +51,8 @@ private fun loadFromDisk(musicFile: FileHandle): World {
         if (freq.toInt() == 0) 0.0 else ln(freq)
     }
 
-    val smoothHeightMapSeries = smoothSeriesMean(heightMapSeries, 15)
-    val heightMap = extractHeightMapFromSeries(smoothHeightMapSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate, 3f)
+    val smoothHeightMapSeries = smoothSeriesMean(heightMapSeries, 7)
+    val heightMap = extractHeightMapFromSeries(smoothHeightMapSeries, spectogram.windowSize, spectogram.mp3Data.sampleRate, 1f)
 
     println("Samples: ${spectogram.mp3Data.pcmSamples.size} @ ${spectogram.mp3Data.sampleRate}Hz (duration: ${spectogram.mp3Data.pcmSamples.size / spectogram.mp3Data.sampleRate})")
     val duration = spectogram.mp3Data.pcmSamples.size / spectogram.mp3Data.sampleRate
