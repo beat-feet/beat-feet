@@ -23,3 +23,10 @@ Pull requests will be warmly received at [https://github.com/pserwylo/beat-game]
 This app uses a the libgdx library and Kotlin. It is recommended to read the [libgdx documentation to get a dev environment setup](https://libgdx.com/dev/setup/).
 
 Alternatively, you can import the project into Android Studio and build from there.
+
+There are some additional build processes involved in the game:
+* `./gradlew :song-extract:processSongs` - Analyses the high bitrate MP3 files from `./songs/original`, extracts features to generate levels, and writes the data to `./android/assets/songs/data/`
+* `./songs/downsample.sh` - Takes high bitrate MP3 files from `./songs/original` and reduce to 96Kbps, writing to `./android/assets/songs/mp3/`
+
+Therefore, adding songs is a matter of putting a high bitrate version inside `./songs/original/SONG.mp3`, running `./gradlew :song-extract:processSongs` and then running `./songs/downsample.sh`.
+This will make both a low bitrate version and a processed data file available to the game code.

@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.Score
 import com.serwylo.beatgame.audio.customMp3
+import java.io.File
 import kotlin.math.min
 
 class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
@@ -23,7 +24,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
     private val atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
 
     private val stage = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
-    private val skin = Skin(Gdx.files.internal("skin.json"));
+    private val skin = Skin(Gdx.files.internal("skin.json"))
 
     private var mediumFont = BitmapFont().apply { data.scale(0.2f) }
     private var smallFont = BitmapFont().apply { data.scale(-0.3f) }
@@ -153,7 +154,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
                 game.loadGame(file, "{Custom}")
             }
         } else {
-            game.loadGame(Gdx.files.internal(level.mp3Name), level.label)
+            game.loadGame(Gdx.files.internal("songs${File.separator}mp3${File.separator}${level.mp3Name}"), level.label)
         }
 
         return true

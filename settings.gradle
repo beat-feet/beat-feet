@@ -1,1 +1,1 @@
-include 'texture-packer', 'desktop', 'android', 'core'
+include 'song-extract', 'texture-packer', 'desktop', 'android', 'core'

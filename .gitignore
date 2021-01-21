@@ -65,6 +65,8 @@ com_crashlytics_export_strings.xml
 /desktop/build/
 /html/build/
 /ios/build/
+/song-extract/build/
+/texture-packer/build/
 
 /nbbuild/
 /android/nbbuild/

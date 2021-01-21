@@ -1,0 +1,27 @@
+apply plugin: "kotlin"
+
+sourceCompatibility = 1.7
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+project.ext.mainClassName = "com.serwylo.beatgame.bin.SongExtractLauncherKt"
+
+/**
+ * Generates game features from higher quality songs in their original format. The game itself
+ * will actually play lower quality songs that have been down-sampled to save space.
+ *
+ * It would be nice if the downsampling happened via this gradle build too, but it is just too
+ * simple to do it via the command line. Therefore, it is done via `songs/downsample.sh`.
+ */
+task processSongs(dependsOn: classes, type: JavaExec) {
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+
+    // The working directory will be that of this gradle project, therefore go back one directory
+    // to find the directories we will work with.
+    args = ['--verbose', '../songs/original', '../android/assets/songs/data']
+}
+
+eclipse.project {
+    name = appName + "-song-extract"
+}
