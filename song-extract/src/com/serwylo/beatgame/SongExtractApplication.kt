@@ -42,11 +42,17 @@ class SongExtract(private var arg: Array<String>): ApplicationAdapter() {
     private fun processFile(mp3File: File, destDir: File) {
 
         val outPath = "${destDir.absolutePath}${File.separator}${mp3File.nameWithoutExtension}.json"
+        val outFile = Gdx.files.absolute(outPath)
+
+        if (outFile.exists()) {
+            Gdx.app.log(TAG, "Skipping ${mp3File.name} as it already has a data file at $outPath.")
+            return
+        }
 
         Gdx.app.log(TAG, "Processing ${mp3File.name}, writing to ${outPath}.")
 
         val world = loadFromDisk(Gdx.files.absolute(mp3File.path))
-        saveWorldToDisk(Gdx.files.absolute(outPath), world)
+        saveWorldToDisk(outFile, world)
 
     }
 

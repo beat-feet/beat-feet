@@ -12,16 +12,16 @@ BitmapFont: {
 }
 Color: {
 	color: {
-		hex: 24ff17ff
+		hex: ffffffff
 	}
 	selected: {
-		hex: 127d0aff
+		hex: ff0000ff
 	}
 	text: {
-		hex: 78ff73ff
+		hex: ffffffff
 	}
 	text-selected: {
-		hex: c4ffbfff
+		hex: ecf9eaff
 	}
 }
 TintedDrawable: {

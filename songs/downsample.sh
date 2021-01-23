@@ -27,5 +27,12 @@ mkdir -p "$DOWNSAMPLED_DIR"
 for MP3_PATH in $(ls "$SRC_DIR"/*.mp3)
 do
     MP3_NAME=$(basename "$MP3_PATH")
-    lame --mp3input -b 96 "$MP3_PATH" "$DOWNSAMPLED_DIR/$MP3_NAME";
+    DEST_FILE="$DOWNSAMPLED_DIR/$MP3_NAME"
+
+    if [[ ! -f "$DEST_FILE" || $* == *--force* ]]
+    then
+        lame --mp3input -b 96 "$MP3_PATH" "$DEST_FILE"
+    else
+        echo "Skipping $MP3_NAME, already exists (use --force to overwrite)"
+    fi
 done
