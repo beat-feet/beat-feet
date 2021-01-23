@@ -38,7 +38,7 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
     override fun create() {
         // val musicFile = Gdx.files.internal("sine_1000Hz_plus_500Hz.mp3")
         // val musicFile = Gdx.files.internal("vivaldi.mp3")
-        val musicFile = Gdx.files.internal("the_haunted_mansion_the_courtyard.mp3")
+        val musicFile = Gdx.files.internal("songs/mp3/the_haunted_mansion_the_courtyard.mp3")
         music = Gdx.audio.newMusic(musicFile)
         spectogram = com.serwylo.beatgame.audio.fft.calculateMp3FFTWithValues(musicFile.read())
         spectogramImage = com.serwylo.beatgame.audio.fft.renderSpectogram(spectogram)
@@ -65,10 +65,10 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         camera.translate((Gdx.graphics.width / 2).toFloat(), (Gdx.graphics.height / 4).toFloat(), 0f)
 
         // Loud (energy) is good, indicates things are happening.
-        series["energy"] = seriesFromFFTWindows(spectogram.windows) { it.energy }
-        series["energyU3"] = smoothSeriesMean(series["energy"]!!, 3)
-        series["energy3"] = smoothSeriesMedian(series["energy"]!!, 3)
-        series["energy13"] = smoothSeriesMedian(series["energy"]!!, 13)
+        //series["energy"] = seriesFromFFTWindows(spectogram.windows) { it.energy }
+        //series["energyU3"] = smoothSeriesMean(series["energy"]!!, 3)
+        //series["energy3"] = smoothSeriesMedian(series["energy"]!!, 3)
+        //series["energy13"] = smoothSeriesMedian(series["energy"]!!, 13)
 
         // When it is loud, is it high or low pitched? Loud drums seem to go down, whereas lout
         // other instruments go higher (as does voice)
@@ -77,10 +77,10 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
             if (freq.toInt() == 0) 0.0 else ln(freq)
         }
 
-        series["domFreq"] = seriesFromFFTWindows(spectogram.windows, domFreq)
-        series["domFreqU3"] = smoothSeriesMean(series["domFreq"]!!, 3)
-        series["domFreq3"] = smoothSeriesMedian(series["domFreq"]!!, 3)
-        series["domFreq13"] = smoothSeriesMedian(series["domFreq"]!!, 13)
+        //series["domFreq"] = seriesFromFFTWindows(spectogram.windows, domFreq)
+        //series["domFreqU3"] = smoothSeriesMean(series["domFreq"]!!, 3)
+        //series["domFreq3"] = smoothSeriesMedian(series["domFreq"]!!, 3)
+        //series["domFreq13"] = smoothSeriesMedian(series["domFreq"]!!, 13)
 
         // When it is loud, is it loud across a bunch of different frequencies? If there is a small
         // standard deviation then it is really just a loud noise at one frequency most likely.
@@ -92,16 +92,19 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         series["kurtosis"] = seriesFromFFTWindows(spectogram.windows) { it.kurtosis }
         series["skewness"] = seriesFromFFTWindows(spectogram.windows) { it.skewness }
 
+        series["stdDev13u"] = smoothSeriesMedian(series["stdDev"]!!, 13)
+
         /* No intuition for these yet after observing for some time.
         */
 
-        val toExtractFeatures = setOf("energy13", "domFreq13")
+        // val toExtractFeatures = setOf("energy13", "domFreq13")
+        val toExtractFeatures = setOf("stdDev13u")
         series.keys
                 .filter { toExtractFeatures.contains(it) }
                 .toSet()
                 .forEach { series["$it*"] = analyseSeries(series[it]!!) }
 
-        features = extractFeaturesFromSeries(series["energy13"]!!, spectogram.windowSize, spectogram.mp3Data.sampleRate)
+        features = extractFeaturesFromSeries(series["stdDev13u"]!!, spectogram.windowSize, spectogram.mp3Data.sampleRate)
 
         series.onEach {
             seriesVertices[it.key] = renderSeries(it.value, statsWidth)
@@ -158,10 +161,21 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         }
         stats.end()
 
-        /*val blobs = ShapeRenderer(1000)
+        val blobs = ShapeRenderer(1000)
         blobs.begin(ShapeRenderer.ShapeType.Filled)
 
-        features
+        val currentWindowIndex = (spectogram.mp3Data.sampleRate.toFloat() / spectogram.windowSize.toFloat() * music.position).toInt()
+        val currentWindow = spectogram.windows[currentWindowIndex]
+
+        val barWidth = Gdx.graphics.width.toFloat() / spectogram.windowSize * 2
+        currentWindow.values.forEachIndexed { i, f ->
+            val value = if (i == 0) { f.logAbsValue } else { (currentWindow.values[i - 1].logAbsValue + f.logAbsValue) / 2f }
+            blobs.color = Color(i * 2 / spectogram.windowSize.toFloat(), 1f, 1f, 1f)
+            blobs.rect((i * barWidth), 0f, barWidth.toInt().toFloat(), value.toFloat() * 50)
+            println("i: $i, r: ${i * 2 / spectogram.windowSize.toFloat()}, rect: ${(i * barWidth)}, 0.0, ${barWidth}, ${f.logAbsValue.toFloat() * 50}")
+        }
+
+        /*features
                 .filter { it.startTimeInSeconds < music.position && it.startTimeInSeconds + it.durationInSeconds * 10 > music.position }
                 .forEach {
                     blobs.color = featureSwatch[it.hashCode() % featureSwatch.size]
@@ -169,9 +183,9 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
                             (it.hashCode() % Gdx.graphics.width).toFloat(),
                             (it.hashCode() % Gdx.graphics.height).toFloat(),
                             (music.position - it.startTimeInSeconds) * 50 + (50 * it.strength))
-                }
+                }*/
 
-        blobs.end()*/
+        blobs.end()
 
     }
 
