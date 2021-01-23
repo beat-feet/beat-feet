@@ -7,7 +7,7 @@ import com.serwylo.beatgame.BeatGame
 
 class AboutScreen(private val game: BeatGame): InfoScreen(
         "Credits",
-        "Music\nThe Haunted Mansion / CC-BY-SA 3.0\nJohn Harrison w/ Wichita State University Chamber - CC-BY-SA 3.0\n\nGraphics: Kenney.nl / CCO 1.0",
+        CREDITS,
         "logo"
 ) {
 
@@ -38,6 +38,19 @@ class AboutScreen(private val game: BeatGame): InfoScreen(
     override fun hide() {
         Gdx.input.inputProcessor = null
         Gdx.input.setCatchKey(Input.Keys.BACK, false)
+    }
+
+    companion object {
+        private const val CREDITS = """
+Music:
+The Haunted Mansion / CC-BY-SA 3.0
+Awakening / CC-BY-SA 3.0
+Health and Safety / CC-BY-SA 3.0
+John Harrison w/ Wichita State University Chamber / CC-BY-SA 3.0
+
+Graphics:
+Kenney.nl / CCO 1.0
+        """
     }
 
 }
