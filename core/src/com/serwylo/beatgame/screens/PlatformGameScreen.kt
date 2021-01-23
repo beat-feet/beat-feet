@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.Vector3
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.HUD
@@ -256,12 +257,27 @@ class PlatformGameScreen(
         camera.update()
     }
 
+    private var leftMostObstacleOnScreenIndex = 0
+
     private fun renderEntities(delta: Float) {
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         ground.render(camera, state == State.PAUSED)
-        obstacles.forEach { it.render(camera, state == State.PAUSED) }
+        val cameraRight = camera.unproject(Vector3(Gdx.graphics.width.toFloat(), 0f, 0f)).x
+        val cameraLeft = camera.unproject(Vector3(0f, 0f, 0f)).x
+        for (i in leftMostObstacleOnScreenIndex until obstacles.size) {
+            val obstacle = obstacles[i]
+            if (obstacle.rect.x > cameraRight) {
+                break;
+            }
+
+            if (obstacle.rect.x + obstacle.rect.width < cameraLeft) {
+                leftMostObstacleOnScreenIndex = i + 1
+            }
+
+            obstacle.render(camera, state == State.PAUSED)
+        }
 
         if (state == State.DYING) {
             deadPlayer.render(camera, state == State.PAUSED)
