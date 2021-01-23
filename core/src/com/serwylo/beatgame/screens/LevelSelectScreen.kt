@@ -42,7 +42,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
         val maxWidth = stage.width / levelsPerRow
         val maxHeight = stage.height / rows
 
-        val width = min(maxWidth, maxHeight)
+        val width = maxWidth // min(maxWidth, maxHeight)
         val height = width
 
         var x = 0
@@ -51,7 +51,11 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
         val table = Table()
         //table.debug = true
         table.setFillParent(true)
-        stage.addActor(table)
+
+        val scrollPane = ScrollPane(table)
+        scrollPane.setFillParent(true)
+
+        stage.addActor(scrollPane)
 
         levels.forEachIndexed { i, level ->
             if (i > 0 && i % levelsPerRow == 0) {
