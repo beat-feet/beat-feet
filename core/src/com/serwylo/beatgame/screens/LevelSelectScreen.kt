@@ -181,6 +181,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
                 Level("vivaldi.mp3", "Vivaldi"),
                 Level("awakenings_old_clock.mp3", "Old Clock"),
                 Level("health_and_safety_regulations_for_equipment_use.mp3", "Regulations for Equipment"),
+                Level("health_and_safety_light_flashes.mp3", "Light Flashes"),
                 Level("health_and_safety_forcing_the_gamecard.mp3", "Forcing the Gamecard"),
                 Level("health_and_safety_play_in_a_well_lit_room.mp3", "Play in a Well Lit Room"),
                 Level("health_and_safety_eye_twitching.mp3", "Eye Twitching"),
