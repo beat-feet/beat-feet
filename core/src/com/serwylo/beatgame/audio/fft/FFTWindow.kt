@@ -16,7 +16,10 @@ open class FFTWindow(
         val kurtosis: Double,
         val skewness: Double,
         val dominantFrequency: Double,
-        val rmse: Double
+        val rmse: Double,
+        val meanFirst: Double,
+        val meanSecond: Double,
+        val meanThird: Double
 ) {
 
     companion object {
@@ -27,6 +30,8 @@ open class FFTWindow(
             values.forEach {
                 stats.addValue(it.absValue)
             }
+
+            val thirdSize = values.size / 3
 
             return FFTWindow(
                     windowIndex,
@@ -47,7 +52,11 @@ open class FFTWindow(
                     dominantFrequency = values.maxBy { it.absValue }!!.frequency,
 
                     // https://maelfabien.github.io/machinelearning/Speech9/#3-root-mean-square-energy
-                    rmse = sqrt(values.map { it.absValue * it.absValue }.sum() / values.size)
+                    rmse = sqrt(values.map { it.absValue * it.absValue }.sum() / values.size),
+
+                    meanFirst = values.slice(IntRange(0, thirdSize)).sumByDouble { it.absValue } / thirdSize,
+                    meanSecond = values.slice(IntRange(thirdSize, thirdSize * 2)).sumByDouble { it.absValue } / thirdSize,
+                    meanThird = values.slice(IntRange(thirdSize * 2, thirdSize * 3)).sumByDouble { it.absValue } / thirdSize
             )
 
         }

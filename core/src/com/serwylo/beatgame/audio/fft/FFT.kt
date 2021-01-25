@@ -3,10 +3,12 @@ package com.serwylo.beatgame.audio.fft
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.serwylo.beatgame.audio.Mp3Data
+import com.serwylo.beatgame.audio.playground.seriesFromFFTWindows
 import javazoom.jl.decoder.Bitstream
 import javazoom.jl.decoder.Header
 import javazoom.jl.decoder.MP3Decoder
 import javazoom.jl.decoder.OutputBuffer
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math3.transform.DftNormalization
 import org.apache.commons.math3.transform.FastFourierTransformer
 import org.apache.commons.math3.transform.TransformType
@@ -19,7 +21,7 @@ fun calculateMp3FFT(mp3InputStream: InputStream): FFTResult {
 
     val mp3Data = readPcm(mp3InputStream)
 
-    val windowSize = 1024 // 4096 // 8192
+    val windowSize = 1024
 
     val numWindows = mp3Data.pcmSamples.size / windowSize
     val windows = ArrayList<FFTWindow>(numWindows)
@@ -36,7 +38,7 @@ fun calculateMp3FFTWithValues(mp3InputStream: InputStream): FFTResultWithValues 
 
     val mp3Data = readPcm(mp3InputStream)
 
-    val windowSize = 1024 // 4096 // 8192
+    val windowSize = 1024
 
     val numWindows = mp3Data.pcmSamples.size / windowSize
     val windows = ArrayList<FFTWindowWithValues>(numWindows)
@@ -47,6 +49,36 @@ fun calculateMp3FFTWithValues(mp3InputStream: InputStream): FFTResultWithValues 
 
     return FFTResultWithValues(mp3Data, windowSize, windows)
 
+}
+
+fun smoothFFT(spectogram:FFTResultWithValues, smoothingWindow: Int): FFTResultWithValues {
+
+    if (smoothingWindow % 2 == 0) {
+        throw IllegalArgumentException("Smoothing window must be an odd number.")
+    }
+
+    val eitherSide:Int = smoothingWindow / 2
+
+    val smoothSeries = ArrayList<FFTWindowWithValues>(spectogram.windows.size)
+
+    for (i in spectogram.windows.indices) {
+        val start = (i - eitherSide).coerceAtLeast(0)
+        val end = (i + eitherSide).coerceAtMost(spectogram.windows.size - 1)
+
+        val window = spectogram.windows.slice(IntRange(start, end)).reduce { acc, window ->
+            val newValues: List<FrequencyValue> = acc.values.mapIndexed { i, value ->
+                FrequencyValue(value.frequency, value.absValue + window.values[i].absValue)
+            }
+
+            val avgValues = newValues.map { FrequencyValue(it.frequency, it.absValue / (end - start)) }
+
+            FFTWindowWithValues.create(i, newValues)
+        }
+
+        smoothSeries.add(window)
+    }
+
+    return FFTResultWithValues(spectogram.mp3Data, spectogram.windowSize, smoothSeries)
 }
 
 fun renderSpectogram(fftResult: FFTResultWithValues): Pixmap {

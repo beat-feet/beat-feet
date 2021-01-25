@@ -26,7 +26,7 @@ class PlatformGameScreen(
 
     private val camera = makeCamera(20, 10, calcDensityScaleFactor())
     private lateinit var hud: HUD
-    private lateinit var obstacles: List<Obstacle>
+    private val obstacles = mutableListOf<Obstacle>()
 
     private lateinit var ground: Ground
     private lateinit var player: Player
@@ -60,7 +60,19 @@ class PlatformGameScreen(
 
         atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
 
-        obstacles = generateObstacles(atlas!!, world.features)
+        val allFeatures = mutableListOf<Feature>()
+        allFeatures.addAll(world.featuresLow)
+        allFeatures.addAll(world.featuresMid)
+        allFeatures.addAll(world.featuresHigh)
+
+        /*
+        obstacles.addAll(generateObstacles(atlas!!, world.featuresLow))
+        obstacles.addAll(generateObstacles(atlas!!, world.featuresMid))
+        obstacles.addAll(generateObstacles(atlas!!, world.featuresHigh))
+        obstacles.sortBy { it.rect.x }
+         */
+
+        obstacles.addAll(generateObstacles(atlas!!, allFeatures))
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         Gdx.input.inputProcessor = object : InputAdapter() {
@@ -352,7 +364,7 @@ class PlatformGameScreen(
          * player to have to jump in order to avoid the feature (more rhythmic that way), so we
          * offset each feature by this many seconds.
          */
-        private const val FEATURE_START_TIME_OFFSET = -0.1f
+        private const val FEATURE_START_TIME_OFFSET = -0f
 
         /**
          * Once the game starts, the player runs infinitely until the player jumps for the first
@@ -393,18 +405,37 @@ class PlatformGameScreen(
         private const val CAMERA_SHAKE_DURATION = 0.12f
 
         private fun generateObstacles(atlas: TextureAtlas, features: List<Feature>): List<Obstacle> {
-            val rects = features.map {
+
+            val rects = features.sortedBy { it.startTimeInSeconds }.map {
+
+                // Round to the nearest tile if it is above a single tile high.
+                // If it is below a tile in size, that is okay, because there are a number of obstacles
+                // which are sub-one-tile large.
+                val rawHeight = (it.strength * Obstacle.STRENGTH_TO_HEIGHT).coerceAtLeast(Obstacle.MIN_HEIGHT)
+                val roundedHeight = ObstacleBuilder.roundToNearestTile(rawHeight)
+
+                val rawWidth = it.durationInSeconds * SCALE_X
+                val roundedWidth = ObstacleBuilder.roundToNearestTile(rawWidth)
+
+                val isSingleTile = rawHeight < ObstacleBuilder.TILE_SIZE && rawWidth < ObstacleBuilder.TILE_SIZE
+
                 Rectangle(
                         (it.startTimeInSeconds + FEATURE_START_TIME_OFFSET + WARM_UP_TIME) * SCALE_X,
                         0f,
-                        it.durationInSeconds * SCALE_X,
-                        (it.strength * Obstacle.STRENGTH_TO_HEIGHT).coerceAtLeast(Obstacle.MIN_HEIGHT)
+                        if (isSingleTile) { rawWidth } else { roundedWidth },
+                        if (isSingleTile) { rawHeight } else { roundedHeight }
                 )
+
             }
 
-            val toRemove = mutableSetOf<Rectangle>()
+            val toRemoveIndices = mutableSetOf<Int>()
             var i = 0
             while (i < rects.size - 1) {
+
+                if (toRemoveIndices.contains(i)) {
+                    i++
+                    continue
+                }
 
                 val current = rects[i]
 
@@ -413,18 +444,30 @@ class PlatformGameScreen(
                 var nextIndex = i + 1
                 while (nextIndex < rects.size) {
 
+                    // If this was removed as part of a (slightly) earlier obstacle comparison.
+                    if (toRemoveIndices.contains(i)) {
+                        nextIndex ++
+                        continue
+                    }
+
                     val next = rects[nextIndex]
 
                     val distanceToNext = next.x - current.x - current.width
-                    if (distanceToNext < OBSTACLE_GAP_THRESHOLD && current.height == next.height) {
+                    if (distanceToNext > OBSTACLE_GAP_THRESHOLD) {
+                        break;
+                    }
+
+                    if (current.height == next.height) {
+
+                        // Consecutive items of more or less the same height should join together
+                        // into larger buildings.
                         current.width += distanceToNext + next.width
+                        toRemoveIndices.add(nextIndex)
 
-                        // Don't start processing this obstacle in the next high level loop, because
-                        // it has been merged into the current one.
-                        i ++
-
-                        // Also completely remove it later on.
-                        toRemove.add(next)
+                    } else if (current.width <= ObstacleBuilder.TILE_SIZE && next.width <= ObstacleBuilder.TILE_SIZE) {
+                        // Two or more narrow lights next to each other (regardless of height) tend not to look good together.
+                        // TODO: Ideally, we'd keep the tallest of these.
+                        toRemoveIndices.remove(nextIndex)
                     }
 
                     nextIndex ++
@@ -434,7 +477,7 @@ class PlatformGameScreen(
                 i ++
             }
 
-            return rects.filter { !toRemove.contains(it) }
+            return rects.filterIndexed { index, _ -> !toRemoveIndices.contains(index) }
                     .map { ObstacleBuilder.makeObstacle(it, atlas) }
 
         }

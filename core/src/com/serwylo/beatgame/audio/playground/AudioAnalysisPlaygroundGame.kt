@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.audio.features.Feature
-import com.serwylo.beatgame.audio.fft.FFTResult
 import com.serwylo.beatgame.audio.fft.FFTResultWithValues
 import com.serwylo.beatgame.audio.fft.FFTWindow
 import java.lang.Math.max
@@ -37,10 +36,13 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
 
     override fun create() {
         // val musicFile = Gdx.files.internal("sine_1000Hz_plus_500Hz.mp3")
-        // val musicFile = Gdx.files.internal("vivaldi.mp3")
-        val musicFile = Gdx.files.internal("songs/mp3/the_haunted_mansion_the_courtyard.mp3")
+        // val musicFile = Gdx.files.internal("songs/mp3/vivaldi.mp3")
+        // val musicFile = Gdx.files.internal("songs/mp3/the_haunted_mansion_the_courtyard.mp3")
+        // val musicFile = Gdx.files.internal("songs/mp3/the_haunted_mansion_the_exercise_room.mp3")
+        val musicFile = Gdx.files.internal("songs/mp3/health_and_safety_sharply_bent_wire.mp3")
         music = Gdx.audio.newMusic(musicFile)
         spectogram = com.serwylo.beatgame.audio.fft.calculateMp3FFTWithValues(musicFile.read())
+        // spectogram = smoothFFT(rawSpectogram, 21)
         spectogramImage = com.serwylo.beatgame.audio.fft.renderSpectogram(spectogram)
         texture = Texture(spectogramImage.width, spectogramImage.height, Pixmap.Format.RGB888)
         sprite = Sprite(texture)
@@ -84,27 +86,39 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
 
         // When it is loud, is it loud across a bunch of different frequencies? If there is a small
         // standard deviation then it is really just a loud noise at one frequency most likely.
-        series["stdDev"] = seriesFromFFTWindows(spectogram.windows) { it.stdDev }
-        series["rmse"] = seriesFromFFTWindows(spectogram.windows) { it.rmse }
-        series["min"] = seriesFromFFTWindows(spectogram.windows) { it.min }
-        series["median"] = seriesFromFFTWindows(spectogram.windows) { it.median }
-        series["max"] = seriesFromFFTWindows(spectogram.windows) { it.max }
-        series["kurtosis"] = seriesFromFFTWindows(spectogram.windows) { it.kurtosis }
-        series["skewness"] = seriesFromFFTWindows(spectogram.windows) { it.skewness }
+        //series["stdDev"] = seriesFromFFTWindows(spectogram.windows) { it.stdDev }
+        //series["rmse"] = seriesFromFFTWindows(spectogram.windows) { it.rmse }
+        //series["min"] = seriesFromFFTWindows(spectogram.windows) { it.min }
+        //series["median"] = seriesFromFFTWindows(spectogram.windows) { it.median }
+        //series["max"] = seriesFromFFTWindows(spectogram.windows) { it.max }
+        //series["kurtosis"] = seriesFromFFTWindows(spectogram.windows) { it.kurtosis }
+        //series["skewness"] = seriesFromFFTWindows(spectogram.windows) { it.skewness }
 
-        series["stdDev13u"] = smoothSeriesMedian(series["stdDev"]!!, 13)
+        series["mean-1st"] = seriesFromFFTWindows(spectogram.windows) { it.meanFirst }
+        series["mean-2nd"] = seriesFromFFTWindows(spectogram.windows) { it.meanSecond }
+        series["mean-3rd"] = seriesFromFFTWindows(spectogram.windows) { it.meanThird }
+
+        series["u1st"] = smoothSeriesMean(series["mean-1st"]!!, 3)
+        series["u2nd"] = smoothSeriesMean(series["mean-2nd"]!!, 5)
+        series["u3rd"] = smoothSeriesMean(series["mean-3rd"]!!, 7)
+
+        series["m1st"] = smoothSeriesMean(series["u1st"]!!, 11)
+        series["m2nd"] = smoothSeriesMean(series["u2nd"]!!, 11)
+        series["m3rd"] = smoothSeriesMean(series["u3rd"]!!,  11)
+
+        //series["stdDev13u"] = smoothSeriesMedian(series["stdDev"]!!, 13)
 
         /* No intuition for these yet after observing for some time.
         */
 
         // val toExtractFeatures = setOf("energy13", "domFreq13")
-        val toExtractFeatures = setOf("stdDev13u")
+        val toExtractFeatures = setOf("u1st", "u2nd", "u3rd", "u4th")
         series.keys
                 .filter { toExtractFeatures.contains(it) }
                 .toSet()
                 .forEach { series["$it*"] = analyseSeries(series[it]!!) }
 
-        features = extractFeaturesFromSeries(series["stdDev13u"]!!, spectogram.windowSize, spectogram.mp3Data.sampleRate)
+        features = extractFeaturesFromSeries(series["mean-1st"]!!, spectogram.windowSize, spectogram.mp3Data.sampleRate)
 
         series.onEach {
             seriesVertices[it.key] = renderSeries(it.value, statsWidth)
@@ -167,12 +181,15 @@ class AudioAnalysisPlaygroundGame : ApplicationAdapter() {
         val currentWindowIndex = (spectogram.mp3Data.sampleRate.toFloat() / spectogram.windowSize.toFloat() * music.position).toInt()
         val currentWindow = spectogram.windows[currentWindowIndex]
 
-        val barWidth = Gdx.graphics.width.toFloat() / spectogram.windowSize * 2
+        val equalizerWidth = Gdx.graphics.width / 3f
+        val equalizerHeight = Gdx.graphics.height / 3f
+        val equalizerX = Gdx.graphics.width - equalizerWidth
+        val equalizerY = Gdx.graphics.height - equalizerHeight
+        val barWidth = equalizerWidth / spectogram.windowSize * 2
         currentWindow.values.forEachIndexed { i, f ->
             val value = if (i == 0) { f.logAbsValue } else { (currentWindow.values[i - 1].logAbsValue + f.logAbsValue) / 2f }
             blobs.color = Color(i * 2 / spectogram.windowSize.toFloat(), 1f, 1f, 1f)
-            blobs.rect((i * barWidth), 0f, barWidth.toInt().toFloat(), value.toFloat() * 50)
-            println("i: $i, r: ${i * 2 / spectogram.windowSize.toFloat()}, rect: ${(i * barWidth)}, 0.0, ${barWidth}, ${f.logAbsValue.toFloat() * 50}")
+            blobs.rect(equalizerX + (i * barWidth), equalizerY, barWidth.toInt().toFloat(), f.logAbsValue.toFloat() * equalizerHeight / 30)
         }
 
         /*features

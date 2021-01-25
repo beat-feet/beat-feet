@@ -17,8 +17,14 @@ class FFTWindowWithValues(
         kurtosis: Double,
         skewness: Double,
         dominantFrequency: Double,
-        rmse: Double
-): FFTWindow(windowIndex, energy, mean, stdDev, min, max, q1, median, q3, kurtosis, skewness, dominantFrequency, rmse) {
+        rmse: Double,
+        meanFirstQuarter: Double,
+        meanSecondQuarter: Double,
+        meanThirdQuarter: Double,
+        meanFourthQuarter: Double
+): FFTWindow(windowIndex, energy, mean, stdDev, min, max, q1, median, q3, kurtosis, skewness, dominantFrequency, rmse, meanFirstQuarter, meanSecondQuarter, meanThirdQuarter) {
+
+    fun toWindow() = FFTWindow(windowIndex, energy, mean, stdDev, min, max, q1, median, q3, kurtosis, skewness, dominantFrequency, rmse, meanFirst, meanSecond, meanThird)
 
     companion object {
         fun create(windowIndex: Int, values: List<FrequencyValue>): FFTWindowWithValues {
@@ -28,6 +34,8 @@ class FFTWindowWithValues(
             values.forEach {
                 stats.addValue(it.absValue)
             }
+
+            val quarterSize = values.size / 4
 
             return FFTWindowWithValues(
                     windowIndex,
@@ -49,7 +57,12 @@ class FFTWindowWithValues(
                     dominantFrequency = values.maxBy { it.absValue }!!.frequency,
 
                     // https://maelfabien.github.io/machinelearning/Speech9/#3-root-mean-square-energy
-                    rmse = sqrt(values.map { it.absValue * it.absValue }.sum() / values.size)
+                    rmse = sqrt(values.map { it.absValue * it.absValue }.sum() / values.size),
+
+                    meanFirstQuarter = values.slice(IntRange(0, quarterSize)).sumByDouble { it.absValue } / quarterSize,
+                    meanSecondQuarter = values.slice(IntRange(quarterSize, quarterSize * 2)).sumByDouble { it.absValue } / quarterSize,
+                    meanThirdQuarter = values.slice(IntRange(quarterSize * 2, quarterSize * 3)).sumByDouble { it.absValue } / quarterSize,
+                    meanFourthQuarter = values.slice(IntRange(quarterSize * 3, values.size - 1)).sumByDouble { it.absValue } / quarterSize
             )
 
         }

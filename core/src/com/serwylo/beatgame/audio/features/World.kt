@@ -15,7 +15,9 @@ class World(
         val musicFileName: String,
         val duration: Int,
         val heightMap: Array<Vector2>,
-        val features: List<Feature>
+        val featuresLow: List<Feature>,
+        val featuresMid: List<Feature>,
+        val featuresHigh: List<Feature>
 ) {
 
     fun dispose() {

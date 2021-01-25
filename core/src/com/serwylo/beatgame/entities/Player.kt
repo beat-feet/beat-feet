@@ -35,7 +35,7 @@ class Player(
     private var textureJump: TextureRegion
     private var textureHit: TextureRegion
 
-    private var health = 100
+    private var health = 1000
 
     private var score: Float = 0f
 
