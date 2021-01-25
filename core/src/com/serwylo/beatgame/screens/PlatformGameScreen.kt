@@ -232,7 +232,7 @@ class PlatformGameScreen(
 
         if (player.justHitDamage > 0 && cameraShakeTotalDuration <= 0) {
             cameraShakeTotalDuration = CAMERA_SHAKE_DURATION
-            cameraShakeAmplitude = player.justHitDamage.coerceAtMost(CAMERA_SHAKE_MAX_DAMAGE).toFloat() / CAMERA_SHAKE_MAX_DAMAGE * CAMERA_SHAKE_MAX_DISTANCE
+            cameraShakeAmplitude = player.justHitDamage.toFloat().coerceAtMost(CAMERA_SHAKE_MAX_DAMAGE) / CAMERA_SHAKE_MAX_DAMAGE * CAMERA_SHAKE_MAX_DISTANCE
             Gdx.input.vibrate((CAMERA_SHAKE_DURATION * 1000 * cameraShakeAmplitude * 4).toInt())
         }
 
@@ -269,6 +269,12 @@ class PlatformGameScreen(
         camera.update()
     }
 
+    /**
+     * Not perfect, but a minor heuristic to help cull items that don't need to be rendered.
+     * We'll keep a rough idea of what is off to the left of the screen, but always render 20 items
+     * to the left of this object. That is because some objects are wider than others, and we
+     * can't just say "Item x is off the screen, so all items before it are also off the screen".
+     */
     private var leftMostObstacleOnScreenIndex = 0
 
     private fun renderEntities(delta: Float) {
@@ -277,15 +283,10 @@ class PlatformGameScreen(
 
         ground.render(camera, state == State.PAUSED)
         val cameraRight = camera.unproject(Vector3(Gdx.graphics.width.toFloat(), 0f, 0f)).x
-        val cameraLeft = camera.unproject(Vector3(0f, 0f, 0f)).x
-        for (i in leftMostObstacleOnScreenIndex until obstacles.size) {
+        for (i in (leftMostObstacleOnScreenIndex - 20).coerceAtLeast(0) until obstacles.size) {
             val obstacle = obstacles[i]
             if (obstacle.rect.x > cameraRight) {
                 break;
-            }
-
-            if (obstacle.rect.x + obstacle.rect.width < cameraLeft) {
-                leftMostObstacleOnScreenIndex = i + 1
             }
 
             obstacle.render(camera, state == State.PAUSED)
@@ -327,9 +328,22 @@ class PlatformGameScreen(
 
     private fun checkCollisions() {
         player.clearHit()
-        obstacles.forEach {
-            if (player.isColliding(it.rect)) {
-                player.hit(it)
+
+        val cameraRight = camera.unproject(Vector3(Gdx.graphics.width.toFloat(), 0f, 0f)).x
+        val cameraLeft = camera.unproject(Vector3(0f, 0f, 0f)).x
+
+        for (i in (leftMostObstacleOnScreenIndex - 20).coerceAtLeast(0) until obstacles.size) {
+            val obstacle = obstacles[i]
+            if (obstacle.rect.x > cameraRight) {
+                break;
+            }
+
+            if (obstacle.rect.x + obstacle.rect.width < cameraLeft) {
+                leftMostObstacleOnScreenIndex = i + 1
+            }
+
+            if (player.isColliding(obstacle.rect)) {
+                player.hit(obstacle)
             }
         }
     }
@@ -400,7 +414,7 @@ class PlatformGameScreen(
          * This amount of damage in one go will result in the maximum shake, anything above will
          * still cause the same amount of shaking, anything below will result in a smaller shake.
          */
-        private const val CAMERA_SHAKE_MAX_DAMAGE = 15
+        private const val CAMERA_SHAKE_MAX_DAMAGE = Player.AREA_TO_DAMAGE
 
         private const val CAMERA_SHAKE_DURATION = 0.12f
 
@@ -467,7 +481,7 @@ class PlatformGameScreen(
                     } else if (current.width <= ObstacleBuilder.TILE_SIZE && next.width <= ObstacleBuilder.TILE_SIZE) {
                         // Two or more narrow lights next to each other (regardless of height) tend not to look good together.
                         // TODO: Ideally, we'd keep the tallest of these.
-                        toRemoveIndices.remove(nextIndex)
+                        toRemoveIndices.add(nextIndex)
                     }
 
                     nextIndex ++

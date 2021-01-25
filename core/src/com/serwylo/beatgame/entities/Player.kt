@@ -35,7 +35,7 @@ class Player(
     private var textureJump: TextureRegion
     private var textureHit: TextureRegion
 
-    private var health = 1000
+    private var health = 100
 
     private var score: Float = 0f
 
@@ -78,6 +78,7 @@ class Player(
             velocity.y = JUMP_VELOCITY
             state = State.JUMPING
             jumpCount ++
+            currentlyOnObstacles.clear()
 
         }
 
@@ -134,8 +135,10 @@ class Player(
         }
     }
 
+    private val currentlyOnObstacles = mutableSetOf<Rectangle>()
+
     fun isColliding(rect: Rectangle): Boolean {
-        if (rect.x + rect.width < position.x || rect.x > position.x + WIDTH || rect.y + rect.height < position.y ) {
+        if (rect.x + rect.width < position.x || rect.x > position.x + WIDTH || rect.y + rect.height < position.y) {
             return false
         }
 
@@ -235,7 +238,7 @@ class Player(
         /**
          * When hitting an obstacle, multiply the area by this in order to figure out how much damage to do.
          */
-        const val AREA_TO_DAMAGE = 15f
+        const val AREA_TO_DAMAGE = 6f
 
         const val MIN_DAMAGE = 1
 

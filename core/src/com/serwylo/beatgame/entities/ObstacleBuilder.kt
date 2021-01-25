@@ -14,16 +14,7 @@ object ObstacleBuilder {
 
     const val TILE_SIZE = TiledSprite.TILE_SIZE
 
-    /**
-     * If it is less than a tile high or wide, then just leave the size as is.
-     * However, if it is above a tile high, then only deal in tile sizes. This will make it much
-     * easier to merge obstacles together for large and interesting buildings.
-     */
     fun roundToNearestTile(size: Float): Float {
-        if (size <= TILE_SIZE) {
-            return size
-        }
-
         return (size / TILE_SIZE).toInt() * TILE_SIZE + TILE_SIZE
     }
 
@@ -37,8 +28,8 @@ object ObstacleBuilder {
 
     fun makeObstacle(rect: Rectangle, atlas: TextureAtlas): Obstacle {
 
-        val narrow = rect.width < TILE_SIZE
-        val short = rect.height < TILE_SIZE
+        val narrow = rect.width <= TILE_SIZE
+        val short = rect.height <= TILE_SIZE
 
         return if (narrow && short) {
             makeSmallObstacle(atlas, rect)

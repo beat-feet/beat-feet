@@ -24,7 +24,7 @@ class Obstacle(val rect: Rectangle, private val sprite: SpriteRenderer) : Entity
 
     companion object {
 
-        const val STRENGTH_TO_HEIGHT = 4f
+        const val STRENGTH_TO_HEIGHT = 3f
 
         const val MIN_HEIGHT = 0.1f
     }
