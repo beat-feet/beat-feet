@@ -138,7 +138,15 @@ class Player(
     private val currentlyOnObstacles = mutableSetOf<Rectangle>()
 
     fun isColliding(rect: Rectangle): Boolean {
-        if (rect.x + rect.width < position.x || rect.x > position.x + WIDTH || rect.y + rect.height < position.y) {
+        if (
+                // Don't check the full width width of the player against the building, because
+                // the feet only take up less than 100%. Therefore allow the player to drop off
+                // objects when stepping off them, even though their head is still above the object.
+                rect.x > position.x + WIDTH / 6 * 5 ||
+                rect.x + rect.width < position.x + WIDTH / 6 ||
+
+                rect.y + rect.height < position.y
+        ) {
             return false
         }
 
