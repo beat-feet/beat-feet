@@ -1,0 +1,8 @@
+Second experimental version. 
+
+* Now has 17 built in levels
+* Better obstacle generation (taking into account low, mid, and high frequencies)
+* Slightly better physics
+* Reduced filesize by downsampling songs (but generating obstacles from the high bitrate version)
+
+Please feel free to provide feedback so we can make this as fun and challenging as can be.

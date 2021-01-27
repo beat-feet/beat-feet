@@ -2,7 +2,7 @@ Jump your way through levels, each automatically generated from the beat of the 
 
 Hit too many obstacles, and you will die. Successfully jump from obstacle to obstacle, and watch your score soar! Can you get to the end?
 
-Play through five techno or classical levels, or use your own MP3 files to generate custom levels.
+Play through techno or classical levels, or use your own MP3 files to generate custom levels.
 
 Each level consists of obstacles that correspond to the music playing in the background. Every time you play the same level, the size of the obstacles will be the same, but they will be regenerated with a different style. No two sessions will look the same.
 
@@ -20,6 +20,5 @@ Known limitations, to be addressed soon:
 - No optimisations. Probably wont work well (or at all) on low end devices.
 - Textures are often loaded multiple times, at the wrong time, inefficiently, and not disposed of correctly.
 - Untested on multiple different screen sizes.
-- Needs more songs (but don't want to make the .apk file too large).
 - Some obstacles are insurmountable.
 - Can only add one custom MP3 at a time, should be able to use an entire folder.
