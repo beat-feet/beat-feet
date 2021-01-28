@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
@@ -13,10 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.entities.Player
+import com.serwylo.beatgame.graphics.ParticleEffectActor
 import kotlin.math.floor
 
 
-class HUD(atlas: TextureAtlas) {
+class HUD(private val atlas: TextureAtlas) {
 
     private val stage = Stage(ExtendViewport(400f, 300f))
 
@@ -39,6 +42,9 @@ class HUD(atlas: TextureAtlas) {
     private val bottomWidget: HorizontalGroup
 
     private val scaleSounds: List<Sound>
+
+    private var previousMultiplier = 1f
+    private var previousHealth = 100
 
     init {
 
@@ -90,8 +96,6 @@ class HUD(atlas: TextureAtlas) {
 
     }
 
-    private var previousMultiplier = 1f
-
     fun render(distancePercent: Float, player: Player) {
         val distance = (distancePercent * 100).toInt().toString() + "%"
         val multiplier = if (player.scoreMultiplier <= 1) "" else " x ${player.scoreMultiplier.toInt()}"
@@ -100,14 +104,35 @@ class HUD(atlas: TextureAtlas) {
         distanceLabel.setText(distance)
         scoreLabel.setText("${player.getScore()}$multiplier")
 
-        heartImages.forEachIndexed { i, image ->
-            val fullThreshold = (i + 1) * 20
-            val halfThreshold = fullThreshold - 10
+        if (previousHealth != player.getHealth()) {
+            val previousNumHalfHearts = previousHealth / 10
+            val newNumHalfHearts = player.getHealth() / 10
+            previousHealth = player.getHealth()
 
-            image.drawable = when {
-                player.getHealth() >= fullThreshold -> textureHeartFull
-                player.getHealth() >= halfThreshold -> textureHeartHalf
-                else -> textureHeartEmpty
+            if (previousNumHalfHearts != newNumHalfHearts) {
+
+                for (i in newNumHalfHearts until previousNumHalfHearts) {
+                    val imageToOverlay = heartImages[i / 2]
+                    val pos = imageToOverlay.parent.localToStageCoordinates(Vector2(imageToOverlay.x, imageToOverlay.y))
+
+                    val p = ParticleEffect()
+                    p.load(Gdx.files.internal("effects/health.p"), atlas)
+                    val pActor = ParticleEffectActor(p)
+                    pActor.setPosition(pos.x, pos.y)
+                    stage.addActor(pActor)
+                }
+
+                heartImages.forEachIndexed { i, image ->
+                    val fullThreshold = (i + 1) * 20
+                    val halfThreshold = fullThreshold - 10
+
+                    image.drawable = when {
+                        player.getHealth() >= fullThreshold -> textureHeartFull
+                        player.getHealth() >= halfThreshold -> textureHeartHalf
+                        else -> textureHeartEmpty
+                    }
+                }
+
             }
         }
 
