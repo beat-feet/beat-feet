@@ -1,12 +1,15 @@
 package com.serwylo.beatgame.entities
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Globals
+import com.serwylo.beatgame.graphics.ParticleEffectActor
 import kotlin.math.abs
 
 class Player(
@@ -41,6 +44,8 @@ class Player(
 
     var scoreMultiplier = 1f
 
+    val jumpParticles = ParticleEffect()
+
     fun getHealth(): Int { return health }
 
     enum class State {
@@ -70,6 +75,8 @@ class Player(
                 atlas.findRegion("ghost"),
                 atlas.findRegion("ghost_x")
         )
+
+        jumpParticles.load(Gdx.files.internal("effects/rainbow.p"), atlas)
     }
 
     fun performJump() {
@@ -80,6 +87,9 @@ class Player(
             state = State.JUMPING
             jumpCount ++
             currentlyOnObstacles.clear()
+
+            jumpParticles.reset()
+            jumpParticles.start()
 
         }
 
@@ -113,6 +123,7 @@ class Player(
         batch.projectionMatrix = camera.combined
         batch.begin()
         batch.draw(sprite(isPaused), position.x, position.y, WIDTH, HEIGHT)
+        jumpParticles.draw(batch)
         batch.end()
 
     }
@@ -139,6 +150,9 @@ class Player(
             scoreMultiplier = 1f
             lastMultiplerTime = 0f
         }
+
+        jumpParticles.setPosition(position.x + WIDTH / 2, position.y)
+        jumpParticles.update(delta)
 
     }
 
