@@ -129,6 +129,8 @@ class PlatformGameScreen(
         atlas?.dispose()
         atlas = null
 
+        hud.dispose()
+
         Gdx.input.inputProcessor = null
         Gdx.input.setCatchKey(Input.Keys.BACK, false)
     }
@@ -385,7 +387,6 @@ class PlatformGameScreen(
          * time. After that, wait this long before starting the song.
          */
         private const val WARM_UP_TIME = 3f
-
 
         /**
          * How long after dying before we move onto the game end screen.

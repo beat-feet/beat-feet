@@ -1,5 +1,7 @@
 package com.serwylo.beatgame
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -12,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.entities.Player
 import kotlin.math.floor
+
 
 class HUD(atlas: TextureAtlas) {
 
@@ -35,7 +38,11 @@ class HUD(atlas: TextureAtlas) {
     private val healthLabel: Label
     private val bottomWidget: HorizontalGroup
 
+    private val scaleSounds: List<Sound>
+
     init {
+
+        scaleSounds = SCALE_SOUND_FILES.map { Gdx.audio.newSound(Gdx.files.internal("sounds/scales/soundset_vibraphone/${it}")) }
 
         padding = stage.width / 50
 
@@ -112,6 +119,11 @@ class HUD(atlas: TextureAtlas) {
             // Only show feedback for whole numbers.
             if (player.scoreMultiplier > 1f && floor(player.scoreMultiplier) == player.scoreMultiplier) {
                 stage.addActor(createIncreasedMultiplier(player.scoreMultiplier))
+
+                // Play an ever increasing xylophone sound for long combos
+                val scaleIndex = player.scoreMultiplier.toInt().coerceAtMost(scaleSounds.size - 1)
+                val volume = (SCALE_SOUND_VOLUME * scaleIndex).coerceAtMost(1f)
+                scaleSounds[scaleIndex].play(volume)
             }
         }
 
@@ -141,6 +153,43 @@ class HUD(atlas: TextureAtlas) {
         label.y = padding
 
         return label
+    }
+
+    fun dispose() {
+        scaleSounds.forEach { it.dispose() }
+    }
+
+    companion object {
+
+        private const val SCALE_SOUND_VOLUME = 0.05f
+
+        private val SCALE_SOUND_FILES = listOf(
+                "n01.mp3",
+                "n02.mp3",
+                "n03.mp3",
+                "n04.mp3",
+                "n05.mp3",
+                "n06.mp3",
+                "n07.mp3",
+                "n08.mp3",
+                "n09.mp3",
+                "n10.mp3",
+                "n11.mp3",
+                "n12.mp3",
+                "n13.mp3",
+                "n14.mp3",
+                "n15.mp3",
+                "n16.mp3",
+                "n17.mp3",
+                "n18.mp3",
+                "n19.mp3",
+                "n20.mp3",
+                "n21.mp3",
+                "n22.mp3",
+                "n23.mp3",
+                "n24.mp3"
+        )
+
     }
 
 }
