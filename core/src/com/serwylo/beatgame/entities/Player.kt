@@ -23,8 +23,8 @@ class Player(
     var hitAnimation = -1f
 
     /**
-     * For one frame, we will record a hit has been performed. This allows the main game to interrotage
-     * and respond (e.g. by starting particle effects, shaking camera, vibrating, etc.
+     * For one frame, we will record a hit has been performed. This allows the main game to interrogate
+     * and respond (e.g. by starting particle effects, shaking camera, vibrating, etc).
      */
     var justHitDamage = 0
 
@@ -54,6 +54,7 @@ class Player(
     private val hitObstacles = mutableSetOf<Obstacle>()
 
     private var deathTime = 0f
+    private var lastMultiplerTime = 0f
 
     init {
         textureJump = atlas.findRegion("character_a_jump")
@@ -133,6 +134,12 @@ class Player(
         } else if (state == State.JUMPING){
             score += SCORE_PER_SECOND * delta * scoreMultiplier
         }
+
+        if (state == State.RUNNING && scoreMultiplier > 1f && Globals.animationTimer - lastMultiplerTime > MULTIPLIER_GRACE_PERIOD) {
+            scoreMultiplier = 1f
+            lastMultiplerTime = 0f
+        }
+
     }
 
     private val currentlyOnObstacles = mutableSetOf<Rectangle>()
@@ -164,10 +171,11 @@ class Player(
     }
 
     private fun landOnSurface(height: Float) {
-        if (height <= 0f) {
-            scoreMultiplier = 1f
-        } else if (state == State.JUMPING) {
+        // If we were jumping and we landed on a surface (even if the ground), then add a multiplier.
+        // This means that falling from a building doesn't count towards multipliers.
+        if (state == State.JUMPING) {
             scoreMultiplier += 0.5f
+            lastMultiplerTime = Globals.animationTimer
         }
 
         state = State.RUNNING
@@ -185,6 +193,7 @@ class Player(
             hitObstacles.add(obstacle)
 
             scoreMultiplier = 1f
+            lastMultiplerTime = 0f
 
             // Bigger obstacles cause more damage.
             val damage = (obstacle.rect.area() * AREA_TO_DAMAGE).toInt().coerceAtLeast(MIN_DAMAGE)
@@ -251,6 +260,12 @@ class Player(
         const val MIN_DAMAGE = 1
 
         const val SCORE_PER_SECOND = 100
+
+        /**
+         * Once the multiplier is increased, then allow the player to run for this many seconds
+         * before restarting the multiplier again.
+         */
+        const val MULTIPLIER_GRACE_PERIOD = 0.5f
 
     }
 
