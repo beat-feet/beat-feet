@@ -17,6 +17,7 @@ import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.entities.*
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.graphics.makeCamera
+import kotlin.math.sin
 
 
 class PlatformGameScreen(
@@ -147,7 +148,7 @@ class PlatformGameScreen(
 
         processInput()
         updateEntities(delta)
-        renderEntities(delta)
+        renderEntities()
 
         hud.render((playTime / world.duration).coerceAtMost(1f), player)
     }
@@ -255,10 +256,10 @@ class PlatformGameScreen(
 
             val factor = cameraShakeCurrentDuration / cameraShakeTotalDuration
             val radians = factor * Math.PI * 2
-            val desiredPosition = (Math.sin(radians) * cameraShakeAmplitude - cameraShakeAmplitude / 2).toFloat()
+            val desiredPosition = (sin(radians) * cameraShakeAmplitude - cameraShakeAmplitude / 2).toFloat()
             val shift = desiredPosition - cameraShakeYPosition
 
-            camera.translate(0f, shift.toFloat())
+            camera.translate(0f, shift)
             cameraShakeYPosition += shift
 
         }
@@ -279,7 +280,7 @@ class PlatformGameScreen(
      */
     private var leftMostObstacleOnScreenIndex = 0
 
-    private fun renderEntities(delta: Float) {
+    private fun renderEntities() {
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
@@ -288,18 +289,16 @@ class PlatformGameScreen(
         for (i in (leftMostObstacleOnScreenIndex - 20).coerceAtLeast(0) until obstacles.size) {
             val obstacle = obstacles[i]
             if (obstacle.rect.x > cameraRight) {
-                break;
+                break
             }
 
             obstacle.render(camera, state == State.PAUSED)
         }
 
-        if (state == State.DYING) {
-            deadPlayer.render(camera, state == State.PAUSED)
-        } else if (state == State.WINNING) {
-            successPlayer.render(camera, state == State.PAUSED)
-        } else {
-            player.render(camera, state == State.PAUSED)
+        when (state) {
+            State.DYING -> deadPlayer.render(camera, state == State.PAUSED)
+            State.WINNING -> successPlayer.render(camera, state == State.PAUSED)
+            else -> player.render(camera, state == State.PAUSED)
         }
     }
 
@@ -337,7 +336,7 @@ class PlatformGameScreen(
         for (i in (leftMostObstacleOnScreenIndex - 20).coerceAtLeast(0) until obstacles.size) {
             val obstacle = obstacles[i]
             if (obstacle.rect.x > cameraRight) {
-                break;
+                break
             }
 
             if (obstacle.rect.x + obstacle.rect.width < cameraLeft) {
@@ -469,7 +468,7 @@ class PlatformGameScreen(
 
                     val distanceToNext = next.x - current.x - current.width
                     if (distanceToNext > OBSTACLE_GAP_THRESHOLD) {
-                        break;
+                        break
                     }
 
                     if (current.height == next.height) {
