@@ -2,10 +2,7 @@ package com.serwylo.beatgame.entities
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Camera
-import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.ParticleEffect
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.*
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Globals
@@ -89,7 +86,15 @@ class Player(
             currentlyOnObstacles.clear()
 
             jumpParticles.reset()
-            jumpParticles.start()
+
+            if (scoreMultiplier > MIN_MULTIPLIER_FOR_RAINBOW) {
+                jumpParticles.emitters.forEach {
+                    it.emission.highMin = (scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 10
+                    it.emission.highMax = (scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 15
+                    it.duration = (scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 15
+                }
+                jumpParticles.start()
+            }
 
         }
 
@@ -123,7 +128,11 @@ class Player(
         batch.projectionMatrix = camera.combined
         batch.begin()
         batch.draw(sprite(isPaused), position.x, position.y, WIDTH, HEIGHT)
-        jumpParticles.draw(batch)
+
+        if (scoreMultiplier > MIN_MULTIPLIER_FOR_RAINBOW) {
+            jumpParticles.draw(batch)
+        }
+
         batch.end()
 
     }
@@ -151,8 +160,10 @@ class Player(
             lastMultiplerTime = 0f
         }
 
-        jumpParticles.setPosition(position.x + WIDTH / 2, position.y)
-        jumpParticles.update(delta)
+        if (scoreMultiplier > MIN_MULTIPLIER_FOR_RAINBOW) {
+            jumpParticles.setPosition(position.x + WIDTH / 2, position.y)
+            jumpParticles.update(delta)
+        }
 
     }
 
@@ -280,6 +291,11 @@ class Player(
          * before restarting the multiplier again.
          */
         const val MULTIPLIER_GRACE_PERIOD = 0.5f
+
+        /**
+         * Show rainbows coming out of the character when jumping, if the multiplier is above this value.
+         */
+        const val MIN_MULTIPLIER_FOR_RAINBOW = 3f
 
     }
 
