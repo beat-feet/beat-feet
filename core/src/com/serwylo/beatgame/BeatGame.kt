@@ -7,6 +7,7 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.audio.features.World
+import com.serwylo.beatgame.levels.Score
 import com.serwylo.beatgame.screens.*
 
 class BeatGame(private val verbose: Boolean) : Game() {
@@ -41,9 +42,9 @@ class BeatGame(private val verbose: Boolean) : Game() {
         }
     }
 
-    fun endGame(world: World, score: Int, distancePercent: Float) {
+    fun endGame(world: World, score: Score) {
         Gdx.app.postRunnable {
-            setScreen(EndGameScreen(this, world, score, distancePercent))
+            setScreen(EndGameScreen(this, world, score))
         }
     }
 

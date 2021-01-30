@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.Score
+import com.serwylo.beatgame.HighScore
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Level.Companion.levels
@@ -112,12 +112,12 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
         table.add(levelLabel).expand().fill().colspan(4)
 
-        val highScore = Score.load(level.mp3Name)
+        val highScore = HighScore.load(level.mp3Name)
 
         if (highScore.exists()) {
 
             val distanceLabel = Label(highScore.distancePercentString(), smallLabelStyle)
-            val scoreLabel = Label(highScore.score.toString(), smallLabelStyle)
+            val scoreLabel = Label(highScore.points.toString(), smallLabelStyle)
 
             val distanceIcon = Image(distanceTexture)
             val scoreIcon = Image(scoreTexture)

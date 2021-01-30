@@ -17,6 +17,7 @@ import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.entities.*
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.graphics.makeCamera
+import com.serwylo.beatgame.levels.Score
 import kotlin.math.sin
 
 
@@ -43,6 +44,8 @@ class PlatformGameScreen(
     private var playTime = 0f
     private var deathTime = 0f
     private var winTime = 0f
+
+    private val score = Score()
 
     private var prePauseState: State = state
 
@@ -100,12 +103,12 @@ class PlatformGameScreen(
             }
         }
 
-        hud = HUD(atlas!!)
+        hud = HUD(score, atlas!!)
 
         camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 5, 0f)
         camera.update()
 
-        player = Player(Vector2(SCALE_X, 0f), atlas!!)
+        player = Player(score, Vector2(SCALE_X, 0f), atlas!!)
         deadPlayer = DeadPlayer(atlas!!)
         successPlayer = SuccessPlayer(atlas!!)
 
@@ -143,7 +146,9 @@ class PlatformGameScreen(
         updateEntities(delta)
         renderEntities()
 
-        hud.render(delta, (playTime / world.duration).coerceAtMost(1f), player)
+        score.progress((playTime / world.duration).coerceAtMost(1f))
+
+        hud.render(delta, player.getHealth())
     }
 
     private fun processInput() {
@@ -192,6 +197,10 @@ class PlatformGameScreen(
                 successPlayer.setup(player.position)
                 winTime = Globals.animationTimer
 
+            }
+
+            if (player.state == Player.State.JUMPING){
+                score.increase(delta)
             }
 
         } else if (state == State.DYING) {
@@ -302,7 +311,7 @@ class PlatformGameScreen(
 
     private fun endGame() {
         world.music.stop()
-        game.endGame(world, player.getScore(), (playTime / world.duration).coerceAtMost(1f))
+        game.endGame(world, score)
     }
 
     override fun pause() {

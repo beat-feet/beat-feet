@@ -10,18 +10,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.actions.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import com.serwylo.beatgame.entities.Player
 import com.serwylo.beatgame.graphics.ParticleEffectActor
-import kotlin.math.floor
+import com.serwylo.beatgame.levels.Score
 
 
-class HUD(private val atlas: TextureAtlas) {
+class HUD(private val score: Score, private val atlas: TextureAtlas) {
 
     private val stage = Stage(ExtendViewport(400f, 300f))
 
@@ -46,7 +46,7 @@ class HUD(private val atlas: TextureAtlas) {
 
     private val scaleSounds: List<Sound>
 
-    private var previousMultiplier = 1f
+    private var previousMultiplier = 1
     private var previousHealth = 100
 
     init {
@@ -101,21 +101,21 @@ class HUD(private val atlas: TextureAtlas) {
 
     }
 
-    fun render(delta:Float, distancePercent: Float, player: Player) {
+    fun render(delta:Float, health: Int) {
 
-        val distance = (distancePercent * 100).toInt().toString() + "%"
-        val multiplier = if (player.scoreMultiplier <= 1) "" else " x ${player.scoreMultiplier.toInt()}"
+        val distance = (score.distancePercent * 100).toInt().toString() + "%"
+        val multiplier = if (score.getMultiplier() <= 1) "" else " x ${score.getMultiplier()}"
 
-        healthLabel.setText(player.getHealth())
+        healthLabel.setText(health)
         distanceLabel.setText(distance)
-        scoreLabel.setText("${player.getScore()}$multiplier")
+        scoreLabel.setText("${score.getPoints()}$multiplier")
 
-        if (previousHealth != player.getHealth()) {
+        if (previousHealth != health) {
             val previousNumHalfHearts = previousHealth / 10
-            val newNumHalfHearts = player.getHealth() / 10
-            previousHealth = player.getHealth()
+            val newNumHalfHearts = health / 10
+            previousHealth = health
 
-            if (player.getHealth() <= 0) {
+            if (health <= 0) {
 
                 // Don't shake for the end of game screen, looks a bit jarring if we do.
                 healthWidget.clearActions()
@@ -157,8 +157,8 @@ class HUD(private val atlas: TextureAtlas) {
                     val halfThreshold = fullThreshold - 10
 
                     image.drawable = when {
-                        player.getHealth() >= fullThreshold -> textureHeartFull
-                        player.getHealth() >= halfThreshold -> textureHeartHalf
+                        health >= fullThreshold -> textureHeartFull
+                        health >= halfThreshold -> textureHeartHalf
                         else -> textureHeartEmpty
                     }
                 }
@@ -168,13 +168,12 @@ class HUD(private val atlas: TextureAtlas) {
 
         // Bring the increasing multiplier to the players attention by showing
         // a floating up, increasing size, reducing alpha label explaining the new multiplier.
-        if (previousMultiplier != player.scoreMultiplier) {
-            previousMultiplier = player.scoreMultiplier
+        if (previousMultiplier != score.getMultiplier()) {
+            previousMultiplier = score.getMultiplier()
 
-            // Only show feedback for whole numbers.
-            if (player.scoreMultiplier > 1f && floor(player.scoreMultiplier) == player.scoreMultiplier) {
-                stage.addActor(createIncreasedMultiplier(player.scoreMultiplier))
-                playScaleSound(player.scoreMultiplier.toInt())
+            if (score.getMultiplier() > 1) {
+                stage.addActor(createIncreasedMultiplier(score.getMultiplier()))
+                playScaleSound(score.getMultiplier())
             }
         }
 
@@ -193,8 +192,8 @@ class HUD(private val atlas: TextureAtlas) {
         scaleSounds[scaleIndex].play(volume)
     }
 
-    private fun createIncreasedMultiplier(scoreMultiplier: Float): Actor {
-        val label = Container<Label>(Label("x ${scoreMultiplier.toInt()}", labelStyle))
+    private fun createIncreasedMultiplier(scoreMultiplier: Int): Actor {
+        val label = Container<Label>(Label("x $scoreMultiplier", labelStyle))
         label.isTransform = true
 
         label.addAction(

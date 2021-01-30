@@ -5,7 +5,7 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.Score
+import com.serwylo.beatgame.HighScore
 import com.serwylo.beatgame.audio.loadWorldFromMp3
 
 class LoadingScreen(
@@ -41,7 +41,7 @@ class LoadingScreen(
 
     override fun otherActor(): WidgetGroup {
 
-        val topScore = Score.load(musicFile.name())
+        val topScore = HighScore.load(musicFile.name())
 
         val labelStyle = Label.LabelStyle()
         labelStyle.font = mediumFont
@@ -54,7 +54,7 @@ class LoadingScreen(
 
         val bestLabel = Label("Best", labelStyle)
         val distanceLabel = Label("${(topScore.distancePercent * 100).toInt()}%", labelStyle)
-        val scoreLabel = Label("${topScore.score}", labelStyle)
+        val scoreLabel = Label("${topScore.points}", labelStyle)
 
         val distanceImage = Image(atlas.findRegion("right_sign"))
         val scoreImage = Image(atlas.findRegion("score"))

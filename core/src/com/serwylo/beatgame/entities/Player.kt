@@ -6,11 +6,12 @@ import com.badlogic.gdx.graphics.g2d.*
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Globals
-import com.serwylo.beatgame.graphics.ParticleEffectActor
+import com.serwylo.beatgame.levels.Score
 import kotlin.math.abs
 
 class Player(
-        val velocity: Vector2 = Vector2(),
+        val score: Score,
+        private val velocity: Vector2 = Vector2(),
         atlas: TextureAtlas
 ) : Entity {
 
@@ -36,10 +37,6 @@ class Player(
     private var textureHit: TextureRegion
 
     private var health = 100
-
-    private var score: Float = 0f
-
-    var scoreMultiplier = 1f
 
     private val jumpParticles = ParticleEffect()
 
@@ -87,12 +84,12 @@ class Player(
 
             jumpParticles.reset()
 
-            if (scoreMultiplier > MIN_MULTIPLIER_FOR_RAINBOW) {
+            if (score.getMultiplier() > MIN_MULTIPLIER_FOR_RAINBOW) {
                 jumpParticles.emitters.forEach {
-                    it.emission.highMin = (scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 10
-                    it.emission.highMax = (scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 15
-                    it.duration = (scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 15
-                    it.maxParticleCount = ((scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 25).toInt()
+                    it.emission.highMin = (score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * 10
+                    it.emission.highMax = (score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * 15
+                    it.duration = (score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * 15
+                    it.maxParticleCount = ((score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * 25).toInt()
                 }
                 jumpParticles.start()
             }
@@ -130,7 +127,7 @@ class Player(
         batch.begin()
         batch.draw(sprite(isPaused), position.x, position.y, WIDTH, HEIGHT)
 
-        if (scoreMultiplier > MIN_MULTIPLIER_FOR_RAINBOW) {
+        if (score.getMultiplier() > MIN_MULTIPLIER_FOR_RAINBOW) {
             jumpParticles.draw(batch)
         }
 
@@ -152,16 +149,14 @@ class Player(
 
         if (position.y < 0) {
             landOnSurface(0f)
-        } else if (state == State.JUMPING){
-            score += SCORE_PER_SECOND * delta * scoreMultiplier
         }
 
-        if (state == State.RUNNING && scoreMultiplier > 1f && Globals.animationTimer - lastMultiplerTime > MULTIPLIER_GRACE_PERIOD) {
-            scoreMultiplier = 1f
+        if (state == State.RUNNING && score.getMultiplier() > 1f && Globals.animationTimer - lastMultiplerTime > MULTIPLIER_GRACE_PERIOD) {
+            score.resetMultiplier()
             lastMultiplerTime = 0f
         }
 
-        if (scoreMultiplier > MIN_MULTIPLIER_FOR_RAINBOW) {
+        if (score.getMultiplier() > MIN_MULTIPLIER_FOR_RAINBOW) {
             jumpParticles.setPosition(position.x + WIDTH / 2, position.y)
             jumpParticles.update(delta)
         }
@@ -200,7 +195,7 @@ class Player(
         // If we were jumping and we landed on a surface (even if the ground), then add a multiplier.
         // This means that falling from a building doesn't count towards multipliers.
         if (state == State.JUMPING) {
-            scoreMultiplier += 0.5f
+            score.increaseMultiplier()
             lastMultiplerTime = Globals.animationTimer
         }
 
@@ -226,7 +221,7 @@ class Player(
 
             hitObstacles.add(obstacle)
 
-            scoreMultiplier = 1f
+            score.resetMultiplier()
             lastMultiplerTime = 0f
 
             // Bigger obstacles cause more damage.
@@ -253,10 +248,6 @@ class Player(
 
         }
 
-    }
-
-    fun getScore(): Int {
-        return score.toInt()
     }
 
     fun clearHit() {
@@ -292,8 +283,6 @@ class Player(
         const val AREA_TO_DAMAGE = 6f
 
         const val MIN_DAMAGE = 1
-
-        const val SCORE_PER_SECOND = 100
 
         /**
          * Once the multiplier is increased, then allow the player to run for this many seconds

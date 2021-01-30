@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.Score
+import com.serwylo.beatgame.HighScore
 import com.serwylo.beatgame.audio.features.World
+import com.serwylo.beatgame.levels.Score
 
 class EndGameScreen(
         private val game: BeatGame,
         private val world: World,
-        private val score: Int,
-        private val distancePercent: Float
+        private val score: Score
 ): InfoScreen("The End") {
 
     private val atlas: TextureAtlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
@@ -22,7 +22,7 @@ class EndGameScreen(
     override fun show() {
         super.show()
 
-        Score.save(world.musicFileName, distancePercent, score)
+        HighScore.save(world.musicFileName, score)
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         Gdx.input.inputProcessor = object : InputAdapter() {
@@ -62,13 +62,13 @@ class EndGameScreen(
         verticalGroup.space(SPACING)
 
         var record = false
-        val highScore = Score.load(world.musicFileName)
-        if ((distancePercent * 100).toInt() > (highScore.distancePercent * 100).toInt()) {
+        val highScore = HighScore.load(world.musicFileName)
+        if ((score.distancePercent * 100).toInt() > (highScore.distancePercent * 100).toInt()) {
             distanceLabelStyle.fontColor = Color.GREEN
             record = true
         }
 
-        if (score > highScore.score) {
+        if (score.getPoints() > highScore.points) {
             scoreLabelStyle.fontColor = Color.GREEN
             record = true
         }
@@ -84,8 +84,8 @@ class EndGameScreen(
         val horizontalGroup = HorizontalGroup()
         horizontalGroup.space(SPACING)
 
-        val distanceLabel = Label("${(distancePercent * 100).toInt()}%", distanceLabelStyle)
-        val scoreLabel = Label("${score}", scoreLabelStyle)
+        val distanceLabel = Label("${(score.distancePercent * 100).toInt()}%", distanceLabelStyle)
+        val scoreLabel = Label("${score.getPoints()}", scoreLabelStyle)
 
         val distanceImage = Image(atlas.findRegion("right_sign"))
         val scoreImage = Image(atlas.findRegion("score"))
