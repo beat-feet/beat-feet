@@ -157,7 +157,9 @@ class Player(
         }
 
         if (score.getMultiplier() > MIN_MULTIPLIER_FOR_RAINBOW) {
-            jumpParticles.setPosition(position.x + WIDTH / 2, position.y)
+            jumpParticles.emitters.forEach {
+                it.setPosition(position.x + WIDTH / 2, position.y)
+            }
             jumpParticles.update(delta)
         }
 
