@@ -41,7 +41,7 @@ class Player(
 
     var scoreMultiplier = 1f
 
-    val jumpParticles = ParticleEffect()
+    private val jumpParticles = ParticleEffect()
 
     fun getHealth(): Int { return health }
 
@@ -92,6 +92,7 @@ class Player(
                     it.emission.highMin = (scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 10
                     it.emission.highMax = (scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 15
                     it.duration = (scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 15
+                    it.maxParticleCount = ((scoreMultiplier - MIN_MULTIPLIER_FOR_RAINBOW) * 25).toInt()
                 }
                 jumpParticles.start()
             }
@@ -207,6 +208,14 @@ class Player(
         velocity.y = 0f
         position.y = height
         jumpCount = 0
+
+        // No longer emit any more particles.
+        jumpParticles.emitters.forEach {
+            // This isn't the cleanest way to finish it, but seems to work.
+            // Essentially tell the timer that it has been running for a really long time, so it
+            // will stop emitting any further.
+            it.durationTimer = 1000f
+        }
     }
 
     fun hit(obstacle: Obstacle) {

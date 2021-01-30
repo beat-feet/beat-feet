@@ -66,13 +66,6 @@ class PlatformGameScreen(
         allFeatures.addAll(world.featuresMid)
         allFeatures.addAll(world.featuresHigh)
 
-        /*
-        obstacles.addAll(generateObstacles(atlas!!, world.featuresLow))
-        obstacles.addAll(generateObstacles(atlas!!, world.featuresMid))
-        obstacles.addAll(generateObstacles(atlas!!, world.featuresHigh))
-        obstacles.sortBy { it.rect.x }
-         */
-
         obstacles.addAll(generateObstacles(atlas!!, allFeatures))
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
