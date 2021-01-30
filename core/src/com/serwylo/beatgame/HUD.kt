@@ -125,7 +125,7 @@ class HUD(private val atlas: TextureAtlas) {
                 if (newNumHalfHearts <= 2) {
 
                     // If there are two half hearts, shake less than one half heart, less so for zero half hearts (almost dead)
-                    val shakeDistance = heartImages[0].width / 7f / (newNumHalfHearts + 1)
+                    val shakeDistance = heartImages[0].width / 5f / (newNumHalfHearts + 1)
                     val shakeTime = 0.03f
 
                     healthWidget.clearActions()
