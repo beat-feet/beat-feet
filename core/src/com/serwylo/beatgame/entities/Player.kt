@@ -51,7 +51,7 @@ class Player(
         DEAD
     }
 
-    private var state: State = State.RUNNING
+    var state: State = State.RUNNING
 
     private val hitObstacles = mutableSetOf<Obstacle>()
 

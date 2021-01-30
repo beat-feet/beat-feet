@@ -10,9 +10,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.*
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.entities.Player
 import com.serwylo.beatgame.graphics.ParticleEffectActor
@@ -40,6 +42,7 @@ class HUD(private val atlas: TextureAtlas) {
     private val scoreLabel: Label
     private val healthLabel: Label
     private val bottomWidget: HorizontalGroup
+    private val healthWidget: HorizontalGroup
 
     private val scaleSounds: List<Sound>
 
@@ -61,7 +64,7 @@ class HUD(private val atlas: TextureAtlas) {
 
         labelStyle = Label.LabelStyle(font, Color.WHITE)
 
-        val healthWidget = HorizontalGroup()
+        healthWidget = HorizontalGroup()
         healthWidget.space(padding / 2)
 
         healthLabel = Label("", labelStyle)
@@ -78,25 +81,28 @@ class HUD(private val atlas: TextureAtlas) {
         distanceLabel = Label("", labelStyle)
         scoreLabel = Label("", labelStyle)
 
+        // It would make much more sense to put all of these widgets (and the ones in the top right)
+        // in a Table. However doing so makes it nigh-on impossible to use actions to shake and move
+        // them. The reason is that any update to the text of a label (which happens regularly)
+        // will always invalidate the label and also its parent (the Table), resetting the position
+        // of everything in it, no matter how far through a given Action is from animating it.
         bottomWidget = HorizontalGroup()
+        bottomWidget.setPosition(padding, padding * 2)
         bottomWidget.space(padding / 2)
         bottomWidget.addActor(Image(textureDistance))
         bottomWidget.addActor(distanceLabel)
         bottomWidget.addActor(Image(textureScore))
         bottomWidget.addActor(scoreLabel)
 
-        val table = Table()
-        table.setFillParent(true)
-        table.pad(padding)
-        table.add(healthWidget).top().right().expand()
-        table.row()
-        table.add(bottomWidget).bottom().left()
+        stage.addActor(bottomWidget)
 
-        stage.addActor(table)
+        healthWidget.setPosition(stage.width - 150f, stage.height - 20f)
+        stage.addActor(healthWidget)
 
     }
 
-    fun render(distancePercent: Float, player: Player) {
+    fun render(delta:Float, distancePercent: Float, player: Player) {
+
         val distance = (distancePercent * 100).toInt().toString() + "%"
         val multiplier = if (player.scoreMultiplier <= 1) "" else " x ${player.scoreMultiplier.toInt()}"
 
@@ -109,7 +115,31 @@ class HUD(private val atlas: TextureAtlas) {
             val newNumHalfHearts = player.getHealth() / 10
             previousHealth = player.getHealth()
 
-            if (previousNumHalfHearts != newNumHalfHearts) {
+            if (player.getHealth() <= 0) {
+
+                // Don't shake for the end of game screen, looks a bit jarring if we do.
+                healthWidget.clearActions()
+
+            } else if (previousNumHalfHearts != newNumHalfHearts) {
+
+                if (newNumHalfHearts <= 2) {
+
+                    // If there are two half hearts, shake less than one half heart, less so for zero half hearts (almost dead)
+                    val shakeDistance = heartImages[0].width / 7f / (newNumHalfHearts + 1)
+                    val shakeTime = 0.03f
+
+                    healthWidget.clearActions()
+                    healthWidget.addAction(
+                            forever(
+                                    sequence(
+                                            moveBy(shakeDistance / 2, 0f, shakeTime),
+                                            moveBy( - shakeDistance, 0f, shakeTime * 2),
+                                            moveBy(shakeDistance / 2, shakeTime)
+                                    )
+                            )
+                    )
+
+                }
 
                 for (i in newNumHalfHearts until previousNumHalfHearts) {
                     val imageToOverlay = heartImages[i / 2]
@@ -144,16 +174,23 @@ class HUD(private val atlas: TextureAtlas) {
             // Only show feedback for whole numbers.
             if (player.scoreMultiplier > 1f && floor(player.scoreMultiplier) == player.scoreMultiplier) {
                 stage.addActor(createIncreasedMultiplier(player.scoreMultiplier))
-
-                // Play an ever increasing xylophone sound for long combos
-                val scaleIndex = player.scoreMultiplier.toInt().coerceAtMost(scaleSounds.size - 1)
-                val volume = (SCALE_SOUND_VOLUME * scaleIndex).coerceAtMost(1f)
-                scaleSounds[scaleIndex].play(volume)
+                playScaleSound(player.scoreMultiplier.toInt())
             }
         }
 
-        stage.act()
+        stage.act(delta)
         stage.draw()
+
+    }
+
+
+    /**
+     * Play an ever increasing xylophone sound for long combos
+     */
+    private fun playScaleSound(multiplier: Int) {
+        val scaleIndex = multiplier.coerceAtMost(scaleSounds.size - 1)
+        val volume = (SCALE_SOUND_VOLUME * scaleIndex).coerceAtMost(1f)
+        scaleSounds[scaleIndex].play(volume)
     }
 
     private fun createIncreasedMultiplier(scoreMultiplier: Float): Actor {
@@ -174,7 +211,7 @@ class HUD(private val atlas: TextureAtlas) {
         // Weird using the score labels height here, but we don't have an exact place to measure this
         // yet, so just sort of guessing. It doesn't really matter, because the animation of this
         // actor makes it hard to see exactly where it started.
-        label.x = padding + bottomWidget.width - scoreLabel.height
+        label.x = padding + bottomWidget.prefWidth - scoreLabel.height
         label.y = padding
 
         return label

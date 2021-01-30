@@ -79,7 +79,7 @@ class PlatformGameScreen(
         Gdx.input.inputProcessor = object : InputAdapter() {
 
             override fun keyDown(keycode: Int): Boolean {
-                if (keycode == Input.Keys.SPACE) {
+                if (keycode == Input.Keys.SPACE || keycode == Input.Keys.B || keycode == Input.Keys.J) {
                     if (state == State.PAUSED) {
                         resume()
                     } else {
@@ -150,7 +150,7 @@ class PlatformGameScreen(
         updateEntities(delta)
         renderEntities()
 
-        hud.render((playTime / world.duration).coerceAtMost(1f), player)
+        hud.render(delta, (playTime / world.duration).coerceAtMost(1f), player)
     }
 
     private fun processInput() {
