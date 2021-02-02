@@ -8,14 +8,13 @@ class Score {
      * a float and truncate when required.
      */
     private var points: Float = 0f
-
     var distancePercent: Float = 0f
-
     private var multiplier: Float = 1f
+    private var maxMultiplier: Int = 1
 
     fun getPoints(): Int = points.toInt()
-
     fun getMultiplier(): Int = multiplier.toInt()
+    fun getMaxMultiplier(): Int = maxMultiplier
 
     fun increase(delta: Float) {
         points += SCORE_PER_SECOND * delta * multiplier
@@ -27,6 +26,11 @@ class Score {
 
     fun increaseMultiplier() {
         multiplier += 0.5f
+
+        // Record this so we can grant achievements at the end of the level.
+        if (getMultiplier() > maxMultiplier) {
+            maxMultiplier = getMultiplier()
+        }
     }
 
     fun progress(distancePercent: Float) {
@@ -38,4 +42,5 @@ class Score {
         const val SCORE_PER_SECOND = 100
 
     }
+
 }

@@ -5,13 +5,15 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.HighScore
 import com.serwylo.beatgame.audio.loadWorldFromMp3
+import com.serwylo.beatgame.levels.Level
+import com.serwylo.beatgame.levels.Level.Companion.levels
+import com.serwylo.beatgame.levels.loadHighScore
 
 class LoadingScreen(
         private val game: BeatGame,
         private val musicFile: FileHandle,
-        private val songName: String
+        songName: String
 ) : InfoScreen(
         songName,
         "Loading...",
@@ -19,6 +21,7 @@ class LoadingScreen(
 ) {
 
     private val atlas: TextureAtlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
+    private val level: Level = levels.find { it.mp3Name == musicFile.name() }!!
 
     override fun show() {
         super.show()
@@ -41,7 +44,7 @@ class LoadingScreen(
 
     override fun otherActor(): WidgetGroup {
 
-        val topScore = HighScore.load(musicFile.name())
+        val topScore = loadHighScore(level)
 
         val labelStyle = Label.LabelStyle()
         labelStyle.font = mediumFont

@@ -14,10 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.HighScore
+import com.serwylo.beatgame.levels.HighScore
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Level.Companion.levels
+import com.serwylo.beatgame.levels.loadHighScore
 import java.io.File
 
 class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
@@ -112,7 +113,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
         table.add(levelLabel).expand().fill().colspan(4)
 
-        val highScore = HighScore.load(level.mp3Name)
+        val highScore = loadHighScore(level)
 
         if (highScore.exists()) {
 
