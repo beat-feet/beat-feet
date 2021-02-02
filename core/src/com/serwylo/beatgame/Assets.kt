@@ -164,6 +164,7 @@ class Assets {
         val logo = atlas.findRegion("logo")
         val mail_box = atlas.findRegion("mail_box")
         val particle_pixel = atlas.findRegion("particle_pixel")
+        val rainbow_bar = atlas.findRegion("rainbow_bar")
         val right_sign = atlas.findRegion("right_sign")
         val score = atlas.findRegion("score")
         val skyline_day = atlas.findRegion("skyline_day")

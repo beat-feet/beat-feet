@@ -746,6 +746,13 @@ particle_pixel
   orig: 1, 1
   offset: 0, 0
   index: -1
+rainbow_bar
+  rotate: false
+  xy: 2, 2
+  size: 1, 6
+  orig: 1, 6
+  offset: 0, 0
+  index: -1
 right_sign
   rotate: false
   xy: 318, 288

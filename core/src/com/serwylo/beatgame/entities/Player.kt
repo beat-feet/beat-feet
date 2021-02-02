@@ -34,6 +34,8 @@ class Player(
 
     private var jumpCount = 0
 
+    private var jumpPower = JUMP_POWER_INITIAL_AMOUNT
+
     private val textureJump = sprites.character_a_jump
     private val textureHit = sprites.character_a_hit
     private val walkAnimation: Animation<TextureRegion> = Animation(0.2f, sprites.character_a_walk)
@@ -50,6 +52,7 @@ class Player(
     private val jumpParticles = particles.jump
 
     fun getHealth(): Int { return health }
+    fun getJumpPower(): Float { return jumpPower }
 
     enum class State {
         RUNNING,
@@ -66,16 +69,27 @@ class Player(
 
     fun performJump() {
 
-        if (jumpCount < 2 && abs(velocity.y) <= DOUBLE_JUMP_THRESHOLD) {
+        val maxJumpCount = when {
+            jumpPower >= JUMP_POWER_SPENT_PER_EXTRA_JUMP * 2 -> 3
+            jumpPower >= JUMP_POWER_SPENT_PER_EXTRA_JUMP     -> 2
+            else -> 1
+        }
+
+        if (jumpCount < maxJumpCount && abs(velocity.y) <= DOUBLE_JUMP_THRESHOLD) {
+
+            if (jumpCount == 0) {
+                jumpParticles.reset()
+            } else {
+                println("Reducing jump multiplier $jumpPower by $JUMP_POWER_SPENT_PER_EXTRA_JUMP")
+                jumpPower -= JUMP_POWER_SPENT_PER_EXTRA_JUMP
+            }
 
             velocity.y = JUMP_VELOCITY
             state = State.JUMPING
             jumpCount ++
             currentlyOnObstacles.clear()
 
-            jumpParticles.reset()
-
-            if (score.getMultiplier() > MIN_MULTIPLIER_FOR_RAINBOW) {
+            if (score.getMultiplier() >= MIN_MULTIPLIER_FOR_RAINBOW) {
                 jumpParticles.emitters.forEach {
                     it.emission.highMin = (score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * 10
                     it.emission.highMax = (score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * 15
@@ -83,6 +97,10 @@ class Player(
                     it.maxParticleCount = ((score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * 25).toInt()
                 }
                 jumpParticles.start()
+
+                println("Increasing jump multiplier $jumpPower by ${(score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * JUMP_POWER_EARNED_PER_JUMP}")
+                val increaseJumpPower = ((score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * JUMP_POWER_EARNED_PER_JUMP).coerceAtMost(JUMP_POWER_MAX_INCREASE)
+                jumpPower = (jumpPower + increaseJumpPower).coerceAtMost(1f)
             }
 
         }
@@ -259,6 +277,25 @@ class Player(
          */
         const val DOUBLE_JUMP_THRESHOLD = 6f
 
+        /**
+         * Use this much jump power each time we double or triple jump.
+         */
+        const val JUMP_POWER_SPENT_PER_EXTRA_JUMP = 0.15f
+
+        const val JUMP_POWER_INITIAL_AMOUNT = 0.3f
+
+        /**
+         * This will increase as a factor of the current multiplier (but not above [JUMP_POWER_MAX_INCREASE])
+         */
+        const val JUMP_POWER_EARNED_PER_JUMP = 0.1f
+
+        /**
+         * Even if you have a combo of 1000x, don't give more than this amount of jump power per jump.
+         * Intentionally a fractional value of [JUMP_POWER_SPENT_PER_EXTRA_JUMP] so that you can't gain
+         * it faster than you spend it.
+         */
+        const val JUMP_POWER_MAX_INCREASE = JUMP_POWER_SPENT_PER_EXTRA_JUMP * 0.5f
+
         const val GRAVITY_CONSTANT = -9.8f * 4f
 
         const val JUMP_VELOCITY = 10f
@@ -279,7 +316,7 @@ class Player(
         /**
          * Show rainbows coming out of the character when jumping, if the multiplier is above this value.
          */
-        const val MIN_MULTIPLIER_FOR_RAINBOW = 3f
+        const val MIN_MULTIPLIER_FOR_RAINBOW = 1f
 
     }
 

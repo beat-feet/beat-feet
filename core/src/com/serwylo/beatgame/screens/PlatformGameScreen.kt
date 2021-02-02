@@ -142,7 +142,7 @@ class PlatformGameScreen(
 
         score.progress((playTime / world.duration).coerceAtMost(1f))
 
-        hud.render(delta, player.getHealth())
+        hud.render(delta, player.getHealth(), player.getJumpPower())
     }
 
     private fun processInput() {

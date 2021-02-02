@@ -27,8 +27,6 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
     private val textureHeartFull = TextureRegionDrawable(sprites.heart)
     private val textureHeartHalf = TextureRegionDrawable(sprites.heart_half)
     private val textureHeartEmpty = TextureRegionDrawable(sprites.heart_empty)
-    private val textureScore = sprites.score
-    private val textureDistance = sprites.right_sign
     private val labelStyle: Label.LabelStyle
 
     private val heartImages: MutableList<Image> = mutableListOf()
@@ -36,6 +34,7 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
     private val distanceLabel: Label
     private val scoreLabel: Label
     private val healthLabel: Label
+    private val jumpPowerLabel: Label
     private val bottomWidget: HorizontalGroup
     private val healthWidget: HorizontalGroup
 
@@ -64,6 +63,7 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
 
         distanceLabel = Label("", labelStyle)
         scoreLabel = Label("", labelStyle)
+        jumpPowerLabel = Label("", labelStyle)
 
         // It would make much more sense to put all of these widgets (and the ones in the top right)
         // in a Table. However doing so makes it nigh-on impossible to use actions to shake and move
@@ -73,9 +73,11 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
         bottomWidget = HorizontalGroup()
         bottomWidget.setPosition(padding, padding * 2)
         bottomWidget.space(padding / 2)
-        bottomWidget.addActor(Image(textureDistance))
+        bottomWidget.addActor(Image(sprites.rainbow_bar).apply { scaleX = 10f; scaleY = 2f })
+        bottomWidget.addActor(jumpPowerLabel)
+        bottomWidget.addActor(Image(sprites.right_sign))
         bottomWidget.addActor(distanceLabel)
-        bottomWidget.addActor(Image(textureScore))
+        bottomWidget.addActor(Image(sprites.score))
         bottomWidget.addActor(scoreLabel)
 
         stage.addActor(bottomWidget)
@@ -85,14 +87,16 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
 
     }
 
-    fun render(delta:Float, health: Int) {
+    fun render(delta:Float, health: Int, jumpPower: Float) {
 
         val distance = (score.distancePercent * 100).toInt().toString() + "%"
+        val jumpPowerString = (jumpPower * 100).toInt().toString()
         val multiplier = if (score.getMultiplier() <= 1) "" else " x ${score.getMultiplier()}"
 
         healthLabel.setText(health)
         distanceLabel.setText(distance)
         scoreLabel.setText("${score.getPoints()}$multiplier")
+        jumpPowerLabel.setText(jumpPowerString)
 
         if (previousHealth != health) {
             val previousNumHalfHearts = previousHealth / 10
