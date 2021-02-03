@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.loadWorldFromMp3
 import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.Level.Companion.levels
+import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.loadHighScore
 
 class LoadingScreen(
@@ -21,7 +21,7 @@ class LoadingScreen(
 ) {
 
     private val atlas: TextureAtlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
-    private val level: Level = levels.find { it.mp3Name == musicFile.name() }!!
+    private val level: Level = Levels.bySong(musicFile.name())
 
     override fun show() {
         super.show()

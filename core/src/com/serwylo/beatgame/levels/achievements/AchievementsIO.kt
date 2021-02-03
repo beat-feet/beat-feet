@@ -3,12 +3,13 @@ package com.serwylo.beatgame.levels.achievements
 import com.badlogic.gdx.Gdx
 import com.google.gson.Gson
 import com.serwylo.beatgame.levels.Level
+import com.serwylo.beatgame.levels.Levels
 
 fun saveAchievements(achievements: List<AchievementType>, level: Level) {
 
     Gdx.app.log(LOGGER, "Saving achievements: ${achievements.map { it.id }.joinToString(", ")}")
 
-    val toPersist = loadAchievements().append(achievements, level)
+    val toPersist = loadPersistedAchievements().append(achievements, level)
     val json = Gson().toJson(toPersist)
 
     prefs()
@@ -17,15 +18,24 @@ fun saveAchievements(achievements: List<AchievementType>, level: Level) {
 
 }
 
-fun achievementsForLevel(level: Level): List<AchievementType> {
-    val saved = loadAchievements()
+fun loadAchievementsForLevel(level: Level): List<AchievementType> {
+    val saved = loadPersistedAchievements()
 
     return saved.forLevel(level).map {
         allAchievements.find { it2 -> it2.id == it.achievementId }!!
     }
 }
 
-private fun loadAchievements(): PersistedAchievements {
+fun loadAllAchievements(): List<Achievement> {
+    return loadPersistedAchievements().achievements.map { persisted ->
+        Achievement(
+                allAchievements.find { it.id == persisted.achievementId }!!,
+                Levels.bySong(persisted.levelId)
+        )
+    }
+}
+
+private fun loadPersistedAchievements(): PersistedAchievements {
     val json = prefs().getString("achievements", "")
 
     if (json == "") {

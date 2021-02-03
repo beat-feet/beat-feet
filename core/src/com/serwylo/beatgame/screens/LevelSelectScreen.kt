@@ -14,10 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.serwylo.beatgame.BeatGame
-import com.serwylo.beatgame.levels.HighScore
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.Level.Companion.levels
+import com.serwylo.beatgame.levels.Levels
+import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.levels.loadHighScore
 import java.io.File
 
@@ -37,6 +37,8 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
     private val distanceTexture = atlas.findRegion("right_sign")
     private val scoreTexture = atlas.findRegion("score")
 
+    private val achievements = loadAllAchievements()
+
     init {
 
         val levelsPerRow = 4
@@ -54,17 +56,18 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
         stage.addActor(scrollPane)
 
-        levels.forEachIndexed { i, level ->
+        Levels.all.forEachIndexed { i, level ->
+
             if (i > 0 && i % levelsPerRow == 0) {
                 table.row()
                 y ++
                 x = 0
             }
 
-
             table.add(makeButton(level)).width(size).height(size)
 
             x ++
+
         }
 
     }
@@ -93,7 +96,12 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
     private fun makeButton(level: Level): WidgetGroup {
 
-        val button = Button(skin)
+        val isLocked = level.unlockRequirements.isLocked(achievements)
+        val buttonStyle = if (isLocked) "locked" else "default"
+        val textColor = if (isLocked) Color.GRAY else Color.WHITE
+
+        val button = Button(skin, buttonStyle)
+        button.isDisabled = isLocked
         button.setFillParent(true)
         button.addListener(object: ChangeListener() {
             override fun changed(event: ChangeEvent?, actor: Actor?) {
@@ -101,12 +109,13 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
             }
         })
 
-        val levelLabel = Label(level.label, mediumLabelStyle)
+        val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else level.label
+        val levelLabel = Label(labelString, mediumLabelStyle)
         levelLabel.wrap = true
+        levelLabel.color = textColor
         levelLabel.setAlignment(Align.topLeft)
 
         val table = Table()
-        table.debug = false
         table.setFillParent(true)
         table.touchable = Touchable.disabled // Let the button in the background do the interactivity.
         table.pad(Value.percentWidth(0.125f))
@@ -115,7 +124,15 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
         val highScore = loadHighScore(level)
 
-        if (highScore.exists()) {
+        if (isLocked) {
+
+            val unlockDescription = Label(level.unlockRequirements.describeOutstandingRequirements(achievements), smallLabelStyle)
+            unlockDescription.color = textColor
+
+            table.row()
+            table.add(unlockDescription)
+
+        } else if (highScore.exists()) {
 
             val distanceLabel = Label(highScore.distancePercentString(), smallLabelStyle)
             val scoreLabel = Label(highScore.points.toString(), smallLabelStyle)

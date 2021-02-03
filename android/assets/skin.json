@@ -208,6 +208,12 @@ ButtonStyle: {
 		down: button-pressed-c
 		over: button-over-c
 	}
+	locked: {
+		parent: default
+		up: button.locked
+		down: button-pressed.locked
+		over: button-over.locked
+	}
 }
 CheckBoxStyle: {
 	default: {

@@ -1,16 +1,9 @@
 package com.serwylo.beatgame.audio.features
 
 import com.badlogic.gdx.audio.Music
-import com.badlogic.gdx.graphics.Camera
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.Level.Companion.levels
-import kotlin.math.max
-import kotlin.math.min
+import com.serwylo.beatgame.levels.Levels
 
 class World(
         val music: Music,
@@ -23,7 +16,7 @@ class World(
 ) {
 
     fun level(): Level {
-        return levels.find { it.mp3Name == musicFileName }!!
+        return Levels.bySong(musicFileName)
     }
 
     fun dispose() {

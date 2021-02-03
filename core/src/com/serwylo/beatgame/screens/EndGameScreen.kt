@@ -11,7 +11,7 @@ import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.levels.HighScore
 import com.serwylo.beatgame.levels.Score
 import com.serwylo.beatgame.levels.achievements.AchievementType
-import com.serwylo.beatgame.levels.achievements.achievementsForLevel
+import com.serwylo.beatgame.levels.achievements.loadAchievementsForLevel
 import com.serwylo.beatgame.levels.achievements.allAchievements
 import com.serwylo.beatgame.levels.achievements.saveAchievements
 import com.serwylo.beatgame.levels.loadHighScore
@@ -24,7 +24,7 @@ class EndGameScreen(
 ): InfoScreen("The End") {
 
     private val atlas: TextureAtlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
-    private val existingAchievements = achievementsForLevel(world.level())
+    private val existingAchievements = loadAchievementsForLevel(world.level())
     private val achievements: List<AchievementType>
     private val existingHighScore: HighScore = loadHighScore(world.level())
     private val highScore: HighScore = saveHighScore(world.level(), score)
