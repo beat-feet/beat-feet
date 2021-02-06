@@ -1,7 +1,6 @@
 package com.serwylo.beatgame.screens
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -42,13 +41,15 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
     init {
 
-        val levelsPerRow = 4
-        val size = stage.width / levelsPerRow
+        val levelsPerRow = 5
+        val padding = stage.width / 50
+        val size = (stage.width - padding * 2) / levelsPerRow
 
         var x = 0
         var y = 0
 
         val table = Table()
+        table.pad(padding)
 
         val scrollPane = ScrollPane(table, skin)
         scrollPane.setFillParent(true)
@@ -59,7 +60,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
         Levels.all.forEachIndexed { i, level ->
 
-            if (i > 0 && i % levelsPerRow == 0) {
+            if (i % levelsPerRow == 0) {
                 table.row()
                 y ++
                 x = 0
@@ -74,11 +75,26 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
     }
 
     override fun show() {
-        Gdx.input.inputProcessor = stage
+
+        Gdx.input.setCatchKey(Input.Keys.BACK, true)
+        Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
+
+            override fun keyDown(keycode: Int): Boolean {
+                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
+                    game.showMenu()
+                    return true
+                }
+
+                return false
+            }
+
+        })
+
     }
 
     override fun hide() {
         Gdx.input.inputProcessor = null
+        Gdx.input.setCatchKey(Input.Keys.BACK, false)
     }
 
     override fun render(delta: Float) {
