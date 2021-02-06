@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.features.World
@@ -113,34 +115,37 @@ class EndGameScreen(
         horizontalGroup.addActor(scoreLabel)
 
         verticalGroup.addActor(horizontalGroup)
+        verticalGroup.addActor(makeAchievementsTable(achievements))
+
+        return verticalGroup
+
+    }
+
+    private fun makeAchievementsTable(achievements: List<AchievementType>): Table {
 
         val achievementsTable = Table()
         val achievementLabelStyle = Label.LabelStyle(mediumFont, Color.WHITE)
-        val achievementIcon = atlas.findRegion("star")
+        val icon = atlas.findRegion("star")
 
         achievements.forEachIndexed { i, it ->
             val label = Label(it.label, achievementLabelStyle)
-            label.color =  Color.WHITE
-
-            val icon = Image(achievementIcon)
 
             val group = HorizontalGroup()
-            group.addActor(icon)
+            if (icon != null) {
+                group.addActor(Image(icon))
+            }
             group.addActor(label)
 
             if (i > 0 && i % 3 == 0) {
                 achievementsTable.row()
             }
 
-            achievementsTable.add(group).space(SPACING / 2)
+            achievementsTable.add(group).space(5f)
         }
 
-        verticalGroup.addActor(achievementsTable)
-
-        return verticalGroup
+        return achievementsTable
 
     }
-
     companion object {
 
         private const val SPACING = 10f

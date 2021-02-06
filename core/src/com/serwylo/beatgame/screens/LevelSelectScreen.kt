@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.customMp3
@@ -25,7 +26,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
     private val atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
 
-    private val stage = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
+    private val stage = Stage(ExtendViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
     private val skin = Skin(Gdx.files.internal("skin.json"))
 
     private var mediumFont = BitmapFont().apply { data.scale(0.2f) }

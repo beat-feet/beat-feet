@@ -103,13 +103,13 @@ object Levels {
     val Vivaldi = Level(
             "vivaldi.mp3",
             "Vivaldi",
-            TotalAchievements(100)
+            TotalAchievements(75)
     )
 
     val ReorientTheReceivingAntenna = Level(
             "health_and_safety_reorient_the_receiving_antenna.mp3",
             "Reorient the Receiving Antenna",
-            TotalAchievements(150)
+            TotalAchievements(80)
     )
 
     val Custom  = Level(

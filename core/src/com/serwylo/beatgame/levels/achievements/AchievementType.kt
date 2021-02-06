@@ -29,10 +29,8 @@ abstract class Attempts(private val num: Int): AchievementType("attempts-$num", 
 }
 
 class AttemptsX5: Attempts(5)
-class AttemptsX10: Attempts(10)
 class AttemptsX25: Attempts(25)
 class AttemptsX50: Attempts(50)
-class AttemptsX100: Attempts(100)
 
 abstract class Distance(private val num: Int): AchievementType("distance-$num", "$num% complete") {
     override fun isAchieved(score: Score, highScore: HighScore): Boolean {
@@ -52,7 +50,6 @@ class FinishedLevel: AchievementType("finished-level", "Completed!") {
 }
 
 val allAchievements = listOf(
-        FinishedLevel(),
         DistanceX10(),
         DistanceX25(),
         DistanceX50(),
@@ -61,10 +58,8 @@ val allAchievements = listOf(
         ComboX10(),
         ComboX25(),
         ComboX50(),
-        ComboX100(),
         AttemptsX5(),
-        AttemptsX10(),
         AttemptsX25(),
         AttemptsX50(),
-        AttemptsX100()
+        FinishedLevel()
 )
