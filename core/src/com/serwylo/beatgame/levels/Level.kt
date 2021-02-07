@@ -10,9 +10,9 @@ data class Level(
 
 object Levels {
 
-    val Maintenance = Level(
-            "health_and_safety_maintenance.mp3",
-            "Maintenance",
+    val TheLaundryRoom = Level(
+            "the_haunted_mansion_the_laundry_room.mp3",
+            "The Laundry Room",
             Unlocked()
     )
 
@@ -22,21 +22,21 @@ object Levels {
             Unlocked()
     )
 
+    val Maintenance = Level(
+            "health_and_safety_maintenance.mp3",
+            "Maintenance",
+            TotalAchievements(5)
+    )
+
     val ForcingTheGamecard = Level(
             "health_and_safety_forcing_the_gamecard.mp3",
             "Forcing the Gamecard",
-            TotalAchievements(5)
+            TotalAchievements(10)
     )
 
     val SharplyBentWire = Level(
             "health_and_safety_sharply_bent_wire.mp3",
             "Sharply Bent Wire",
-            TotalAchievements(10)
-    )
-
-    val TheLaundryRoom = Level(
-            "the_haunted_mansion_the_laundry_room.mp3",
-            "The Laundry Room",
             TotalAchievements(15)
     )
 
@@ -119,11 +119,11 @@ object Levels {
     )
 
     val all = listOf(
-            Maintenance,
+            TheLaundryRoom,
             TheCourtyard,
+            Maintenance,
             ForcingTheGamecard,
             SharplyBentWire,
-            TheLaundryRoom,
             EyeTwitching,
             LightFlashes,
             PlayInAWellLitRoom,

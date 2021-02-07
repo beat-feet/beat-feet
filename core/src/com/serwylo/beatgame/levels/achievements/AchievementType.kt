@@ -20,7 +20,6 @@ class ComboX5: Combo(5)
 class ComboX10: Combo(10)
 class ComboX25: Combo(25)
 class ComboX50: Combo(50)
-class ComboX100: Combo(100)
 
 abstract class Attempts(private val num: Int): AchievementType("attempts-$num", "$num attempts") {
     override fun isAchieved(score: Score, highScore: HighScore): Boolean {
@@ -30,7 +29,6 @@ abstract class Attempts(private val num: Int): AchievementType("attempts-$num", 
 
 class AttemptsX5: Attempts(5)
 class AttemptsX25: Attempts(25)
-class AttemptsX50: Attempts(50)
 
 abstract class Distance(private val num: Int): AchievementType("distance-$num", "$num% complete") {
     override fun isAchieved(score: Score, highScore: HighScore): Boolean {
@@ -60,6 +58,5 @@ val allAchievements = listOf(
         ComboX50(),
         AttemptsX5(),
         AttemptsX25(),
-        AttemptsX50(),
         FinishedLevel()
 )
