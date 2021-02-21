@@ -1,8 +1,6 @@
 package com.serwylo.beatgame.screens
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.loadWorldFromMp3
@@ -15,12 +13,12 @@ class LoadingScreen(
         private val musicFile: FileHandle,
         songName: String
 ) : InfoScreen(
+        game,
         songName,
         "Loading...",
-        "logo"
+        game.assets.getSprites().logo
 ) {
 
-    private val atlas: TextureAtlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
     private val level: Level = Levels.bySong(musicFile.name())
 
     override fun show() {
@@ -59,8 +57,8 @@ class LoadingScreen(
         val distanceLabel = Label("${(topScore.distancePercent * 100).toInt()}%", labelStyle)
         val scoreLabel = Label("${topScore.points}", labelStyle)
 
-        val distanceImage = Image(atlas.findRegion("right_sign"))
-        val scoreImage = Image(atlas.findRegion("score"))
+        val distanceImage = Image(game.assets.getSprites().right_sign)
+        val scoreImage = Image(game.assets.getSprites().score)
 
         horizontalGroup.addActor(bestLabel)
         horizontalGroup.addActor(distanceImage)

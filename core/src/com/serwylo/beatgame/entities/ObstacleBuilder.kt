@@ -1,9 +1,9 @@
 package com.serwylo.beatgame.entities
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.graphics.LayeredTiledSprite
 import com.serwylo.beatgame.graphics.TiledSprite
 import kotlin.math.abs
@@ -26,26 +26,26 @@ object ObstacleBuilder {
         return tilePixels.toFloat() * (TILE_SIZE) / 16f
     }
 
-    fun makeObstacle(rect: Rectangle, atlas: TextureAtlas): Obstacle {
+    fun makeObstacle(rect: Rectangle, sprites: Assets.Sprites): Obstacle {
 
         val narrow = rect.width <= TILE_SIZE
         val short = rect.height <= TILE_SIZE
 
         return if (narrow && short) {
-            makeSmallObstacle(atlas, rect)
+            makeSmallObstacle(sprites, rect)
         } else if (short) {
-            makeShortObstacle(atlas, rect.x, rect.width)
+            makeShortObstacle(sprites, rect.x, rect.width)
         } else if (narrow) {
-            makeNarrowObstacle(atlas, rect.x, rect.height)
+            makeNarrowObstacle(sprites, rect.x, rect.height)
         } else {
-            makeBigObstacle(atlas, rect)
+            makeBigObstacle(sprites, rect)
         }
 
     }
 
     private fun sizeToTileCount(size: Float): Int = ceil(size / TILE_SIZE).toInt()
 
-    private fun makeBigObstacle(atlas: TextureAtlas, rect: Rectangle): Obstacle {
+    private fun makeBigObstacle(sprites: Assets.Sprites, rect: Rectangle): Obstacle {
         // Building
 
         val tilesWide = sizeToTileCount(rect.width)
@@ -56,7 +56,7 @@ object ObstacleBuilder {
 
         for (x in 0 until tilesWide) {
             for (y in 0 until tilesHigh) {
-                val spriteName: String = if (x == 0 && y == 0) {
+                val sprite: RegionFetcher = if (x == 0 && y == 0) {
                     buildingSprites.bottomLeft
                 } else if (x == 0 && y == tilesHigh - 1) {
                     buildingSprites.topLeft
@@ -76,7 +76,7 @@ object ObstacleBuilder {
                     buildingSprites.inner
                 }
 
-                baseSprites[y][x] = atlas.findRegion(spriteName)
+                baseSprites[y][x] = sprite(sprites)
             }
         }
 
@@ -84,9 +84,9 @@ object ObstacleBuilder {
 
         val doorSprite = DoorSprite.random()
         val doorPosition = (Math.random() * tilesWide).toInt().coerceAtMost(tilesWide - 1 /* In case Math.random() returns 1.0... can it do this?*/)
-        featureSprites[0][doorPosition] = atlas.findRegion(doorSprite.closed)
+        featureSprites[0][doorPosition] = doorSprite.closed(sprites)
 
-        val woodenWindowTexture = atlas.findRegion(WoodenWindowSprite.random().sprite)
+        val woodenWindowTexture = WoodenWindowSprite.random().sprite(sprites)
 
         if (tilesHigh == 2) {
             if (tilesWide == 2) {
@@ -118,37 +118,28 @@ object ObstacleBuilder {
         return Obstacle(boundingBox, LayeredTiledSprite(arrayOf(baseLayer, featureLayer)))
     }
 
-    private fun makeNarrowObstacle(atlas: TextureAtlas, x: Float, height: Float): Obstacle {
+    private fun makeNarrowObstacle(sprites: Assets.Sprites, x: Float, height: Float): Obstacle {
         // Light poles, trees, etc.
         val tilesHigh = sizeToTileCount(height)
         val boundingBox = Rectangle(x, 0f, TILE_SIZE, tilesHigh * TILE_SIZE)
         val streetlight = StreetlightSprites.random()
-        val sprites = Array<Array<TextureRegion?>>(tilesHigh) { index ->
+        val spriteTextures = Array<Array<TextureRegion?>>(tilesHigh) { index ->
             when (index) {
-                0 -> arrayOf( atlas.findRegion(streetlight.base))
-                (tilesHigh - 1) -> arrayOf(atlas.findRegion(streetlight.top))
-                else -> arrayOf( atlas.findRegion(streetlight.post))
+                0 -> arrayOf(streetlight.base(sprites))
+                (tilesHigh - 1) -> arrayOf(streetlight.top(sprites))
+                else -> arrayOf(streetlight.post(sprites))
             }
         }
-        return Obstacle(boundingBox, TiledSprite(Vector2(x, 0f), sprites))
+        return Obstacle(boundingBox, TiledSprite(Vector2(x, 0f), spriteTextures))
     }
 
-    class BuildingSprites(val topLeft: String, val top: String, val topRight: String, val right: String, val bottomRight: String, val bottom: String, val bottomLeft: String, val left: String, val inner: String) {
+    class BuildingSprites(val topLeft: RegionFetcher, val top: RegionFetcher, val topRight: RegionFetcher, val right: RegionFetcher, val bottomRight: RegionFetcher, val bottom: RegionFetcher, val bottomLeft: RegionFetcher, val left: RegionFetcher, val inner: RegionFetcher) {
         companion object {
-            private val all = arrayOf("a", "b", "c").map {
-                val prefix = "building_${it}"
-                BuildingSprites(
-                        "${prefix}_top_left",
-                        "${prefix}_top",
-                        "${prefix}_top_right",
-                        "${prefix}_right",
-                        "${prefix}_bottom_right",
-                        "${prefix}_bottom",
-                        "${prefix}_bottom_left",
-                        "${prefix}_left",
-                        "${prefix}_inner"
-                )
-            }
+            private val all = arrayOf(
+                    BuildingSprites({ it.building_a_top_left }, { it.building_a_top }, { it.building_a_top_right }, { it.building_a_right }, { it.building_a_bottom_right }, { it.building_a_bottom }, { it.building_a_bottom_left }, { it.building_a_left }, { it.building_a_inner }),
+                    BuildingSprites({ it.building_b_top_left }, { it.building_b_top }, { it.building_b_top_right }, { it.building_b_right }, { it.building_b_bottom_right }, { it.building_b_bottom }, { it.building_b_bottom_left }, { it.building_b_left }, { it.building_b_inner }),
+                    BuildingSprites({ it.building_c_top_left }, { it.building_c_top }, { it.building_c_top_right }, { it.building_c_right }, { it.building_c_bottom_right }, { it.building_c_bottom }, { it.building_c_bottom_left }, { it.building_c_left }, { it.building_c_inner })
+            )
 
             fun random(): BuildingSprites {
                 return all.random()
@@ -156,11 +147,16 @@ object ObstacleBuilder {
         }
     }
 
-    class StreetlightSprites(val base: String, val post: String, val top: String) {
+    class StreetlightSprites(val base: RegionFetcher, val post: RegionFetcher, val top: RegionFetcher) {
         companion object {
-            private val all = arrayOf("a", "b", "c", "d", "e", "f").map {
-                StreetlightSprites("streetlight_${it}_base", "streetlight_${it}_post", "streetlight_${it}_top")
-            }
+            private val all = arrayOf(
+                    StreetlightSprites({ it.streetlight_a_base }, { it.streetlight_a_post }, { it.streetlight_a_top }),
+                    StreetlightSprites({ it.streetlight_b_base }, { it.streetlight_b_post }, { it.streetlight_b_top }),
+                    StreetlightSprites({ it.streetlight_c_base }, { it.streetlight_c_post }, { it.streetlight_c_top }),
+                    StreetlightSprites({ it.streetlight_d_base }, { it.streetlight_d_post }, { it.streetlight_d_top }),
+                    StreetlightSprites({ it.streetlight_e_base }, { it.streetlight_e_post }, { it.streetlight_e_top }),
+                    StreetlightSprites({ it.streetlight_f_base }, { it.streetlight_f_post }, { it.streetlight_f_top })
+            )
 
             fun random(): StreetlightSprites {
                 return all.random()
@@ -168,20 +164,20 @@ object ObstacleBuilder {
         }
     }
 
-    class WallSprites(val left: String, val inner: Array<String>, val right: String) {
+    class WallSprites(val left: RegionFetcher, val inner: Array<RegionFetcher>, val right: RegionFetcher) {
 
-        constructor(left: String, inner: String, right: String):
+        constructor(left: RegionFetcher, inner: RegionFetcher, right: RegionFetcher):
                 this(left, arrayOf(inner), right)
 
         companion object {
             private val all = arrayOf(
-                WallSprites("wall_a_left", "wall_a_inner", "wall_a_right"),
-                WallSprites("wall_b_left", "wall_b_inner", "wall_b_right"),
-                WallSprites("wall_c_left", "wall_c_inner", "wall_c_right"),
+                WallSprites({ it.wall_a_left }, { it.wall_a_inner }, { it.wall_a_right }),
+                WallSprites({ it.wall_b_left }, { it.wall_b_inner }, { it.wall_b_right }),
+                WallSprites({ it.wall_c_left }, { it.wall_c_inner }, { it.wall_c_right }),
                 WallSprites(
-                        "fence_left",
-                        arrayOf("fence_inner", "fence_inner", "fence_inner", "fence_inner", "fence_inner_broken_a", "fence_inner_broken_b"),
-                        "fence_right"
+                        { it.fence_left },
+                        arrayOf<RegionFetcher>({ it.fence_inner }, { it.fence_inner }, { it.fence_inner }, { it.fence_inner }, { it.fence_inner_broken_a }, { it.fence_inner_broken_b }),
+                        { it.fence_right }
                 )
             )
 
@@ -191,16 +187,16 @@ object ObstacleBuilder {
         }
     }
 
-    class BushSprite(val sprite: String) {
+    class BushSprite(val sprite: RegionFetcher) {
         companion object {
             private val all = arrayOf(
-                    BushSprite("bush_small_a"),
-                    BushSprite("bush_small_a"),
-                    BushSprite("bush_small_b"),
-                    BushSprite("bush_small_c"),
-                    BushSprite("bush_medium_a"),
-                    BushSprite("bush_medium_b"),
-                    BushSprite("bush_medium_c")
+                    BushSprite { it.bush_small_a },
+                    BushSprite { it.bush_small_a },
+                    BushSprite { it.bush_small_b },
+                    BushSprite { it.bush_small_c },
+                    BushSprite { it.bush_medium_a },
+                    BushSprite { it.bush_medium_b },
+                    BushSprite { it.bush_medium_c }
             )
 
             fun random(): BushSprite {
@@ -209,23 +205,44 @@ object ObstacleBuilder {
         }
     }
 
-    class DoorSprite(val closed: String, val open: String, val covered: String) {
+    class DoorSprite(
+            val closed: RegionFetcher,
+            val open: RegionFetcher,
+            val covered: RegionFetcher) {
+
         companion object {
-            private val all = arrayOf("a", "b", "c", "d", "e", "f").map {
-                DoorSprite("door_${it}_closed", "door_${it}_open", "door_${it}_covered")
-            }
+
+            private val all = arrayOf(
+                    DoorSprite( { it.door_a_closed }, { it.door_a_open }, { it.door_a_covered } ),
+                    DoorSprite( { it.door_b_closed }, { it.door_b_open }, { it.door_b_covered } ),
+                    DoorSprite( { it.door_c_closed }, { it.door_c_open }, { it.door_c_covered } ),
+                    DoorSprite( { it.door_d_closed }, { it.door_d_open }, { it.door_d_covered } ),
+                    DoorSprite( { it.door_e_closed }, { it.door_e_open }, { it.door_e_covered } ),
+                    DoorSprite( { it.door_f_closed }, { it.door_f_open }, { it.door_f_covered } )
+            )
 
             fun random(): DoorSprite {
                 return all.random()
             }
+
         }
     }
 
-    class WoodenWindowSprite(val sprite: String) {
+    class WoodenWindowSprite(val sprite: RegionFetcher) {
+
         companion object {
-            private val all = arrayOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j").map {
-                WoodenWindowSprite("window_wood_${it}")
-            }
+            private val all = arrayOf(
+                    WoodenWindowSprite { it.window_wood_a },
+                    WoodenWindowSprite { it.window_wood_b },
+                    WoodenWindowSprite { it.window_wood_c },
+                    WoodenWindowSprite { it.window_wood_d },
+                    WoodenWindowSprite { it.window_wood_e },
+                    WoodenWindowSprite { it.window_wood_f },
+                    WoodenWindowSprite { it.window_wood_g },
+                    WoodenWindowSprite { it.window_wood_h },
+                    WoodenWindowSprite { it.window_wood_i },
+                    WoodenWindowSprite { it.window_wood_j }
+            )
 
             fun random(): WoodenWindowSprite {
                 return all.random()
@@ -233,20 +250,22 @@ object ObstacleBuilder {
         }
     }
 
-    class SmallObstacle(val sprite: String, val width: Float, val height: Float, val offsetX: Float = 0f, val offsetY: Float = 0f) {
+    class SmallObstacle(private val sprite: RegionFetcher, val width: Float, val height: Float, val offsetX: Float = 0f, val offsetY: Float = 0f) {
 
         private var diagnoal = sqrt(width * width + height * height)
 
+        fun getSprite(sprites: Assets.Sprites): TextureRegion = sprite(sprites)
+
         companion object {
             private val all = arrayOf(
-                    SmallObstacle("barrel_a", px2Unit(8), px2Unit(12), px2Unit(4), px2Unit(2)),
-                    SmallObstacle("barrier_a", px2Unit(16), px2Unit(11)),
-                    SmallObstacle("box_small", px2Unit(10), px2Unit(10), px2Unit(3), px2Unit(2)),
-                    SmallObstacle("box_medium", px2Unit(12), px2Unit(12), px2Unit(2), px2Unit(2)),
-                    SmallObstacle("hydrant", px2Unit(8), px2Unit(13), px2Unit(4), px2Unit(2)),
-                    SmallObstacle("tyres_small", px2Unit(8), px2Unit(10), px2Unit(4), px2Unit(2)),
-                    SmallObstacle("tyres_medium", px2Unit(8), px2Unit(11), px2Unit(4), px2Unit(2)),
-                    SmallObstacle("tyres_large", px2Unit(12), px2Unit(14), px2Unit(2), px2Unit(1))
+                    SmallObstacle({ it.barrel_a }, px2Unit(8), px2Unit(12), px2Unit(4), px2Unit(2)),
+                    SmallObstacle({ it.barrier_a }, px2Unit(16), px2Unit(11)),
+                    SmallObstacle({ it.box_small }, px2Unit(10), px2Unit(10), px2Unit(3), px2Unit(2)),
+                    SmallObstacle({ it.box_medium }, px2Unit(12), px2Unit(12), px2Unit(2), px2Unit(2)),
+                    SmallObstacle({ it.hydrant }, px2Unit(8), px2Unit(13), px2Unit(4), px2Unit(2)),
+                    SmallObstacle({ it.tyres_small }, px2Unit(8), px2Unit(10), px2Unit(4), px2Unit(2)),
+                    SmallObstacle({ it.tyres_medium }, px2Unit(8), px2Unit(11), px2Unit(4), px2Unit(2)),
+                    SmallObstacle({ it.tyres_large }, px2Unit(12), px2Unit(14), px2Unit(2), px2Unit(1))
             )
 
             /**
@@ -282,22 +301,22 @@ object ObstacleBuilder {
         }
     }
 
-    private fun makeShortObstacle(atlas: TextureAtlas, x: Float, width: Float): Obstacle {
+    private fun makeShortObstacle(sprites: Assets.Sprites, x: Float, width: Float): Obstacle {
         // Fence or row of cars or seats, etc.
         val tilesWide = sizeToTileCount(width)
         val boundingBox = Rectangle(x, 0f, tilesWide * TILE_SIZE, TILE_SIZE)
         val wallSprites = WallSprites.random()
         val baseLayerSprites = Array<TextureRegion?>(tilesWide) {
             when (it) {
-                0 -> atlas.findRegion(wallSprites.left)
-                (tilesWide - 1) -> atlas.findRegion(wallSprites.right)
-                else -> atlas.findRegion(wallSprites.inner.random())
+                0 -> wallSprites.left(sprites)
+                (tilesWide - 1) -> wallSprites.right(sprites)
+                else -> wallSprites.inner.random()(sprites)
             }
         }
 
         val flourishLayerSprites = Array<TextureRegion?>(tilesWide) {
             if (Math.random() < 0.25) {
-                atlas.findRegion(BushSprite.random().sprite)
+                BushSprite.random().sprite(sprites)
             } else {
                 null
             }
@@ -313,22 +332,31 @@ object ObstacleBuilder {
         return Obstacle(boundingBox, layers)
     }
 
-    private fun makeSmallObstacle(atlas: TextureAtlas, rect: Rectangle): Obstacle {
+    private fun makeSmallObstacle(sprites: Assets.Sprites, rect: Rectangle): Obstacle {
         // Barrel or barrier, etc.
         val smallThing = SmallObstacle.closest(rect)
         val boundingBox = Rectangle(rect.x, rect.y, smallThing.width, smallThing.height)
-        return Obstacle(boundingBox, TiledSprite(Vector2(rect.x, 0f), atlas.findRegion(smallThing.sprite), Vector2(smallThing.offsetX, smallThing.offsetY)))
+        return Obstacle(boundingBox, TiledSprite(Vector2(rect.x, 0f), smallThing.getSprite(sprites), Vector2(smallThing.offsetX, smallThing.offsetY)))
     }
 
-    fun makeGround(atlas: TextureAtlas): Ground {
-        return Ground(atlas.findRegion(GroundSprite.random().sprite))
+    fun makeGround(sprites: Assets.Sprites): Ground {
+        return Ground(GroundSprite.random().getSprite(sprites))
     }
 
-    class GroundSprite(val sprite: String) {
+    class GroundSprite(private val sprite: RegionFetcher) {
+
+        fun getSprite(sprites: Assets.Sprites): TextureRegion = sprite(sprites)
+
         companion object {
-            private val all = arrayOf("a", "b", "c", "d", "e", "f").map {
-                GroundSprite("ground_${it}")
-            }
+
+            private val all = arrayOf(
+                    GroundSprite { it.ground_a },
+                    GroundSprite { it.ground_b },
+                    GroundSprite { it.ground_c },
+                    GroundSprite { it.ground_d },
+                    GroundSprite { it.ground_e },
+                    GroundSprite { it.ground_f }
+            )
 
             fun random(): GroundSprite {
                 return all.random()
@@ -337,3 +365,5 @@ object ObstacleBuilder {
     }
 
 }
+
+typealias RegionFetcher = (sprites: Assets.Sprites) -> TextureRegion

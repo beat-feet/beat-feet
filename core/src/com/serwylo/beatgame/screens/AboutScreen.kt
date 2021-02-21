@@ -6,9 +6,10 @@ import com.badlogic.gdx.InputAdapter
 import com.serwylo.beatgame.BeatGame
 
 class AboutScreen(private val game: BeatGame): InfoScreen(
+        game,
         "Credits",
         CREDITS,
-        "logo"
+        game.assets.getSprites().logo
 ) {
 
     override fun show() {

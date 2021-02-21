@@ -4,7 +4,6 @@ import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -12,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.levels.Level
@@ -23,10 +21,10 @@ import java.io.File
 
 class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
-    private val atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
+    private val sprites = game.assets.getSprites()
 
     private val stage = Stage(ExtendViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
-    private val skin = Skin(Gdx.files.internal("skin.json"))
+    private val skin = game.assets.getSkin()
 
     private var mediumFont = BitmapFont().apply { data.scale(0.2f) }
     private var smallFont = BitmapFont().apply { data.scale(-0.3f) }
@@ -34,8 +32,8 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
     private val mediumLabelStyle = Label.LabelStyle(mediumFont, Color.WHITE)
     private val smallLabelStyle = Label.LabelStyle(smallFont, Color.WHITE)
 
-    private val distanceTexture = atlas.findRegion("right_sign")
-    private val scoreTexture = atlas.findRegion("score")
+    private val distanceTexture = sprites.right_sign
+    private val scoreTexture = sprites.score
 
     private val achievements = loadAllAchievements()
 

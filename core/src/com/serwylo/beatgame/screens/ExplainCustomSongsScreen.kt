@@ -7,6 +7,7 @@ import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.customMp3
 
 class ExplainCustomSongsScreen(private val game: BeatGame): InfoScreen(
+        game,
         "Custom Songs",
         "Want a level that matches your favourite song?\n\nCopy an MP3 file to:\n\n${customMp3().file().absolutePath}\n\nWe'll generate a level just for you!"
 ) {

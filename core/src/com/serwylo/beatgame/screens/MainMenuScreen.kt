@@ -3,7 +3,7 @@ package com.serwylo.beatgame.screens
 import com.badlogic.gdx.Gdx
 import com.serwylo.beatgame.BeatGame
 
-class MainMenuScreen(private val game: BeatGame): MenuScreen(keys, labels, "Beat Game", "logo") {
+class MainMenuScreen(private val game: BeatGame): MenuScreen(keys, labels, "Beat Game", game.assets.getSprites().logo) {
 
     override fun onMenuItemSelected(selectedIndex: Int) {
 

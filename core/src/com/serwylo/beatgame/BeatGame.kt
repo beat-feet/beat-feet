@@ -12,6 +12,8 @@ import com.serwylo.beatgame.screens.*
 
 class BeatGame(private val verbose: Boolean) : Game() {
 
+    val assets = Assets()
+
     @Suppress("LibGDXLogLevel") // Optional flag to make more verbose.
     override fun create() {
         if (verbose) {
@@ -21,6 +23,7 @@ class BeatGame(private val verbose: Boolean) : Game() {
         Globals.shapeRenderer = ShapeRenderer()
         Globals.spriteBatch = SpriteBatch()
 
+        assets.initSync()
         setScreen(MainMenuScreen(this))
     }
 

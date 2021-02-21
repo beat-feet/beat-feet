@@ -1046,14 +1046,14 @@ tile
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 801
+  index: 800
 tile
   rotate: false
   xy: 252, 352
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 800
+  index: 801
 tile
   rotate: false
   xy: 302, 352
@@ -1215,28 +1215,28 @@ wall_c_right
   orig: 16, 16
   offset: 0, 0
   index: -1
-window_steel+c
-  rotate: false
-  xy: 452, 402
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-window_steel_e
-  rotate: false
-  xy: 452, 402
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
 window_steel_a
+  rotate: false
+  xy: 452, 402
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+window_steel_b
   rotate: false
   xy: 502, 402
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-window_steel_b
+window_steel_c
+  rotate: false
+  xy: 552, 402
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+window_steel_e
   rotate: false
   xy: 552, 402
   size: 16, 16

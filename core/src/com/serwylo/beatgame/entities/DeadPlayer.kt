@@ -2,22 +2,22 @@ package com.serwylo.beatgame.entities
 
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
+import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.Globals
 
 class DeadPlayer(
-        atlas: TextureAtlas
+        sprites: Assets.Sprites
 ) : Entity {
 
     private val position = Vector2()
     private var animation: Animation<TextureRegion> = Animation(
             0.5f,
-            atlas.findRegion("character_a_hit"),
-            atlas.findRegion("character_a_duck"),
-            atlas.findRegion("ghost"),
-            atlas.findRegion("ghost_x")
+            sprites.character_a_hit,
+            sprites.character_a_duck,
+            sprites.ghost,
+            sprites.ghost_x
     )
 
     var deathTime = 0f

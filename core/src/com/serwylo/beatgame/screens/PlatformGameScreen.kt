@@ -5,10 +5,10 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.HUD
@@ -37,8 +37,6 @@ class PlatformGameScreen(
 
     private var isInitialised = false
 
-    private var atlas: TextureAtlas? = null
-
     private var state = State.PENDING
     private var startTime = 0f
     private var playTime = 0f
@@ -62,14 +60,14 @@ class PlatformGameScreen(
 
         isInitialised = false
 
-        atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
+        val sprites = game.assets.getSprites()
 
         val allFeatures = mutableListOf<Feature>()
         allFeatures.addAll(world.featuresLow)
         allFeatures.addAll(world.featuresMid)
         allFeatures.addAll(world.featuresHigh)
 
-        obstacles.addAll(generateObstacles(atlas!!, allFeatures))
+        obstacles.addAll(generateObstacles(sprites, allFeatures))
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         Gdx.input.inputProcessor = object : InputAdapter() {
@@ -103,16 +101,16 @@ class PlatformGameScreen(
             }
         }
 
-        hud = HUD(score, atlas!!)
+        hud = HUD(score, sprites, game.assets.getParticles())
 
         camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 5, 0f)
         camera.update()
 
-        player = Player(score, Vector2(SCALE_X, 0f), atlas!!)
-        deadPlayer = DeadPlayer(atlas!!)
-        successPlayer = SuccessPlayer(atlas!!)
+        player = Player(score, Vector2(SCALE_X, 0f), sprites, game.assets.getParticles())
+        deadPlayer = DeadPlayer(sprites)
+        successPlayer = SuccessPlayer(sprites)
 
-        ground = ObstacleBuilder.makeGround(atlas!!)
+        ground = ObstacleBuilder.makeGround(sprites)
 
         Globals.animationTimer = 0f
 
@@ -120,12 +118,7 @@ class PlatformGameScreen(
     }
 
     override fun hide() {
-
         world.dispose()
-
-        atlas?.dispose()
-        atlas = null
-
         hud.dispose()
 
         Gdx.input.inputProcessor = null
@@ -420,7 +413,7 @@ class PlatformGameScreen(
 
         private const val CAMERA_SHAKE_DURATION = 0.12f
 
-        private fun generateObstacles(atlas: TextureAtlas, features: List<Feature>): List<Obstacle> {
+        private fun generateObstacles(sprites: Assets.Sprites, features: List<Feature>): List<Obstacle> {
 
             val rects = features.sortedBy { it.startTimeInSeconds }.map {
 
@@ -494,7 +487,7 @@ class PlatformGameScreen(
             }
 
             return rects.filterIndexed { index, _ -> !toRemoveIndices.contains(index) }
-                    .map { ObstacleBuilder.makeObstacle(it, atlas) }
+                    .map { ObstacleBuilder.makeObstacle(it, sprites) }
 
         }
 

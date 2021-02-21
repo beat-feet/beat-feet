@@ -4,9 +4,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.ParticleEffect
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -21,7 +18,7 @@ import com.serwylo.beatgame.graphics.ParticleEffectActor
 import com.serwylo.beatgame.levels.Score
 
 
-class HUD(private val score: Score, private val atlas: TextureAtlas) {
+class HUD(private val score: Score, sprites: Assets.Sprites, private val particles: Assets.Particles) {
 
     private val stage = Stage(ExtendViewport(400f, 300f))
 
@@ -29,11 +26,11 @@ class HUD(private val score: Score, private val atlas: TextureAtlas) {
 
     private val font = BitmapFont()
 
-    private val textureHeartFull: TextureRegionDrawable
-    private val textureHeartHalf: TextureRegionDrawable
-    private val textureHeartEmpty: TextureRegionDrawable
-    private val textureScore: TextureRegion
-    private val textureDistance: TextureRegion
+    private val textureHeartFull = TextureRegionDrawable(sprites.heart)
+    private val textureHeartHalf = TextureRegionDrawable(sprites.heart_half)
+    private val textureHeartEmpty = TextureRegionDrawable(sprites.heart_empty)
+    private val textureScore = sprites.score
+    private val textureDistance = sprites.right_sign
     private val labelStyle: Label.LabelStyle
 
     private val heartImages: MutableList<Image> = mutableListOf()
@@ -54,13 +51,6 @@ class HUD(private val score: Score, private val atlas: TextureAtlas) {
         scaleSounds = SCALE_SOUND_FILES.map { Gdx.audio.newSound(Gdx.files.internal("sounds/scales/soundset_vibraphone/${it}")) }
 
         padding = stage.width / 50
-
-        textureHeartFull = TextureRegionDrawable(atlas.findRegion("heart"))
-        textureHeartHalf = TextureRegionDrawable(atlas.findRegion("heart_half"))
-        textureHeartEmpty = TextureRegionDrawable(atlas.findRegion("heart_empty"))
-
-        textureScore = atlas.findRegion("score")
-        textureDistance = atlas.findRegion("right_sign")
 
         labelStyle = Label.LabelStyle(font, Color.WHITE)
 
@@ -145,9 +135,7 @@ class HUD(private val score: Score, private val atlas: TextureAtlas) {
                     val imageToOverlay = heartImages[i / 2]
                     val pos = imageToOverlay.parent.localToStageCoordinates(Vector2(imageToOverlay.x, imageToOverlay.y))
 
-                    val p = ParticleEffect()
-                    p.load(Gdx.files.internal("effects/health.p"), atlas)
-                    val pActor = ParticleEffectActor(p)
+                    val pActor = ParticleEffectActor(particles.health)
                     pActor.setPosition(pos.x, pos.y)
                     stage.addActor(pActor)
                 }

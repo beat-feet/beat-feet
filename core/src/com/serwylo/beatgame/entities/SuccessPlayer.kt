@@ -2,22 +2,22 @@ package com.serwylo.beatgame.entities
 
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
+import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.Globals
 
 class SuccessPlayer(
-        atlas: TextureAtlas
+        sprites: Assets.Sprites
 ) : Entity {
 
     private val position = Vector2()
-    private val spriteFront = atlas.findRegion("character_a_front")
+    private val spriteFront = sprites.character_a_front
 
     private var animation: Animation<TextureRegion> = Animation(
             0.2f,
-            atlas.findRegion("character_a_dance_a"),
-            atlas.findRegion("character_a_dance_b")
+            sprites.character_a_dance_a,
+            sprites.character_a_dance_b
     )
 
     var successTime = 0f

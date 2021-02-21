@@ -4,17 +4,14 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.levels.HighScore
 import com.serwylo.beatgame.levels.Score
 import com.serwylo.beatgame.levels.achievements.AchievementType
-import com.serwylo.beatgame.levels.achievements.loadAchievementsForLevel
 import com.serwylo.beatgame.levels.achievements.allAchievements
+import com.serwylo.beatgame.levels.achievements.loadAchievementsForLevel
 import com.serwylo.beatgame.levels.achievements.saveAchievements
 import com.serwylo.beatgame.levels.loadHighScore
 import com.serwylo.beatgame.levels.saveHighScore
@@ -23,9 +20,8 @@ class EndGameScreen(
         private val game: BeatGame,
         world: World,
         private val score: Score
-): InfoScreen("The End") {
+): InfoScreen(game, "The End") {
 
-    private val atlas: TextureAtlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
     private val existingAchievements = loadAchievementsForLevel(world.level())
     private val achievements: List<AchievementType>
     private val existingHighScore: HighScore = loadHighScore(world.level())
@@ -106,8 +102,8 @@ class EndGameScreen(
         val distanceLabel = Label("${(score.distancePercent * 100).toInt()}%", distanceLabelStyle)
         val scoreLabel = Label("${score.getPoints()}", scoreLabelStyle)
 
-        val distanceImage = Image(atlas.findRegion("right_sign"))
-        val scoreImage = Image(atlas.findRegion("score"))
+        val distanceImage = Image(game.assets.getSprites().right_sign)
+        val scoreImage = Image(game.assets.getSprites().score)
 
         horizontalGroup.addActor(distanceImage)
         horizontalGroup.addActor(distanceLabel)
@@ -125,15 +121,13 @@ class EndGameScreen(
 
         val achievementsTable = Table()
         val achievementLabelStyle = Label.LabelStyle(mediumFont, Color.WHITE)
-        val icon = atlas.findRegion("star")
+        val icon = game.assets.getSprites().star
 
         achievements.forEachIndexed { i, it ->
             val label = Label(it.label, achievementLabelStyle)
 
             val group = HorizontalGroup()
-            if (icon != null) {
-                group.addActor(Image(icon))
-            }
+            group.addActor(Image(icon))
             group.addActor(label)
 
             if (i > 0 && i % 3 == 0) {

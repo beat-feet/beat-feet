@@ -4,16 +4,18 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.serwylo.beatgame.BeatGame
 
 abstract class InfoScreen(
+        private val game: BeatGame,
         private val heading: String,
         private val subheading: String? = null,
-        private val headingSprite: String? = null
+        private val headingSprite: TextureRegion? = null
 ): ScreenAdapter() {
 
     private val stage = Stage(FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
@@ -43,9 +45,7 @@ abstract class InfoScreen(
         headingGroup.space(10f)
 
         if (headingSprite != null) {
-            val atlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
-            val texture = atlas.findRegion(headingSprite)
-            val image = Image(texture)
+            val image = Image(headingSprite)
             headingGroup.addActor(image)
         }
 

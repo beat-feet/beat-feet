@@ -1,10 +1,11 @@
 package com.serwylo.beatgame.entities
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Camera
-import com.badlogic.gdx.graphics.g2d.*
+import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
+import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.levels.Score
 import kotlin.math.abs
@@ -12,7 +13,8 @@ import kotlin.math.abs
 class Player(
         val score: Score,
         private val velocity: Vector2 = Vector2(),
-        atlas: TextureAtlas
+        sprites: Assets.Sprites,
+        particles: Assets.Particles
 ) : Entity {
 
     val position = Vector2()
@@ -31,14 +33,20 @@ class Player(
 
     private var jumpCount = 0
 
-    private var walkAnimation: Animation<TextureAtlas.AtlasRegion>
-    private var deathAnimation: Animation<TextureRegion>
-    private var textureJump: TextureRegion
-    private var textureHit: TextureRegion
+    private val textureJump = sprites.character_a_jump
+    private val textureHit = sprites.character_a_hit
+    private val walkAnimation = Animation(0.2f, sprites.character_a_walk)
+    private val deathAnimation = Animation(
+            0.5f,
+            textureHit,
+            sprites.character_a_duck,
+            sprites.ghost,
+            sprites.ghost_x
+    )
 
     private var health = 100
 
-    private val jumpParticles = ParticleEffect()
+    private val jumpParticles = particles.jump
 
     fun getHealth(): Int { return health }
 
@@ -54,24 +62,6 @@ class Player(
 
     private var deathTime = 0f
     private var lastMultiplerTime = 0f
-
-    init {
-        textureJump = atlas.findRegion("character_a_jump")
-        textureHit = atlas.findRegion("character_a_hit")
-
-        val texturesWalk = atlas.findRegions("character_a_walk")
-        walkAnimation = Animation(0.2f, texturesWalk)
-
-        deathAnimation = Animation(
-                0.5f,
-                textureHit,
-                atlas.findRegion("character_a_duck"),
-                atlas.findRegion("ghost"),
-                atlas.findRegion("ghost_x")
-        )
-
-        jumpParticles.load(Gdx.files.internal("effects/rainbow.p"), atlas)
-    }
 
     fun performJump() {
 

@@ -4,13 +4,11 @@ import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Levels
@@ -22,11 +20,9 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
 
     private val stage = Stage(ExtendViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
 
-    protected var bigFont = BitmapFont().apply { data.scale(0.5f) }
-    protected var mediumFont = BitmapFont().apply { data.scale(-0.2f) }
-    protected var smallFont = BitmapFont().apply { data.scale(-0.5f) }
-
-    private val atlas: TextureAtlas = TextureAtlas(Gdx.files.internal("sprites.atlas"))
+    private var bigFont = BitmapFont().apply { data.scale(0.5f) }
+    private var mediumFont = BitmapFont().apply { data.scale(-0.2f) }
+    private var smallFont = BitmapFont().apply { data.scale(-0.5f) }
 
     init {
         val achievements = loadAllAchievements()
@@ -40,7 +36,7 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
 
         val headingGroup = HorizontalGroup()
 
-        val headingIcon = Image(atlas.findRegion("star"))
+        val headingIcon = Image(game.assets.getSprites().star)
         val headingLabel = Label("Achievements", bigLabelStyle)
 
         headingGroup.addActor(headingIcon)
