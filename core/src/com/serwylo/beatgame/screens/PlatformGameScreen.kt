@@ -101,7 +101,7 @@ class PlatformGameScreen(
             }
         }
 
-        hud = HUD(score, sprites, game.assets.getParticles())
+        hud = HUD(score, sprites, game.assets.getParticles(), game.assets.getSounds())
 
         camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 5, 0f)
         camera.update()
@@ -119,7 +119,6 @@ class PlatformGameScreen(
 
     override fun hide() {
         world.dispose()
-        hud.dispose()
 
         Gdx.input.inputProcessor = null
         Gdx.input.setCatchKey(Input.Keys.BACK, false)

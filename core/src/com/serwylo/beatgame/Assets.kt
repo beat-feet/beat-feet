@@ -1,6 +1,8 @@
 package com.serwylo.beatgame
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -13,28 +15,47 @@ class Assets {
     private lateinit var skin: Skin
     private lateinit var sprites: Sprites
     private lateinit var particles: Particles
+    private lateinit var sounds: Sounds
 
     init {
         manager.load("skin.json", Skin::class.java)
         manager.load("sprites.atlas", TextureAtlas::class.java)
         manager.load("effects/rainbow.p", ParticleEffect::class.java)
         manager.load("effects/health.p", ParticleEffect::class.java)
+
+        // TODO: This doubles the loading time on my PC from 200ms to 400ms. Is it worth it?
+        //       Perhaps we could procedurally generate the sound instead as it is relatively straightforward.
+        manager.load("sounds/vibraphone_base_pitch.mp3", Sound::class.java)
     }
 
     fun initSync() {
+
+        val startTime = System.currentTimeMillis()
+        Gdx.app.debug(TAG, "Loading assets...")
+
         manager.finishLoading()
+
         skin = manager.get("skin.json")
         sprites = Sprites(manager.get("sprites.atlas"))
         particles = Particles(manager)
+        sounds = Sounds(manager)
+
+        Gdx.app.debug(TAG, "Finished loading assets (${System.currentTimeMillis() - startTime}ms)")
+
     }
 
     fun getSkin() = skin
     fun getSprites() = sprites
     fun getParticles() = particles
+    fun getSounds() = sounds
 
     class Particles(manager: AssetManager) {
         val jump: ParticleEffect = manager.get("effects/rainbow.p")
         val health: ParticleEffect = manager.get("effects/health.p")
+    }
+
+    class Sounds(manager: AssetManager) {
+        val scale: Sound = manager.get("sounds/vibraphone_base_pitch.mp3")
     }
 
     class Sprites(atlas: TextureAtlas) {
@@ -186,6 +207,39 @@ class Assets {
         val window_wood_h: TextureRegion = atlas.findRegion("window_wood_h")
         val window_wood_i: TextureRegion = atlas.findRegion("window_wood_i")
         val window_wood_j: TextureRegion = atlas.findRegion("window_wood_j")
+    }
+
+    companion object {
+
+        private const val TAG = "Assets"
+
+        private val SCALE_SOUND_FILES = listOf(
+                "n01.mp3",
+                "n02.mp3",
+                "n03.mp3",
+                "n04.mp3",
+                "n05.mp3",
+                "n06.mp3",
+                "n07.mp3",
+                "n08.mp3",
+                "n09.mp3",
+                "n10.mp3",
+                "n11.mp3",
+                "n12.mp3",
+                "n13.mp3",
+                "n14.mp3",
+                "n15.mp3",
+                "n16.mp3",
+                "n17.mp3",
+                "n18.mp3",
+                "n19.mp3",
+                "n20.mp3",
+                "n21.mp3",
+                "n22.mp3",
+                "n23.mp3",
+                "n24.mp3"
+        )
+
     }
 
 }

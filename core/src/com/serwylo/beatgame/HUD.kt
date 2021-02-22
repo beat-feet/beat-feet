@@ -1,7 +1,5 @@
 package com.serwylo.beatgame
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Vector2
@@ -17,8 +15,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.graphics.ParticleEffectActor
 import com.serwylo.beatgame.levels.Score
 
-
-class HUD(private val score: Score, sprites: Assets.Sprites, private val particles: Assets.Particles) {
+class HUD(private val score: Score, sprites: Assets.Sprites, private val particles: Assets.Particles, private val sounds: Assets.Sounds) {
 
     private val stage = Stage(ExtendViewport(400f, 300f))
 
@@ -41,14 +38,10 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
     private val bottomWidget: HorizontalGroup
     private val healthWidget: HorizontalGroup
 
-    private val scaleSounds: List<Sound>
-
     private var previousMultiplier = 1
     private var previousHealth = 100
 
     init {
-
-        scaleSounds = SCALE_SOUND_FILES.map { Gdx.audio.newSound(Gdx.files.internal("sounds/scales/soundset_vibraphone/${it}")) }
 
         padding = stage.width / 50
 
@@ -175,9 +168,11 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
      * Play an ever increasing xylophone sound for long combos
      */
     private fun playScaleSound(multiplier: Int) {
-        val scaleIndex = multiplier.coerceAtMost(scaleSounds.size - 1)
+        val scaleIndex = multiplier.coerceAtMost(SCALE_SOUND_MAX_PITCH)
+        val scaleFactor = scaleIndex.toFloat() / SCALE_SOUND_MAX_PITCH
         val volume = (SCALE_SOUND_VOLUME * scaleIndex).coerceAtMost(1f)
-        scaleSounds[scaleIndex].play(volume)
+        val sound = sounds.scale.play(volume)
+        sounds.scale.setPitch(sound, 1f + scaleFactor /* Must be a number between 0.5 and 2.0, but we are choosing one between 1.0 and 2.0 */ )
     }
 
     private fun createIncreasedMultiplier(scoreMultiplier: Int): Actor {
@@ -204,40 +199,10 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
         return label
     }
 
-    fun dispose() {
-        scaleSounds.forEach { it.dispose() }
-    }
-
     companion object {
 
         private const val SCALE_SOUND_VOLUME = 0.05f
-
-        private val SCALE_SOUND_FILES = listOf(
-                "n01.mp3",
-                "n02.mp3",
-                "n03.mp3",
-                "n04.mp3",
-                "n05.mp3",
-                "n06.mp3",
-                "n07.mp3",
-                "n08.mp3",
-                "n09.mp3",
-                "n10.mp3",
-                "n11.mp3",
-                "n12.mp3",
-                "n13.mp3",
-                "n14.mp3",
-                "n15.mp3",
-                "n16.mp3",
-                "n17.mp3",
-                "n18.mp3",
-                "n19.mp3",
-                "n20.mp3",
-                "n21.mp3",
-                "n22.mp3",
-                "n23.mp3",
-                "n24.mp3"
-        )
+        private const val SCALE_SOUND_MAX_PITCH = 25
 
     }
 
