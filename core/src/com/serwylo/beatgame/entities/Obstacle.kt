@@ -2,6 +2,7 @@ package com.serwylo.beatgame.entities
 
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.math.Rectangle
+import com.serwylo.beatgame.graphics.ParallaxCamera
 import com.serwylo.beatgame.graphics.SpriteRenderer
 
 class Obstacle(val rect: Rectangle, private val sprite: SpriteRenderer) : Entity {
@@ -9,7 +10,7 @@ class Obstacle(val rect: Rectangle, private val sprite: SpriteRenderer) : Entity
     override fun update(delta: Float) {
     }
 
-    override fun render(camera: Camera, isPaused: Boolean) {
+    override fun render(camera: ParallaxCamera, isPaused: Boolean) {
 
         sprite.render()
 

@@ -1,6 +1,6 @@
 package com.serwylo.beatgame.entities
 
-import com.badlogic.gdx.graphics.Camera
+import com.serwylo.beatgame.graphics.ParallaxCamera
 
 interface Entity {
     fun update(delta: Float)
@@ -9,5 +9,5 @@ interface Entity {
      * The delta here is really just used for animations. Actual logic dependent on the passage
      * of time should use [update].
      */
-    fun render(camera: Camera, isPaused: Boolean)
+    fun render(camera: ParallaxCamera, isPaused: Boolean)
 }

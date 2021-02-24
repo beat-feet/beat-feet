@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
@@ -30,6 +32,7 @@ class PlatformGameScreen(
     private lateinit var hud: HUD
     private val obstacles = mutableListOf<Obstacle>()
 
+    private var background = Background(SCALE_X)
     private lateinit var ground: Ground
     private lateinit var player: Player
     private lateinit var deadPlayer: DeadPlayer
@@ -158,6 +161,11 @@ class PlatformGameScreen(
 
         checkCollisions()
 
+        if (state != State.PAUSED) {
+            // Clouds should move regardless of being paused, etc.
+            background.update(delta)
+        }
+
         if (state == State.PENDING || state == State.PAUSED) {
 
             // Do nothing, we just need to animate the running player (which happens in the render loop).
@@ -168,7 +176,7 @@ class PlatformGameScreen(
         if (state == State.PLAYING || state == State.WARMING_UP) {
 
             player.update(delta)
-            scrollCamera(delta)
+            scrollCamera(camera, delta)
             shakeCamera(delta)
 
             if (state == State.WARMING_UP && Globals.animationTimer - startTime > WARM_UP_TIME) {
@@ -261,7 +269,7 @@ class PlatformGameScreen(
         camera.update()
     }
 
-    private fun scrollCamera(delta: Float) {
+    private fun scrollCamera(camera: OrthographicCamera, delta: Float) {
         camera.translate(delta * SCALE_X, 0f)
         camera.update()
     }
@@ -278,6 +286,7 @@ class PlatformGameScreen(
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
+        background.render(camera, state == State.PAUSED)
         ground.render(camera, state == State.PAUSED)
         val cameraRight = camera.unproject(Vector3(Gdx.graphics.width.toFloat(), 0f, 0f)).x
         for (i in (leftMostObstacleOnScreenIndex - 20).coerceAtLeast(0) until obstacles.size) {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.Globals
+import com.serwylo.beatgame.graphics.ParallaxCamera
 import com.serwylo.beatgame.levels.Score
 import kotlin.math.abs
 
@@ -110,7 +111,7 @@ class Player(
 
     }
 
-    override fun render(camera: Camera, isPaused: Boolean) {
+    override fun render(camera: ParallaxCamera, isPaused: Boolean) {
 
         val batch = Globals.spriteBatch
         batch.projectionMatrix = camera.combined

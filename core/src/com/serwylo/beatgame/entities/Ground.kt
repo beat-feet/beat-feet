@@ -7,13 +7,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 import com.serwylo.beatgame.Globals
+import com.serwylo.beatgame.graphics.ParallaxCamera
 
 class Ground(private val sprite: TextureRegion) : Entity {
 
     override fun update(delta: Float) {
     }
 
-    override fun render(camera: Camera, isPaused: Boolean) {
+    override fun render(camera: ParallaxCamera, isPaused: Boolean) {
         val batch = Globals.spriteBatch
         batch.begin()
         val numTiles = (camera.viewportWidth / ObstacleBuilder.TILE_SIZE).toInt() + 3

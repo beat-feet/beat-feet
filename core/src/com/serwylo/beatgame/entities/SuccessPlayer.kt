@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.Globals
+import com.serwylo.beatgame.graphics.ParallaxCamera
 
 class SuccessPlayer(
         sprites: Assets.Sprites
@@ -27,7 +28,7 @@ class SuccessPlayer(
         this.successTime = Globals.animationTimer
     }
 
-    override fun render(camera: Camera, isPaused: Boolean) {
+    override fun render(camera: ParallaxCamera, isPaused: Boolean) {
 
         val sprite = if (Globals.animationTimer - successTime < STAND_TIME) spriteFront else animation.getKeyFrame(Globals.animationTimer, true)
 
