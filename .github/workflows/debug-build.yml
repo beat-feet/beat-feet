@@ -1,0 +1,39 @@
+name: Build and sign debug version
+ 
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Build debug version
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: assembleDebug
+
+      - name: Sign debug .apk
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: android/build/outputs/apk/debug
+          signingKeyBase64: ${{ secrets.DEBUG_SIGNING_KEY }}
+          alias: ${{ secrets.DEBUG_SIGNING_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.DEBUG_KEY_STORE_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "29.0.3"
+          
+      - name: Upload signed debug app
+        uses: actions/upload-artifact@v2
+        with:
+          name: Signed debug apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
