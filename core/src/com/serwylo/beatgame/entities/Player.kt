@@ -35,7 +35,7 @@ class Player(
 
     private val textureJump = sprites.character_a_jump
     private val textureHit = sprites.character_a_hit
-    private val walkAnimation = Animation(0.2f, sprites.character_a_walk)
+    private val walkAnimation: Animation<TextureRegion> = Animation(0.2f, sprites.character_a_walk)
     private val deathAnimation = Animation(
             0.5f,
             textureHit,

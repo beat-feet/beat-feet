@@ -93,7 +93,7 @@ class Assets {
         val character_a_front: TextureRegion = atlas.findRegion("character_a_front")
         val character_a_hit: TextureRegion = atlas.findRegion("character_a_hit")
         val character_a_jump: TextureRegion = atlas.findRegion("character_a_jump")
-        val character_a_walk: TextureAtlas.AtlasRegion = atlas.findRegion("character_a_walk")
+        val character_a_walk = atlas.findRegions("character_a_walk")
         val door_a_closed: TextureRegion = atlas.findRegion("door_a_closed")
         val door_a_covered: TextureRegion = atlas.findRegion("door_a_covered")
         val door_a_open: TextureRegion = atlas.findRegion("door_a_open")
