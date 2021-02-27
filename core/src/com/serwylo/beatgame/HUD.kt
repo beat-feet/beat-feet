@@ -2,6 +2,7 @@ package com.serwylo.beatgame
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -128,7 +129,7 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
                     val imageToOverlay = heartImages[i / 2]
                     val pos = imageToOverlay.parent.localToStageCoordinates(Vector2(imageToOverlay.x, imageToOverlay.y))
 
-                    val pActor = ParticleEffectActor(particles.health)
+                    val pActor = ParticleEffectActor(ParticleEffect(particles.health))
                     pActor.setPosition(pos.x, pos.y)
                     stage.addActor(pActor)
                 }
