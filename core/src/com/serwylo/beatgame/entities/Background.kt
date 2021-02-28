@@ -2,20 +2,25 @@ package com.serwylo.beatgame.entities
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.graphics.ParallaxCamera
 
-class Background(private val maxSpeed: Float) : Entity {
+class Background(private val sprites: Assets.Sprites, private val maxSpeed: Float) : Entity {
 
     /**
      * Postpone initialisation until the first render, because we need to know the camera
      * viewport bounds in order to place them somewhere sensible.
      */
     private val clouds = mutableListOf<Cloud>()
+
+    private val batch = SpriteBatch(50)
 
     override fun update(delta: Float) {
         clouds.forEach { it.update(delta) }
@@ -26,6 +31,8 @@ class Background(private val maxSpeed: Float) : Entity {
         val cloudParallaxX = 0.2f
 
         val r = Globals.shapeRenderer
+
+        batch.projectionMatrix = camera.calculateParallaxMatrix(cloudParallaxX, 1f)
         r.projectionMatrix = camera.calculateParallaxMatrix(cloudParallaxX, 1f)
 
         val bottomLeft = camera.unproject(Vector3(0f, Gdx.graphics.height.toFloat(), 0f))
@@ -35,21 +42,18 @@ class Background(private val maxSpeed: Float) : Entity {
 
         if (clouds.size == 0) {
             clouds.addAll((0..20).mapIndexed { it, i ->
-                val cloud = Cloud(maxSpeed)
+                val cloud = Cloud(sprites, maxSpeed)
                 cloud.init(if (i < 10) cameraViewport else nextViewport)
                 cloud
             })
         }
 
-        r.color = Color.WHITE
-        r.begin(ShapeRenderer.ShapeType.Filled)
-
+        batch.begin()
         clouds.forEach {
             it.checkBoundsAndMaybeReset(cameraViewport, nextViewport)
-            it.render(r)
+            it.render(batch)
         }
-
-        r.end()
+        batch.end()
 
         r.begin(ShapeRenderer.ShapeType.Line)
         r.color = Color.CYAN
@@ -57,32 +61,42 @@ class Background(private val maxSpeed: Float) : Entity {
         r.end()
     }
 
-    class Cloud(private val playerSpeed: Float) {
+    class Cloud(private val sprites: Assets.Sprites, private val playerSpeed: Float) {
 
-        val position = Vector2()
-        val size = Vector2()
+        var sprite = Sprite()
         val velocity = Vector2()
 
         fun init(viewport: Rectangle) {
-
-            position.set(
-                    viewport.x + (Math.random() * viewport.width).toFloat(),
-                    viewport.y + viewport.height / 2 + (Math.random() * (viewport.height / 2)).toFloat()
-            )
-
-            size.set(
-                    (Math.random() * 2 + 1).toFloat(),
-                    (Math.random() * 0.5 + 0.5).toFloat()
-            )
 
             val minSpeed = playerSpeed / 40
             val maxSpeed = minSpeed * 2
             velocity.x = -(Math.random() * (maxSpeed - minSpeed) + minSpeed).toFloat()
 
+            val region = arrayOf(
+                sprites.cloud_a,
+                sprites.cloud_b,
+                sprites.cloud_c,
+                sprites.cloud_d,
+                sprites.cloud_e,
+                sprites.cloud_f,
+                sprites.cloud_g,
+                sprites.cloud_h,
+                sprites.cloud_i,
+                sprites.cloud_j
+            ).random()
+
+            sprite.setRegion(region)
+            sprite.setSize(region.originalWidth * 0.01f, region.originalHeight * 0.01f)
+
+            sprite.setPosition(
+                viewport.x + (Math.random() * viewport.width).toFloat(),
+                viewport.y + viewport.height / 3 * 2 + (Math.random() * (viewport.height / 3)).toFloat()
+            )
+
         }
 
         fun update(delta: Float) {
-            position.x = position.x + velocity.x * delta
+            sprite.x = sprite.x + velocity.x * delta
         }
 
         /**
@@ -90,13 +104,13 @@ class Background(private val maxSpeed: Float) : Entity {
          * respawn them into the [nextViewport].
          */
         fun checkBoundsAndMaybeReset(currentViewport: Rectangle, nextViewport: Rectangle) {
-            if (position.x + position.y < currentViewport.x) {
+            if (sprite.x + sprite.width < currentViewport.x) {
                 init(nextViewport)
             }
         }
 
-        fun render(shapeRenderer: ShapeRenderer) {
-            shapeRenderer.ellipse(position.x, position.y, size.x, size.y, 0f, 10)
+        fun render(batch: SpriteBatch) {
+            sprite.draw(batch)
         }
 
     }

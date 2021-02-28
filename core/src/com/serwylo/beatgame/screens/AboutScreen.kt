@@ -51,6 +51,7 @@ John Harrison w/ Wichita State University Chamber / CC-BY-SA 3.0
 
 Graphics:
 Kenney.nl / CCO 1.0
+disabledpaladin / CC-BY-SA 4.0
         """
     }
 

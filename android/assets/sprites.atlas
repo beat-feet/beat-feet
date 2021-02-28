@@ -1,6 +1,6 @@
 
 sprites.png
-size: 1024,512
+size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -13,1344 +13,1481 @@ barrel_a
   index: -1
 barrel_b
   rotate: false
-  xy: 52, 2
+  xy: 318, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 barrel_c
   rotate: false
-  xy: 102, 2
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 barrier_a
   rotate: false
-  xy: 152, 2
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 barrier_b
   rotate: false
-  xy: 202, 2
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 barrier_c
   rotate: false
-  xy: 252, 2
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 barrier_d
   rotate: false
-  xy: 302, 2
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bin_medium_a
   rotate: false
-  xy: 352, 2
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bin_medium_b
   rotate: false
-  xy: 402, 2
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bin_small_a
   rotate: false
-  xy: 452, 2
+  xy: 2, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bin_small_b
   rotate: false
-  xy: 502, 2
+  xy: 318, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 box_large
   rotate: false
-  xy: 552, 2
+  xy: 634, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 box_medium
   rotate: false
-  xy: 602, 2
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 box_small
   rotate: false
-  xy: 652, 2
+  xy: 318, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_a_bottom
   rotate: false
-  xy: 702, 2
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_a_bottom_left
   rotate: false
-  xy: 752, 2
+  xy: 2, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_a_bottom_right
   rotate: false
-  xy: 802, 2
+  xy: 318, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_a_inner
   rotate: false
-  xy: 852, 2
+  xy: 634, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+
+sprites2.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 building_a_left
   rotate: false
-  xy: 902, 2
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_a_right
   rotate: false
-  xy: 952, 2
+  xy: 318, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_a_top
   rotate: false
-  xy: 2, 52
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_a_top_left
   rotate: false
-  xy: 52, 52
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_a_top_right
   rotate: false
-  xy: 102, 52
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_b_bottom
   rotate: false
-  xy: 152, 52
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_b_bottom_left
   rotate: false
-  xy: 202, 52
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_b_bottom_right
   rotate: false
-  xy: 252, 52
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_b_inner
   rotate: false
-  xy: 302, 52
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_b_left
   rotate: false
-  xy: 352, 52
+  xy: 2, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_b_right
   rotate: false
-  xy: 402, 52
+  xy: 318, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_b_top
   rotate: false
-  xy: 452, 52
+  xy: 634, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_b_top_left
   rotate: false
-  xy: 502, 52
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_b_top_right
   rotate: false
-  xy: 552, 52
+  xy: 318, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_c_bottom
   rotate: false
-  xy: 602, 52
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_c_bottom_left
   rotate: false
-  xy: 652, 52
+  xy: 2, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_c_bottom_right
   rotate: false
-  xy: 702, 52
+  xy: 318, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_c_inner
   rotate: false
-  xy: 752, 52
+  xy: 634, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+
+sprites3.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 building_c_left
   rotate: false
-  xy: 802, 52
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_c_right
   rotate: false
-  xy: 852, 52
+  xy: 318, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_c_top
   rotate: false
-  xy: 902, 52
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_c_top_left
   rotate: false
-  xy: 952, 52
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 building_c_top_right
   rotate: false
-  xy: 2, 102
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bush_medium_a
   rotate: false
-  xy: 52, 102
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bush_medium_b
   rotate: false
-  xy: 102, 102
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bush_medium_c
   rotate: false
-  xy: 152, 102
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bush_small_a
   rotate: false
-  xy: 202, 102
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bush_small_b
   rotate: false
-  xy: 252, 102
+  xy: 2, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bush_small_c
   rotate: false
-  xy: 302, 102
+  xy: 318, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 character_a_dance_a
   rotate: false
-  xy: 352, 102
+  xy: 634, 473
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 character_a_dance_b
   rotate: false
-  xy: 402, 102
+  xy: 2, 630
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 character_a_duck
   rotate: false
-  xy: 452, 102
+  xy: 318, 630
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 character_a_face
   rotate: false
-  xy: 502, 102
+  xy: 634, 630
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 character_a_face_small
   rotate: false
-  xy: 552, 102
+  xy: 2, 787
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 character_a_front
   rotate: false
-  xy: 602, 102
+  xy: 318, 787
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 character_a_hit
   rotate: false
-  xy: 652, 102
+  xy: 634, 787
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
+
+sprites4.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 character_a_jump
   rotate: false
-  xy: 702, 102
+  xy: 2, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 character_a_walk
   rotate: false
-  xy: 752, 102
+  xy: 318, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: 1
 character_a_walk
   rotate: false
-  xy: 802, 102
+  xy: 634, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: 2
+cloud_a
+  rotate: false
+  xy: 2, 159
+  size: 282, 146
+  orig: 282, 146
+  offset: 0, 0
+  index: -1
+cloud_b
+  rotate: false
+  xy: 318, 159
+  size: 270, 131
+  orig: 270, 131
+  offset: 0, 0
+  index: -1
+cloud_c
+  rotate: false
+  xy: 634, 159
+  size: 208, 110
+  orig: 208, 110
+  offset: 0, 0
+  index: -1
+cloud_d
+  rotate: false
+  xy: 2, 316
+  size: 58, 51
+  orig: 58, 51
+  offset: 0, 0
+  index: -1
+cloud_e
+  rotate: false
+  xy: 318, 316
+  size: 40, 37
+  orig: 40, 37
+  offset: 0, 0
+  index: -1
+cloud_f
+  rotate: false
+  xy: 634, 316
+  size: 66, 47
+  orig: 66, 47
+  offset: 0, 0
+  index: -1
+cloud_g
+  rotate: false
+  xy: 2, 473
+  size: 129, 62
+  orig: 129, 62
+  offset: 0, 0
+  index: -1
+cloud_h
+  rotate: false
+  xy: 318, 473
+  size: 58, 45
+  orig: 58, 45
+  offset: 0, 0
+  index: -1
+cloud_i
+  rotate: false
+  xy: 634, 473
+  size: 89, 56
+  orig: 89, 56
+  offset: 0, 0
+  index: -1
+cloud_j
+  rotate: false
+  xy: 2, 630
+  size: 314, 155
+  orig: 314, 155
+  offset: 0, 0
+  index: -1
+cloud_k
+  rotate: false
+  xy: 318, 630
+  size: 296, 130
+  orig: 296, 130
+  offset: 0, 0
+  index: -1
 door_a_closed
   rotate: false
-  xy: 852, 102
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_a_covered
   rotate: false
-  xy: 902, 102
+  xy: 2, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_a_open
   rotate: false
-  xy: 952, 102
+  xy: 318, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_b_closed
   rotate: false
-  xy: 2, 152
+  xy: 634, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+
+sprites5.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 door_b_covered
   rotate: false
-  xy: 52, 152
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_b_open
   rotate: false
-  xy: 102, 152
+  xy: 318, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_c_closed
   rotate: false
-  xy: 152, 152
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_c_covered
   rotate: false
-  xy: 202, 152
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_c_open
   rotate: false
-  xy: 252, 152
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_d_closed
   rotate: false
-  xy: 302, 152
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_d_covered
   rotate: false
-  xy: 352, 152
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_d_open
   rotate: false
-  xy: 402, 152
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_e_closed
   rotate: false
-  xy: 452, 152
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_e_covered
   rotate: false
-  xy: 502, 152
+  xy: 2, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_e_open
   rotate: false
-  xy: 552, 152
+  xy: 318, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_f_closed
   rotate: false
-  xy: 602, 152
+  xy: 634, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_f_covered
   rotate: false
-  xy: 652, 152
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 door_f_open
   rotate: false
-  xy: 702, 152
+  xy: 318, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fence_inner
   rotate: false
-  xy: 752, 152
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fence_inner_broken_a
   rotate: false
-  xy: 802, 152
+  xy: 2, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fence_inner_broken_b
   rotate: false
-  xy: 852, 152
+  xy: 318, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 fence_left
   rotate: false
-  xy: 902, 152
+  xy: 634, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+
+sprites6.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 fence_right
   rotate: false
-  xy: 952, 152
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ghost
   rotate: false
-  xy: 2, 202
+  xy: 318, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 ghost_x
   rotate: false
-  xy: 52, 202
+  xy: 634, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 ground_a
   rotate: false
-  xy: 102, 202
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ground_b
   rotate: false
-  xy: 152, 202
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ground_c
   rotate: false
-  xy: 202, 202
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ground_d
   rotate: false
-  xy: 252, 202
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ground_e
   rotate: false
-  xy: 302, 202
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ground_f
   rotate: false
-  xy: 352, 202
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 heart
   rotate: false
-  xy: 402, 202
+  xy: 2, 473
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 heart_empty
   rotate: false
-  xy: 452, 202
+  xy: 318, 473
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 heart_half
   rotate: false
-  xy: 502, 202
+  xy: 634, 473
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 hydrant
   rotate: false
-  xy: 552, 202
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 logo
   rotate: false
-  xy: 602, 202
+  xy: 318, 630
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 mail_box
   rotate: false
-  xy: 652, 202
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 particle_pixel
   rotate: false
-  xy: 702, 202
+  xy: 2, 787
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 right_sign
   rotate: false
-  xy: 752, 202
+  xy: 318, 787
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 score
   rotate: false
-  xy: 802, 202
+  xy: 634, 787
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
+
+sprites7.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 star
   rotate: false
-  xy: 852, 202
+  xy: 2, 2
   size: 21, 21
   orig: 21, 21
   offset: 0, 0
   index: -1
 streetlight_a_base
   rotate: false
-  xy: 902, 202
+  xy: 318, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_a_post
   rotate: false
-  xy: 952, 202
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_a_top
   rotate: false
-  xy: 2, 252
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_b_base
   rotate: false
-  xy: 52, 252
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_b_post
   rotate: false
-  xy: 102, 252
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_b_top
   rotate: false
-  xy: 152, 252
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_c_base
   rotate: false
-  xy: 202, 252
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_c_post
   rotate: false
-  xy: 252, 252
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_c_top
   rotate: false
-  xy: 302, 252
+  xy: 2, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_d_base
   rotate: false
-  xy: 352, 252
+  xy: 318, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_d_post
   rotate: false
-  xy: 402, 252
+  xy: 634, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_d_top
   rotate: false
-  xy: 452, 252
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_e_base
   rotate: false
-  xy: 502, 252
+  xy: 318, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_e_post
   rotate: false
-  xy: 552, 252
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_e_top
   rotate: false
-  xy: 602, 252
+  xy: 2, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_f_base
   rotate: false
-  xy: 652, 252
+  xy: 318, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 streetlight_f_post
   rotate: false
-  xy: 702, 252
+  xy: 634, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+
+sprites8.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 streetlight_f_top
   rotate: false
-  xy: 752, 252
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 tile
   rotate: false
-  xy: 802, 252
+  xy: 318, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 407
 tile
   rotate: false
-  xy: 852, 252
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 408
 tile
   rotate: false
-  xy: 902, 252
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 411
 tile
   rotate: false
-  xy: 952, 252
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 412
 tile
   rotate: false
-  xy: 2, 302
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 415
 tile
   rotate: false
-  xy: 52, 302
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 416
 tile
   rotate: false
-  xy: 102, 302
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 444
 tile
   rotate: false
-  xy: 152, 302
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 445
 tile
   rotate: false
-  xy: 202, 302
+  xy: 2, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 448
 tile
   rotate: false
-  xy: 252, 302
+  xy: 318, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 449
 tile
   rotate: false
-  xy: 302, 302
+  xy: 634, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 452
 tile
   rotate: false
-  xy: 352, 302
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 453
 tile
   rotate: false
-  xy: 402, 302
+  xy: 318, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 570
 tile
   rotate: false
-  xy: 452, 302
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 572
 tile
   rotate: false
-  xy: 502, 302
+  xy: 2, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 573
 tile
   rotate: false
-  xy: 552, 302
+  xy: 318, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 583
 tile
   rotate: false
-  xy: 602, 302
+  xy: 634, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 584
+
+sprites9.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 tile
   rotate: false
-  xy: 652, 302
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 585
 tile
   rotate: false
-  xy: 702, 302
+  xy: 318, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 596
 tile
   rotate: false
-  xy: 752, 302
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 597
 tile
   rotate: false
-  xy: 802, 302
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 598
 tile
   rotate: false
-  xy: 852, 302
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 602
 tile
   rotate: false
-  xy: 902, 302
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 603
 tile
   rotate: false
-  xy: 952, 302
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 607
 tile
   rotate: false
-  xy: 2, 352
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 609
 tile_609 (copy)
   rotate: false
-  xy: 2, 352
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 tile
   rotate: false
-  xy: 52, 352
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 610
 tile_610 (copy)
   rotate: false
-  xy: 52, 352
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 tile
   rotate: false
-  xy: 102, 352
+  xy: 2, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 640
 tile
   rotate: false
-  xy: 152, 352
+  xy: 318, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 694
 tile
   rotate: false
-  xy: 202, 352
+  xy: 634, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 695
 tile
   rotate: false
-  xy: 252, 352
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 696
 tile
   rotate: false
-  xy: 252, 352
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 800
 tile
   rotate: false
-  xy: 252, 352
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 801
 tile
   rotate: false
-  xy: 302, 352
+  xy: 318, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 802
 tile
   rotate: false
-  xy: 352, 352
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 803
 tile
   rotate: false
-  xy: 402, 352
+  xy: 2, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 839
 tile
   rotate: false
-  xy: 452, 352
+  xy: 318, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 840
 tile
   rotate: false
-  xy: 502, 352
+  xy: 634, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 971
+
+sprites10.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 tile
   rotate: false
-  xy: 552, 352
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 981
 tile
   rotate: false
-  xy: 602, 352
+  xy: 318, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 991
 tile
   rotate: false
-  xy: 652, 352
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 992
 tile
   rotate: false
-  xy: 702, 352
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1028
 tile
   rotate: false
-  xy: 752, 352
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1029
 tyre
   rotate: false
-  xy: 802, 352
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 tyres_large
   rotate: false
-  xy: 852, 352
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 tyres_medium
   rotate: false
-  xy: 902, 352
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 tyres_small
   rotate: false
-  xy: 952, 352
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_a_inner
   rotate: false
-  xy: 2, 402
+  xy: 2, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_a_left
   rotate: false
-  xy: 52, 402
+  xy: 318, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_a_right
   rotate: false
-  xy: 102, 402
+  xy: 634, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_b_inner
   rotate: false
-  xy: 152, 402
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_b_left
   rotate: false
-  xy: 202, 402
+  xy: 318, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_b_right
   rotate: false
-  xy: 252, 402
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_c_inner
   rotate: false
-  xy: 302, 402
+  xy: 2, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_c_left
   rotate: false
-  xy: 352, 402
+  xy: 318, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_c_right
   rotate: false
-  xy: 402, 402
+  xy: 634, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+
+sprites11.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 window_steel_a
   rotate: false
-  xy: 452, 402
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_steel_b
   rotate: false
-  xy: 502, 402
+  xy: 318, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_steel_c
   rotate: false
-  xy: 552, 402
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_steel_e
   rotate: false
-  xy: 552, 402
+  xy: 634, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_steel_d
   rotate: false
-  xy: 602, 402
+  xy: 2, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_steel_f
   rotate: false
-  xy: 652, 402
+  xy: 318, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_steel_g
   rotate: false
-  xy: 702, 402
+  xy: 634, 159
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_steel_h
   rotate: false
-  xy: 752, 402
+  xy: 2, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_steel_i
   rotate: false
-  xy: 802, 402
+  xy: 318, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_steel_j
   rotate: false
-  xy: 852, 402
+  xy: 634, 316
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_a
   rotate: false
-  xy: 902, 402
+  xy: 2, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_b
   rotate: false
-  xy: 952, 402
+  xy: 318, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_c
   rotate: false
-  xy: 2, 452
+  xy: 634, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_e
   rotate: false
-  xy: 2, 452
+  xy: 634, 473
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_d
   rotate: false
-  xy: 52, 452
+  xy: 2, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_f
   rotate: false
-  xy: 102, 452
+  xy: 318, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_g
   rotate: false
-  xy: 152, 452
+  xy: 634, 630
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_h
   rotate: false
-  xy: 202, 452
+  xy: 2, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_i
   rotate: false
-  xy: 252, 452
+  xy: 318, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 window_wood_j
   rotate: false
-  xy: 302, 452
+  xy: 634, 787
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

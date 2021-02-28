@@ -32,7 +32,7 @@ class PlatformGameScreen(
     private lateinit var hud: HUD
     private val obstacles = mutableListOf<Obstacle>()
 
-    private var background = Background(SCALE_X)
+    private var background = Background(game.assets.getSprites(), SCALE_X)
     private lateinit var ground: Ground
     private lateinit var player: Player
     private lateinit var deadPlayer: DeadPlayer
