@@ -6,7 +6,6 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
@@ -286,8 +285,18 @@ class PlatformGameScreen(
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        background.render(camera, state == State.PAUSED)
-        ground.render(camera, state == State.PAUSED)
+        val batch = Globals.spriteBatch
+
+        batch.projectionMatrix = camera.combined
+        batch.begin()
+        background.render(batch, camera, state == State.PAUSED)
+
+        // The background is different in that it uses a parallax scrolling mechanism, which means
+        // that it manages the projection matrix differently. So make sure to choose a sensible
+        // projection matrix after rendering the background.
+        batch.projectionMatrix = camera.combined
+
+        ground.render(batch, camera, state == State.PAUSED)
         val cameraRight = camera.unproject(Vector3(Gdx.graphics.width.toFloat(), 0f, 0f)).x
         for (i in (leftMostObstacleOnScreenIndex - 20).coerceAtLeast(0) until obstacles.size) {
             val obstacle = obstacles[i]
@@ -295,14 +304,16 @@ class PlatformGameScreen(
                 break
             }
 
-            obstacle.render(camera, state == State.PAUSED)
+            obstacle.render(batch, camera, state == State.PAUSED)
         }
 
         when (state) {
-            State.DYING -> deadPlayer.render(camera, state == State.PAUSED)
-            State.WINNING -> successPlayer.render(camera, state == State.PAUSED)
-            else -> player.render(camera, state == State.PAUSED)
+            State.DYING -> deadPlayer.render(batch, camera, state == State.PAUSED)
+            State.WINNING -> successPlayer.render(batch, camera, state == State.PAUSED)
+            else -> player.render(batch, camera, state == State.PAUSED)
         }
+
+        batch.end()
     }
 
     private fun startGame() {

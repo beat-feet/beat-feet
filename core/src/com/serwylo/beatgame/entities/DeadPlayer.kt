@@ -1,6 +1,7 @@
 package com.serwylo.beatgame.entities
 
 import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Assets
@@ -27,7 +28,7 @@ class DeadPlayer(
         this.deathTime = Globals.animationTimer
     }
 
-    override fun render(camera: ParallaxCamera, isPaused: Boolean) {
+    override fun render(batch: SpriteBatch, camera: ParallaxCamera, isPaused: Boolean) {
 
         val sprite = animation.getKeyFrame(Globals.animationTimer - deathTime, false)
 
@@ -35,11 +36,7 @@ class DeadPlayer(
             position.y + (getDuration() - (KEYFRAME_SPEED * 2)) * FLOAT_SPEED
         }
 
-        val batch = Globals.spriteBatch
-        batch.projectionMatrix = camera.combined
-        batch.begin()
         batch.draw(sprite, position.x, y, Player.WIDTH, Player.HEIGHT)
-        batch.end()
 
     }
 

@@ -1,15 +1,12 @@
 package com.serwylo.beatgame.entities
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.serwylo.beatgame.Assets
-import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.graphics.ParallaxCamera
 
 class Background(private val sprites: Assets.Sprites, private val maxSpeed: Float) : Entity {
@@ -20,20 +17,15 @@ class Background(private val sprites: Assets.Sprites, private val maxSpeed: Floa
      */
     private val clouds = mutableListOf<Cloud>()
 
-    private val batch = SpriteBatch(50)
-
     override fun update(delta: Float) {
         clouds.forEach { it.update(delta) }
     }
 
-    override fun render(camera: ParallaxCamera, isPaused: Boolean) {
+    override fun render(batch: SpriteBatch, camera: ParallaxCamera, isPaused: Boolean) {
 
         val cloudParallaxX = 0.2f
 
-        val r = Globals.shapeRenderer
-
         batch.projectionMatrix = camera.calculateParallaxMatrix(cloudParallaxX, 1f)
-        r.projectionMatrix = camera.calculateParallaxMatrix(cloudParallaxX, 1f)
 
         val bottomLeft = camera.unproject(Vector3(0f, Gdx.graphics.height.toFloat(), 0f))
         bottomLeft.x = bottomLeft.x * cloudParallaxX
@@ -48,17 +40,10 @@ class Background(private val sprites: Assets.Sprites, private val maxSpeed: Floa
             })
         }
 
-        batch.begin()
         clouds.forEach {
             it.checkBoundsAndMaybeReset(cameraViewport, nextViewport)
             it.render(batch)
         }
-        batch.end()
-
-        r.begin(ShapeRenderer.ShapeType.Line)
-        r.color = Color.CYAN
-        r.rect(cameraViewport.x, cameraViewport.y, cameraViewport.width, cameraViewport.height)
-        r.end()
     }
 
     class Cloud(private val sprites: Assets.Sprites, private val playerSpeed: Float) {

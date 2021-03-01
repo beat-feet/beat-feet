@@ -1,7 +1,7 @@
 package com.serwylo.beatgame.entities
 
-import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
@@ -111,19 +111,12 @@ class Player(
 
     }
 
-    override fun render(camera: ParallaxCamera, isPaused: Boolean) {
-
-        val batch = Globals.spriteBatch
-        batch.projectionMatrix = camera.combined
-        batch.begin()
+    override fun render(batch: SpriteBatch, camera: ParallaxCamera, isPaused: Boolean) {
         batch.draw(sprite(isPaused), position.x, position.y, WIDTH, HEIGHT)
 
         if (score.getMultiplier() > MIN_MULTIPLIER_FOR_RAINBOW) {
             jumpParticles.draw(batch)
         }
-
-        batch.end()
-
     }
 
     override fun update(delta: Float) {

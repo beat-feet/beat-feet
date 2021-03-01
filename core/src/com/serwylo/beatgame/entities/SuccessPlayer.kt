@@ -1,7 +1,7 @@
 package com.serwylo.beatgame.entities
 
-import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.Assets
@@ -28,15 +28,11 @@ class SuccessPlayer(
         this.successTime = Globals.animationTimer
     }
 
-    override fun render(camera: ParallaxCamera, isPaused: Boolean) {
+    override fun render(batch: SpriteBatch, camera: ParallaxCamera, isPaused: Boolean) {
 
         val sprite = if (Globals.animationTimer - successTime < STAND_TIME) spriteFront else animation.getKeyFrame(Globals.animationTimer, true)
 
-        val batch = Globals.spriteBatch
-        batch.projectionMatrix = camera.combined
-        batch.begin()
         batch.draw(sprite, position.x, position.y, Player.WIDTH, Player.HEIGHT)
-        batch.end()
 
     }
 
