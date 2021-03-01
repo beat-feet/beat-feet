@@ -2,23 +2,22 @@ Jump your way through levels, each automatically generated from the beat of the 
 
 Hit too many obstacles, and you will die. Successfully jump from obstacle to obstacle, and watch your score soar! Can you get to the end?
 
-Play through techno or classical levels, or use your own MP3 files to generate custom levels.
+Play through dozens of levels, or use your own MP3 files to generate custom worlds.
 
-Each level consists of obstacles that correspond to the music playing in the background. Every time you play the same level, the size of the obstacles will be the same, but they will be regenerated with a different style. No two sessions will look the same.
+Each level consists of obstacles that correspond to the music playing in the background. Every time you play the same level, the size of the obstacles will be the same, but the world will have a different style. No two sessions will look the same.
 
 This is still in an early stage and experimental, so any feedback is very welcome at https://github.com/pserwylo/beat-game/discussions.
 
+Support further development at https://github.com/sponsors/pserwylo.
+
 Some of the things we'd particularly like feedback on:
-- What would be a better name for the game?
-- Anyone with skills in DSP -  How can we more accurately turn audio into game obstacles (right now it is almost good, but still not quite right)?
-- Are the mechanics too difficult? too easy?
-- What other obstacles (or bonuses) would make sense to add?
-- How best to jazz it up with little flourishes (without making it seem obnoxious)?
-- How to turn it into more of a journey through levels? should you have to unlock levels? if so, how?
+* What would be a better name for the game?
+* Anyone with skills in DSP -  How can we more accurately turn audio into game obstacles (right now it is almost good, but still not quite right)?
+* Are the mechanics too difficult? too easy?
+* What other obstacles (or bonuses) would make sense to add?
+* How best to jazz it up with little flourishes (without making it seem obnoxious)?
+* How to turn it into more of a journey through levels?
 
 Known limitations, to be addressed soon:
-- No optimisations. Probably wont work well (or at all) on low end devices.
-- Textures are often loaded multiple times, at the wrong time, inefficiently, and not disposed of correctly.
-- Untested on multiple different screen sizes.
-- Some obstacles are insurmountable.
-- Can only add one custom MP3 at a time, should be able to use an entire folder.
+* Untested on multiple different screen sizes or low end devices
+* Can only add one custom MP3 at a time, should be able to use an entire folder.

@@ -1,0 +1,12 @@
+Third experimental version. 
+
+* Earn achievements to unlock levels
+* Performance improvements
+* Background sky and clouds
+* Easier to see layout of health information
+* Highlight combo's using animation
+* Emphasis on polish (particle effects, minor tweaks to sprites, sky and clouds, etc)
+
+Please feel free to provide feedback so we can make this as fun and challenging as can be.
+
+Support further development at https://github.com/sponsors/pserwylo.
