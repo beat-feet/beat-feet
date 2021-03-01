@@ -104,9 +104,11 @@ class HUD(private val score: Score, sprites: Assets.Sprites, private val particl
                 // Don't shake for the end of game screen, looks a bit jarring if we do.
                 healthWidget.clearActions()
 
-            } else if (previousNumHalfHearts != newNumHalfHearts) {
+            }
 
-                if (newNumHalfHearts <= 2) {
+            if (previousNumHalfHearts != newNumHalfHearts) {
+
+                if (newNumHalfHearts in 1..2) {
 
                     // If there are two half hearts, shake less than one half heart, less so for zero half hearts (almost dead)
                     val shakeDistance = heartImages[0].width / 5f / (newNumHalfHearts + 1)
