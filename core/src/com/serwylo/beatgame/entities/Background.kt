@@ -17,6 +17,12 @@ class Background(private val sprites: Assets.Sprites, private val maxSpeed: Floa
      */
     private val clouds = mutableListOf<Cloud>()
 
+    private val skyline = Sprite(arrayOf(
+        sprites.skyline_day,
+        sprites.skyline_sunset,
+        sprites.skyline_evening
+    ).random())
+
     override fun update(delta: Float) {
         clouds.forEach { it.update(delta) }
     }
@@ -32,8 +38,12 @@ class Background(private val sprites: Assets.Sprites, private val maxSpeed: Floa
         val cameraViewport = Rectangle(camera.position.x * cloudParallaxX - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight)
         val nextViewport = Rectangle(cameraViewport.x + cameraViewport.width, cameraViewport.y, cameraViewport.width, cameraViewport.height)
 
+        skyline.setSize(cameraViewport.width, cameraViewport.height + cameraViewport.y)
+        skyline.setPosition(cameraViewport.x, 0f)
+        skyline.draw(batch)
+
         if (clouds.size == 0) {
-            clouds.addAll((0..20).mapIndexed { it, i ->
+            clouds.addAll((0..(Math.random() * MAX_CLOUDS).toInt()).mapIndexed { it, i ->
                 val cloud = Cloud(sprites, maxSpeed)
                 cloud.init(if (i < 10) cameraViewport else nextViewport)
                 cloud
@@ -44,6 +54,10 @@ class Background(private val sprites: Assets.Sprites, private val maxSpeed: Floa
             it.checkBoundsAndMaybeReset(cameraViewport, nextViewport)
             it.render(batch)
         }
+    }
+
+    companion object {
+        const val MAX_CLOUDS = 25
     }
 
     class Cloud(private val sprites: Assets.Sprites, private val playerSpeed: Float) {

@@ -4,9 +4,9 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker
 
 fun main(arg: Array<String>) {
     val settings = TexturePacker.Settings()
-    settings.maxWidth = 1024
-    settings.maxHeight = 1024
-    settings.grid = true
+    settings.maxWidth = 2048
+    settings.maxHeight = 2048
+    settings.grid = false
 
     TexturePacker.process(settings, "sprites/", "../android/assets", "sprites")
 }
