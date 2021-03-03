@@ -103,7 +103,7 @@ class PlatformGameScreen(
             }
         }
 
-        hud = HUD(score, sprites, game.assets.getParticles(), game.assets.getSounds())
+        hud = HUD(score, game.assets.getSkin(), sprites, game.assets.getParticles(), game.assets.getSounds())
 
         camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 5, 0f)
         camera.update()
@@ -142,7 +142,7 @@ class PlatformGameScreen(
 
         score.progress((playTime / world.duration).coerceAtMost(1f))
 
-        hud.render(delta, player.getHealth(), player.getJumpPower())
+        hud.render(delta, player.getHealth(), player.getShield())
     }
 
     private fun processInput() {

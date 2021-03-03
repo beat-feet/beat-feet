@@ -34,8 +34,6 @@ class Player(
 
     private var jumpCount = 0
 
-    private var jumpPower = JUMP_POWER_INITIAL_AMOUNT
-
     private val textureJump = sprites.character_a_jump
     private val textureHit = sprites.character_a_hit
     private val walkAnimation: Animation<TextureRegion> = Animation(0.2f, sprites.character_a_walk)
@@ -48,11 +46,12 @@ class Player(
     )
 
     private var health = 100
+    private var shield = SHIELD_INITIAL_AMOUNT
 
     private val jumpParticles = particles.jump
 
     fun getHealth(): Int { return health }
-    fun getJumpPower(): Float { return jumpPower }
+    fun getShield(): Int { return shield }
 
     enum class State {
         RUNNING,
@@ -69,19 +68,10 @@ class Player(
 
     fun performJump() {
 
-        val maxJumpCount = when {
-            jumpPower >= JUMP_POWER_SPENT_PER_EXTRA_JUMP * 2 -> 3
-            jumpPower >= JUMP_POWER_SPENT_PER_EXTRA_JUMP     -> 2
-            else -> 1
-        }
-
-        if (jumpCount < maxJumpCount && abs(velocity.y) <= DOUBLE_JUMP_THRESHOLD) {
+        if (jumpCount < 2 && abs(velocity.y) <= DOUBLE_JUMP_THRESHOLD) {
 
             if (jumpCount == 0) {
                 jumpParticles.reset()
-            } else {
-                println("Reducing jump multiplier $jumpPower by $JUMP_POWER_SPENT_PER_EXTRA_JUMP")
-                jumpPower -= JUMP_POWER_SPENT_PER_EXTRA_JUMP
             }
 
             velocity.y = JUMP_VELOCITY
@@ -98,9 +88,8 @@ class Player(
                 }
                 jumpParticles.start()
 
-                println("Increasing jump multiplier $jumpPower by ${(score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * JUMP_POWER_EARNED_PER_JUMP}")
-                val increaseJumpPower = ((score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * JUMP_POWER_EARNED_PER_JUMP).coerceAtMost(JUMP_POWER_MAX_INCREASE)
-                jumpPower = (jumpPower + increaseJumpPower).coerceAtMost(1f)
+                val increaseJumpPower = ((score.getMultiplier() - MIN_MULTIPLIER_FOR_RAINBOW) * SHIELD_EARNED_PER_JUMP).coerceAtMost(SHIELD_MAX_INCREASE).toInt()
+                shield = (shield + increaseJumpPower).coerceAtMost(SHIELD_MAX_AMOUNT)
             }
 
         }
@@ -240,7 +229,15 @@ class Player(
                 damage
             }
 
-            health -= scaledDamage
+            // Take damage from the shield first (at a greater rate than is applied to the player health)
+            shield -= scaledDamage * SHIELD_DAMAGE_RATIO
+            if (shield < 0) {
+                // Any left over damage that the shield couldn't absorbe is applied back to the health.
+                val nonShieldDamage = -shield / SHIELD_DAMAGE_RATIO
+                health -= nonShieldDamage
+                shield = 0
+            }
+
             justHitDamage = scaledDamage
 
             if (health <= 0) {
@@ -277,24 +274,25 @@ class Player(
          */
         const val DOUBLE_JUMP_THRESHOLD = 6f
 
-        /**
-         * Use this much jump power each time we double or triple jump.
-         */
-        const val JUMP_POWER_SPENT_PER_EXTRA_JUMP = 0.15f
-
-        const val JUMP_POWER_INITIAL_AMOUNT = 0.3f
+        const val SHIELD_INITIAL_AMOUNT = 0
+        const val SHIELD_MAX_AMOUNT = 100
 
         /**
-         * This will increase as a factor of the current multiplier (but not above [JUMP_POWER_MAX_INCREASE])
+         * This will increase as a factor of the current multiplier (but not above [SHIELD_MAX_INCREASE])
          */
-        const val JUMP_POWER_EARNED_PER_JUMP = 0.1f
+        const val SHIELD_EARNED_PER_JUMP = 2
 
         /**
-         * Even if you have a combo of 1000x, don't give more than this amount of jump power per jump.
-         * Intentionally a fractional value of [JUMP_POWER_SPENT_PER_EXTRA_JUMP] so that you can't gain
-         * it faster than you spend it.
+         * Even if you have a combo of 1000x, don't give more than this amount of fhield per jump.
          */
-        const val JUMP_POWER_MAX_INCREASE = JUMP_POWER_SPENT_PER_EXTRA_JUMP * 0.5f
+        const val SHIELD_MAX_INCREASE = 20f
+
+        /**
+         * The multiplier applied to damage used to subtract from the shield, compared to what would
+         * be subtracted if it was taken from the players health. The shield damages more easily
+         * than health, so the damage it receives should be greater.
+         */
+        const val SHIELD_DAMAGE_RATIO = 4
 
         const val GRAVITY_CONSTANT = -9.8f * 4f
 

@@ -299,8 +299,8 @@ ListStyle: {
 }
 ProgressBarStyle: {
 	default-horizontal: {
-		background: progress-bar-c
-		knobBefore: progress-bar-knob-c
+		background: window
+		knobBefore: rainbow_bar
 	}
 	default-vertical: {
 		background: progress-bar-vertical-c
