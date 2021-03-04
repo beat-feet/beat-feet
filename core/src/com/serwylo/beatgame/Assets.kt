@@ -22,6 +22,7 @@ class Assets {
         manager.load("sprites.atlas", TextureAtlas::class.java)
         manager.load("effects/rainbow.p", ParticleEffect::class.java)
         manager.load("effects/health.p", ParticleEffect::class.java)
+        manager.load("effects/shield.p", ParticleEffect::class.java)
 
         // TODO: This doubles the loading time on my PC from 200ms to 400ms. Is it worth it?
         //       Perhaps we could procedurally generate the sound instead as it is relatively straightforward.
@@ -52,6 +53,7 @@ class Assets {
     class Particles(manager: AssetManager) {
         val jump: ParticleEffect = manager.get("effects/rainbow.p")
         val health: ParticleEffect = manager.get("effects/health.p")
+        val shield: ParticleEffect = manager.get("effects/shield.p")
     }
 
     class Sounds(manager: AssetManager) {

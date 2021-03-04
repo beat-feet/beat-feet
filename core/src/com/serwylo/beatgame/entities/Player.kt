@@ -274,7 +274,7 @@ class Player(
          */
         const val DOUBLE_JUMP_THRESHOLD = 6f
 
-        const val SHIELD_INITIAL_AMOUNT = 0
+        const val SHIELD_INITIAL_AMOUNT = 40
         const val SHIELD_MAX_AMOUNT = 100
 
         /**

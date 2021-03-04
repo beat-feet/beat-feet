@@ -24,7 +24,7 @@ class HUD(private val score: Score, skin: Skin, sprites: Assets.Sprites, private
     private val labelStyle = Label.LabelStyle(font, Color.WHITE)
 
     private val hearts = DiscreteProgressBar(TextureRegionDrawable(sprites.heart), TextureRegionDrawable(sprites.heart_half), TextureRegionDrawable(sprites.heart_empty), particles.health, true)
-    private val shields = DiscreteProgressBar(TextureRegionDrawable(sprites.shield_full), TextureRegionDrawable(sprites.shield_half), TextureRegionDrawable(sprites.shield_empty), particles.health, false)
+    private val shields = DiscreteProgressBar(TextureRegionDrawable(sprites.shield_full), TextureRegionDrawable(sprites.shield_half), TextureRegionDrawable(sprites.shield_empty), particles.shield, false)
 
     private val distanceLabel: Label
     private val scoreLabel: Label

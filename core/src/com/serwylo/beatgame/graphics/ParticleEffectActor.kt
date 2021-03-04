@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 class ParticleEffectActor(private val effect: ParticleEffect) : Actor() {
 
     init {
+        effect.scaleEffect(0.75f, 0.25f, 1f)
         effect.start()
     }
 
