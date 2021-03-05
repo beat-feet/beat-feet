@@ -15,7 +15,7 @@ Play through dozens of levels, or use your own MP3 files to generate custom worl
 
 Each level consists of obstacles that correspond to the music playing in the background. Every time you play the same level, the size of the obstacles will be the same, but the world will have a different style. No two sessions will look the same.
 
-This is still in an early stage and experimental, so any feedback is very welcome at https://github.com/pserwylo/beat-game/discussions.
+This is still in an early stage and experimental, so any feedback is very welcome at https://github.com/beat-game/beat-game/discussions.
 
 ## Contributing
 
@@ -30,11 +30,11 @@ If you wish to support the development financially, donations are welcome via:
 
 ### Reporting Issues
 
-Please report any issues or suggest features on the [issue tracker](https://github.com/pserwylo/beat-game/issues).
+Please report any issues or suggest features on the [issue tracker](https://github.com/beat-game/beat-game/issues).
 
 ### Submitting changes
 
-Pull requests will be warmly received at [https://github.com/pserwylo/beat-game](https://github.com/pserwylo/beat-game).
+Pull requests will be warmly received at [https://github.com/beat-game/beat-game](https://github.com/beat-game/beat-game).
 
 ## Compiling
 
