@@ -285,14 +285,14 @@ class Player(
         /**
          * Even if you have a combo of 1000x, don't give more than this amount of fhield per jump.
          */
-        const val SHIELD_MAX_INCREASE = 20f
+        const val SHIELD_MAX_INCREASE = 10f
 
         /**
          * The multiplier applied to damage used to subtract from the shield, compared to what would
          * be subtracted if it was taken from the players health. The shield damages more easily
          * than health, so the damage it receives should be greater.
          */
-        const val SHIELD_DAMAGE_RATIO = 4
+        const val SHIELD_DAMAGE_RATIO = 5
 
         const val GRAVITY_CONSTANT = -9.8f * 4f
 
