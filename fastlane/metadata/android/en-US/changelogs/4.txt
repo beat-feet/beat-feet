@@ -1,0 +1,9 @@
+Make the game a bit easier by adding shields:
+
+* Start with a small amount of shield
+* Recharge your shield by jumping
+* When getting hit, you will lose your shield before losing any health
+
+Please feel free to provide feedback so we can make this as fun and challenging as can be.
+
+Support further development at https://github.com/sponsors/pserwylo or https://liberapay.com/BeatGame.
