@@ -45,12 +45,6 @@ class BeatGame(private val verbose: Boolean) : Game() {
         }
     }
 
-    fun endGame(world: World, score: Score) {
-        Gdx.app.postRunnable {
-            setScreen(EndGameScreen(this, world, score))
-        }
-    }
-
     fun showLevelSelectMenu() {
         Gdx.app.postRunnable {
             setScreen(LevelSelectScreen(this))

@@ -1,13 +1,7 @@
 {
 BitmapFont: {
 	font: {
-		file: font-export.fnt
-	}
-	font-over: {
-		file: font-over-export.fnt
-	}
-	font-pressed: {
-		file: font-pressed-export.fnt
+		file: liberationmono.fnt
 	}
 }
 Color: {
@@ -280,11 +274,11 @@ LabelStyle: {
 		fontColor: text
 	}
 	over: {
-		font: font-over
+		font: font
 		fontColor: text
 	}
 	pressed: {
-		font: font-pressed
+		font: font
 		fontColor: text
 	}
 }

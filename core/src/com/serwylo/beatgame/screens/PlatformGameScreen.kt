@@ -1,14 +1,16 @@
 package com.serwylo.beatgame.screens
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputAdapter
-import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.*
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.Globals
@@ -18,7 +20,14 @@ import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.entities.*
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.graphics.makeCamera
+import com.serwylo.beatgame.levels.HighScore
 import com.serwylo.beatgame.levels.Score
+import com.serwylo.beatgame.levels.achievements.AchievementType
+import com.serwylo.beatgame.levels.achievements.allAchievements
+import com.serwylo.beatgame.levels.achievements.loadAchievementsForLevel
+import com.serwylo.beatgame.levels.achievements.saveAchievements
+import com.serwylo.beatgame.levels.loadHighScore
+import com.serwylo.beatgame.levels.saveHighScore
 import kotlin.math.sin
 
 
@@ -31,11 +40,20 @@ class PlatformGameScreen(
     private lateinit var hud: HUD
     private val obstacles = mutableListOf<Obstacle>()
 
+    private val music = Gdx.audio.newMusic(world.musicFile)
+
+    /**
+     * Used at the end of the game to show feedback about the level and also a few options for
+     * either restarting, changing level, etc.
+      */
+    private val stage = Stage(ExtendViewport(300f, 200f))
+
     private var background = Background(game.assets.getSprites(), SCALE_X)
     private lateinit var ground: Ground
     private lateinit var player: Player
     private lateinit var deadPlayer: DeadPlayer
     private lateinit var successPlayer: SuccessPlayer
+    private val shapeRenderer = ShapeRenderer()
 
     private var isInitialised = false
 
@@ -72,7 +90,7 @@ class PlatformGameScreen(
         obstacles.addAll(generateObstacles(sprites, allFeatures))
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
-        Gdx.input.inputProcessor = object : InputAdapter() {
+        Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
 
             override fun keyDown(keycode: Int): Boolean {
                 if (keycode == Input.Keys.SPACE || keycode == Input.Keys.B || keycode == Input.Keys.J) {
@@ -101,7 +119,7 @@ class PlatformGameScreen(
                 player.performJump()
                 return true
             }
-        }
+        })
 
         hud = HUD(score, game.assets.getSkin(), sprites, game.assets.getParticles(), game.assets.getSounds())
 
@@ -120,7 +138,9 @@ class PlatformGameScreen(
     }
 
     override fun hide() {
-        world.dispose()
+        music.stop()
+        music.dispose()
+        stage.dispose()
 
         Gdx.input.inputProcessor = null
         Gdx.input.setCatchKey(Input.Keys.BACK, false)
@@ -136,6 +156,7 @@ class PlatformGameScreen(
             playTime += delta
         }
 
+        stage.act(delta)
         processInput()
         updateEntities(delta)
         renderEntities()
@@ -143,6 +164,21 @@ class PlatformGameScreen(
         score.progress((playTime / world.duration).coerceAtMost(1f))
 
         hud.render(delta, player.getHealth(), player.getShield())
+
+        Gdx.gl.glEnable(GL20.GL_BLEND)
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+
+        if (state == State.DYING || state == State.WINNING) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
+            shapeRenderer.color = Color(0f, 0f, 0f, 0.5f)
+            shapeRenderer.rect(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+            shapeRenderer.end()
+        }
+
+        stage.draw()
+
+        Gdx.gl.glDisable(GL20.GL_BLEND)
+
     }
 
     private fun processInput() {
@@ -204,25 +240,24 @@ class PlatformGameScreen(
 
         } else if (state == State.DYING) {
 
+            if (stage.actors.size == 0) {
+                endGame()
+            }
+
             if (Globals.animationTimer - deathTime < DEATH_TIME) {
 
                 camera.translate(0f, delta * DeadPlayer.FLOAT_SPEED / 8)
                 camera.zoom += DEATH_ZOOM_RATE * delta
                 camera.update()
 
-            } else {
-
-                endGame()
-
             }
 
         } else if (state == State.WINNING) {
 
-            if (Globals.animationTimer - winTime > WINNING_TIME) {
-
+            if (stage.actors.size == 0) {
                 endGame()
-
             }
+
         }
 
     }
@@ -266,6 +301,7 @@ class PlatformGameScreen(
         }
 
         camera.update()
+
     }
 
     private fun scrollCamera(camera: OrthographicCamera, delta: Float) {
@@ -318,26 +354,21 @@ class PlatformGameScreen(
 
     private fun startGame() {
         state = State.PLAYING
-        world.music.play()
-    }
-
-    private fun endGame() {
-        world.music.stop()
-        game.endGame(world, score)
+        music.play()
     }
 
     override fun pause() {
         super.pause()
 
         prePauseState = state
-        world.music.pause()
+        music.pause()
         state = State.PAUSED
     }
 
     override fun resume() {
         super.resume()
 
-        world.music.play()
+        music.play()
         state = prePauseState
     }
 
@@ -361,6 +392,44 @@ class PlatformGameScreen(
                 player.hit(obstacle)
             }
         }
+    }
+
+    private fun endGame() {
+        music.volume = 0.4f
+
+        val existingAchievements = loadAchievementsForLevel(world.level())
+        val newAchievements: List<AchievementType>
+        val existingHighScore: HighScore = loadHighScore(world.level())
+        val newHighScore: HighScore = saveHighScore(world.level(), score)
+
+        newAchievements = allAchievements.filter {
+            it.isAchieved(score, newHighScore) && existingAchievements.all { existing -> existing.id != it.id }
+        }
+
+        saveAchievements(newAchievements, world.level())
+
+        val leaveGame = { subsequentAction: () -> Unit -> {
+            music.stop()
+            subsequentAction()
+        }}
+
+        val endGameInfo = EndGameActor(
+            game,
+            existingHighScore,
+            score,
+            newAchievements,
+            leaveGame { game.startGame(world) },
+            leaveGame { game.showLevelSelectMenu() },
+            leaveGame { game.showMenu() }
+        )
+
+        // Despite our best efforts to fit all of this info nicely on one screen, you may have an
+        // epic play through that earns all the achievements, in which case we need you to be able
+        // to see them all to celebrate, so add it in a scroll view.
+        val scrollView = ScrollPane(endGameInfo)
+        scrollView.setFillParent(true)
+        scrollView.setScrollingDisabled(true, false)
+        stage.addActor(scrollView)
     }
 
     companion object {
@@ -406,11 +475,6 @@ class PlatformGameScreen(
          * The animation of death is handled differently, managed by the [Player] class.
          */
         private const val DEATH_TIME = 5f
-
-        /**
-         * Play a celebration animation for this long.
-         */
-        private const val WINNING_TIME = 3f
 
         /**
          * After reaching 100% of the level, walk for this much longer before stopping, celebrating, then ending the level.

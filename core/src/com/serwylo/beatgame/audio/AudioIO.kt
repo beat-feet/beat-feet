@@ -70,10 +70,9 @@ fun loadFromDisk(musicFile: FileHandle): World {
 
     Gdx.app.debug(TAG, "Samples: ${spectogram.mp3Data.pcmSamples.size} @ ${spectogram.mp3Data.sampleRate}Hz (duration: ${spectogram.mp3Data.pcmSamples.size / spectogram.mp3Data.sampleRate})")
     val duration = spectogram.mp3Data.pcmSamples.size / spectogram.mp3Data.sampleRate
-    val music = Gdx.audio.newMusic(musicFile)
 
     Gdx.app.debug(TAG, "Finished generating world")
-    return World(music, musicFile.name(), duration, heightMap, features[0], features[1], features[2])
+    return World(musicFile, duration, heightMap, features[0], features[1], features[2])
 
 }
 
@@ -96,7 +95,7 @@ private fun loadFromCache(musicFile: FileHandle): World? {
             return null
         }
 
-        return World(Gdx.audio.newMusic(musicFile), musicFile.name(), data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
+        return World(musicFile, data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
@@ -126,7 +125,7 @@ private fun loadPrecompiled(musicFile: FileHandle): World? {
             error("Precompiled world data is version ${data.version}, whereas we only know how to handle version ${CachedWorldData.currentVersion} with certainty. Perhaps we need to compile again using :song-extract:processSongs?")
         }
 
-        return World(Gdx.audio.newMusic(musicFile), musicFile.name(), data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
+        return World(musicFile, data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
