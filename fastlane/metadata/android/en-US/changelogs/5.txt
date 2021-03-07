@@ -1,0 +1,8 @@
+Enhance the end-of-level experience by:
+
+* Instantly letting you restart, change level, or return to the main level after dying
+* Instantly save the progress (rather than waiting for the death animation to complete)
+
+Please feel free to provide feedback so we can make this as fun and challenging as can be.
+
+Support further development at https://github.com/sponsors/pserwylo or https://liberapay.com/BeatGame.
