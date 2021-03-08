@@ -1,7 +1,16 @@
 {
 BitmapFont: {
-	font: {
-		file: liberationmono.fnt
+	font_huge: {
+		file: kenney_high_square_72.fnt
+	}
+	font_large: {
+		file: kenney_pixel_72.fnt
+	}
+	font_medium: {
+		file: kenney_pixel_42.fnt
+	}
+	font_small: {
+		file: kenney_mini_18.fnt
 	}
 }
 Color: {
@@ -205,8 +214,8 @@ ButtonStyle: {
 	locked: {
 		parent: default
 		up: button.locked
-		down: button-pressed.locked
-		over: button-over.locked
+		down: button.locked
+		over: button.locked
 	}
 }
 CheckBoxStyle: {
@@ -214,7 +223,7 @@ CheckBoxStyle: {
 		checkboxOn: checkbox-pressed-c
 		checkboxOff: checkbox-c
 		checkboxOver: checkbox-over-c
-		font: font
+		font: font_medium
 		fontColor: text
 		downFontColor: text-selected
 		checkedFontColor: text-selected
@@ -223,7 +232,7 @@ CheckBoxStyle: {
 		checkboxOn: radio-pressed-c
 		checkboxOff: radio-c
 		checkboxOver: radio-over-c
-		font: font
+		font: font_medium
 		fontColor: color
 		downFontColor: selected
 		checkedFontColor: selected
@@ -238,7 +247,7 @@ ImageButtonStyle: {
 }
 ImageTextButtonStyle: {
 	default: {
-		font: font
+		font: font_medium
 		fontColor: text
 		downFontColor: text-selected
 		up: button-c
@@ -251,7 +260,7 @@ ImageTextButtonStyle: {
 		imageOver: checkbox-over-c
 		imageChecked: checkbox-pressed-c
 		imageCheckedOver: checkbox-pressed-over-c
-		font: font
+		font: font_medium
 		fontColor: text
 		downFontColor: text-selected
 		checkedFontColor: text-selected
@@ -262,7 +271,7 @@ ImageTextButtonStyle: {
 		imageOver: radio-over-c
 		imageChecked: radio-pressed-c
 		imageCheckedOver: radio-over-c
-		font: font
+		font: font_medium
 		fontColor: text
 		downFontColor: text-selected
 		checkedFontColor: text-selected
@@ -270,21 +279,33 @@ ImageTextButtonStyle: {
 }
 LabelStyle: {
 	default: {
-		font: font
+		font: font_medium
 		fontColor: text
 	}
 	over: {
-		font: font
+		font: font_medium
 		fontColor: text
 	}
 	pressed: {
-		font: font
+		font: font_medium
 		fontColor: text
+	}
+	small: {
+		parent: default
+		font: font_small
+	}
+	large: {
+		parent: default
+		font: font_large
+	}
+	huge: {
+		parent: default
+		font: font_huge
 	}
 }
 ListStyle: {
 	default: {
-		font: font
+		font: font_medium
 		fontColorSelected: selected
 		fontColorUnselected: text
 		selection: color
@@ -313,7 +334,7 @@ ScrollPaneStyle: {
 }
 SelectBoxStyle: {
 	default: {
-		font: font
+		font: font_medium
 		fontColor: text
 		background: select-box-c
 		scrollStyle: default
@@ -348,17 +369,29 @@ SplitPaneStyle: {
 }
 TextButtonStyle: {
 	default: {
-		font: font
+		font: font_medium
 		fontColor: text
 		downFontColor: text-selected
-		up: button-c
-		down: button-pressed-c
-		over: button-over-c
+		up: button
+		down: button-pressed
+		over: button-over
+	}
+	small: {
+		parent: default
+		font: font_small
+	}
+	large: {
+		parent: default
+		font: font_large
+	}
+	huge: {
+		parent: default
+		font: font_huge
 	}
 }
 TextFieldStyle: {
 	default: {
-		font: font
+		font: font_medium
 		fontColor: text
 		background: textfield-c
 		focusedBackground: textfield-selected-c
@@ -366,7 +399,7 @@ TextFieldStyle: {
 		selection: selected
 	}
 	login: {
-		font: font
+		font: font_medium
 		fontColor: text
 		background: textfield-login-c
 		focusedBackground: textfield-login-selected-c
@@ -374,7 +407,7 @@ TextFieldStyle: {
 		selection: selected
 	}
 	password: {
-		font: font
+		font: font_medium
 		fontColor: text
 		background: textfield-password-c
 		focusedBackground: textfield-password-selected-c
@@ -404,7 +437,7 @@ TreeStyle: {
 WindowStyle: {
 	default: {
 		background: window-c
-		titleFont: font
+		titleFont: font_medium
 	}
 }
 }

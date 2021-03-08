@@ -3,17 +3,19 @@ package com.serwylo.beatgame
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+
 
 @Suppress("PropertyName") // Allow underscores in variable names here, because it better reflects the source files things come from.
 class Assets {
 
     private val manager = AssetManager()
     private lateinit var skin: Skin
+    private lateinit var styles: Styles
     private lateinit var sprites: Sprites
     private lateinit var particles: Particles
     private lateinit var sounds: Sounds
@@ -38,6 +40,8 @@ class Assets {
         manager.finishLoading()
 
         skin = manager.get("skin.json")
+
+        styles = Styles(skin)
         sprites = Sprites(manager.get("sprites.atlas"))
         particles = Particles(manager)
         sounds = Sounds(manager)
@@ -47,9 +51,29 @@ class Assets {
     }
 
     fun getSkin() = skin
+    fun getStyles() = styles
     fun getSprites() = sprites
     fun getParticles() = particles
     fun getSounds() = sounds
+
+    class Styles(private val skin: Skin) {
+        val label = Labels()
+        val textButton = TextButtons()
+
+        inner class Labels {
+            val small = skin.get("small", Label.LabelStyle::class.java)
+            val medium = skin.get("default", Label.LabelStyle::class.java)
+            val large = skin.get("large", Label.LabelStyle::class.java)
+            val huge = skin.get("huge", Label.LabelStyle::class.java)
+        }
+
+        inner class TextButtons {
+            val small = skin.get("small", TextButton.TextButtonStyle::class.java)
+            val medium = skin.get("default", TextButton.TextButtonStyle::class.java)
+            val large = skin.get("large", TextButton.TextButtonStyle::class.java)
+            val huge = skin.get("huge", TextButton.TextButtonStyle::class.java)
+        }
+    }
 
     class Particles(manager: AssetManager) {
         val jump: ParticleEffect = manager.get("effects/rainbow.p")

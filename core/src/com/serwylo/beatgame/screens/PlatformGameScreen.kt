@@ -28,6 +28,7 @@ import com.serwylo.beatgame.levels.achievements.loadAchievementsForLevel
 import com.serwylo.beatgame.levels.achievements.saveAchievements
 import com.serwylo.beatgame.levels.loadHighScore
 import com.serwylo.beatgame.levels.saveHighScore
+import com.serwylo.beatgame.ui.makeStage
 import kotlin.math.sin
 
 
@@ -46,7 +47,7 @@ class PlatformGameScreen(
      * Used at the end of the game to show feedback about the level and also a few options for
      * either restarting, changing level, etc.
       */
-    private val stage = Stage(ExtendViewport(300f, 200f))
+    private val stage = makeStage()
 
     private var background = Background(game.assets.getSprites(), SCALE_X)
     private lateinit var ground: Ground

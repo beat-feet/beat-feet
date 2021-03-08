@@ -1,0 +1,13 @@
+{
+"characters": "",
+"size": 26,
+"hinting": "AutoMedium",
+"color": "color",
+"colorValue": -1,
+"gamma": 1.8,
+"renderCount": 2,
+"borderGamma": 1.8,
+"kerning": true,
+"minFilter": "Nearest",
+"magFilter": "Nearest"
+}

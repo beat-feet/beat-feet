@@ -10,6 +10,9 @@ import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.levels.HighScore
 import com.serwylo.beatgame.levels.Score
 import com.serwylo.beatgame.levels.achievements.AchievementType
+import com.serwylo.beatgame.ui.UI_SPACE
+import com.serwylo.beatgame.ui.makeButton
+import com.serwylo.beatgame.ui.makeLargeButton
 
 class EndGameActor(
         private val game: BeatGame,
@@ -21,39 +24,17 @@ class EndGameActor(
         onMainMenu: () -> Unit
 ): VerticalGroup() {
 
-    private var mediumFont = BitmapFont().apply { data.scale(-0.2f) }
+    private val styles = game.assets.getStyles()
 
     init {
 
         align(Align.center)
         columnAlign(Align.center)
+        space(UI_SPACE)
 
-        val replayButton = TextButton("Replay", game.assets.getSkin())
-        replayButton.isDisabled = false
-        replayButton.pad(SPACING * 1.75f)
-        replayButton.addListener(object: ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                onReplay()
-            }
-        })
-
-        val changeLevelButton = TextButton("Change level", game.assets.getSkin())
-        changeLevelButton.isDisabled = false
-        changeLevelButton.label.setFontScale(0.5f)
-        changeLevelButton.addListener(object: ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                onChangeLevel()
-            }
-        })
-
-        val mainMenuButton = TextButton("Main menu", game.assets.getSkin())
-        mainMenuButton.isDisabled = false
-        mainMenuButton.label.setFontScale(0.5f)
-        mainMenuButton.addListener(object: ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                onMainMenu()
-            }
-        })
+        val replayButton = makeLargeButton("Replay", styles) { onReplay() }
+        val changeLevelButton = makeButton("Change level", styles) { onChangeLevel() }
+        val mainMenuButton = makeButton("Change level", styles) { onMainMenu() }
 
         val secondaryButtons = HorizontalGroup()
         secondaryButtons.addActor(changeLevelButton)
@@ -66,23 +47,20 @@ class EndGameActor(
         val scoreRecord = score.getPoints() > existingHighScore.points
 
         if (distanceRecord || scoreRecord) {
-            val recordLabelStyle = Label.LabelStyle()
-            recordLabelStyle.font = mediumFont
-
             val horizontalGroup = HorizontalGroup()
             horizontalGroup.space(SPACING)
             horizontalGroup.padTop(SPACING)
 
-            horizontalGroup.addActor(Label("New Record!", recordLabelStyle))
+            horizontalGroup.addActor(Label("New Record!", styles.label.medium))
 
             if (distanceRecord) {
                 horizontalGroup.addActor(Image(game.assets.getSprites().right_sign))
-                horizontalGroup.addActor(Label("${(score.distancePercent * 100).toInt()}%", recordLabelStyle))
+                horizontalGroup.addActor(Label("${(score.distancePercent * 100).toInt()}%", styles.label.medium))
             }
 
             if (scoreRecord) {
                 horizontalGroup.addActor(Image(game.assets.getSprites().score))
-                horizontalGroup.addActor(Label("${score.getPoints()}", recordLabelStyle))
+                horizontalGroup.addActor(Label("${score.getPoints()}", styles.label.medium))
             }
 
             addActor(horizontalGroup)
@@ -95,11 +73,10 @@ class EndGameActor(
     private fun makeAchievementsTable(achievements: List<AchievementType>): Table {
 
         val achievementsTable = Table()
-        val achievementLabelStyle = Label.LabelStyle(mediumFont, Color.WHITE)
         val icon = game.assets.getSprites().star
 
         achievements.forEachIndexed { i, it ->
-            val label = Label(it.label, achievementLabelStyle)
+            val label = Label(it.label, styles.label.medium)
 
             val group = HorizontalGroup()
             group.addActor(Image(icon))
