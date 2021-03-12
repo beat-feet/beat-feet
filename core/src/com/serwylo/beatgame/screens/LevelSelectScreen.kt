@@ -3,34 +3,29 @@ package com.serwylo.beatgame.screens
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.levels.loadHighScore
+import com.serwylo.beatgame.ui.UI_SPACE
+import com.serwylo.beatgame.ui.makeIcon
+import com.serwylo.beatgame.ui.makeStage
 import java.io.File
 
 class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
+    private val stage = makeStage()
+
     private val sprites = game.assets.getSprites()
-
-    private val stage = Stage(ExtendViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
+    private val styles = game.assets.getStyles()
     private val skin = game.assets.getSkin()
-
-    private var mediumFont = BitmapFont().apply { data.scale(0.2f) }
-    private var smallFont = BitmapFont().apply { data.scale(-0.3f) }
-
-    private val mediumLabelStyle = Label.LabelStyle(mediumFont, Color.WHITE)
-    private val smallLabelStyle = Label.LabelStyle(smallFont, Color.WHITE)
 
     private val distanceTexture = sprites.right_sign
     private val scoreTexture = sprites.score
@@ -40,19 +35,19 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
     init {
 
         val levelsPerRow = 5
-        val padding = stage.width / 50
-        val size = (stage.width - padding * 2) / levelsPerRow
+        val width = (stage.width - UI_SPACE * 2) / levelsPerRow
+        val height = width * 3 / 4
 
         var x = 0
         var y = 0
 
         val table = Table()
-        table.pad(padding)
+        table.pad(UI_SPACE)
 
         val scrollPane = ScrollPane(table, skin)
         scrollPane.setFillParent(true)
         scrollPane.setScrollingDisabled(true, false)
-        scrollPane.setupOverscroll(size / 4, 30f, 200f)
+        scrollPane.setupOverscroll(width / 4, 30f, 200f)
 
         stage.addActor(scrollPane)
 
@@ -64,7 +59,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
                 x = 0
             }
 
-            table.add(makeButton(level)).width(size).height(size)
+            table.add(makeButton(level)).width(width).height(height)
 
             x ++
 
@@ -115,33 +110,37 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
         val buttonStyle = if (isLocked) "locked" else "default"
         val textColor = if (isLocked) Color.GRAY else Color.WHITE
 
-        val button = Button(skin, buttonStyle)
-        button.isDisabled = isLocked
-        button.setFillParent(true)
-        button.addListener(object: ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                onLevelSelected(level)
-            }
-        })
+        val button = Button(skin, buttonStyle).apply {
+            isDisabled = isLocked
+            setFillParent(true)
+            addListener(object: ChangeListener() {
+                override fun changed(event: ChangeEvent?, actor: Actor?) {
+                    onLevelSelected(level)
+                }
+            })
+        }
 
         val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else level.label
-        val levelLabel = Label(labelString, mediumLabelStyle)
-        levelLabel.wrap = true
-        levelLabel.color = textColor
-        levelLabel.setAlignment(Align.topLeft)
 
-        val table = Table()
-        table.setFillParent(true)
-        table.touchable = Touchable.disabled // Let the button in the background do the interactivity.
-        table.pad(Value.percentWidth(0.125f))
+        val levelLabel = Label(labelString, styles.label.medium).apply {
+            wrap = true
+            color = textColor
+            setAlignment(Align.topLeft)
+        }
 
-        table.add(levelLabel).expand().fill().colspan(4)
+        val table = Table().apply {
+            setFillParent(true)
+            touchable = Touchable.disabled // Let the button in the background do the interactivity.
+            pad(Value.percentWidth(0.125f))
+
+            add(levelLabel).expand().fill().colspan(4)
+        }
 
         val highScore = loadHighScore(level)
 
         if (isLocked) {
 
-            val unlockDescription = Label(level.unlockRequirements.describeOutstandingRequirements(achievements), smallLabelStyle)
+            val unlockDescription = Label(level.unlockRequirements.describeOutstandingRequirements(achievements), styles.label.small)
             unlockDescription.color = textColor
 
             table.row()
@@ -149,11 +148,11 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
         } else if (highScore.exists()) {
 
-            val distanceLabel = Label(highScore.distancePercentString(), smallLabelStyle)
-            val scoreLabel = Label(highScore.points.toString(), smallLabelStyle)
+            val distanceLabel = Label(highScore.distancePercentString(), styles.label.small)
+            val scoreLabel = Label(highScore.points.toString(), styles.label.small)
 
-            val distanceIcon = Image(distanceTexture)
-            val scoreIcon = Image(scoreTexture)
+            val distanceIcon = makeIcon(distanceTexture)
+            val scoreIcon = makeIcon(scoreTexture)
 
             val iconSize = Value.percentWidth(0.75f)
             val iconSpace = Value.percentWidth(0.2f)
@@ -183,16 +182,6 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
         }
 
         return true
-    }
-
-    companion object {
-
-        @JvmStatic
-        private val VIEWPORT_WIDTH = 600f
-
-        @JvmStatic
-        private val VIEWPORT_HEIGHT = 400f
-
     }
 
 }
