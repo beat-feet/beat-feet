@@ -1,25 +1,77 @@
 package com.serwylo.beatgame.screens
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
+import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.loadWorldFromMp3
-import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.loadHighScore
+import com.serwylo.beatgame.ui.*
 
 class LoadingScreen(
-        private val game: BeatGame,
-        private val musicFile: FileHandle,
-        songName: String
-) : InfoScreen(
-        game,
-        songName,
-        "Loading...",
-        game.assets.getSprites().logo
-) {
+    private val game: BeatGame,
+    private val musicFile: FileHandle,
+    songName: String
+    ): ScreenAdapter() {
 
-    private val level: Level = Levels.bySong(musicFile.name())
+    private val stage = makeStage()
+
+    private val level = Levels.bySong(musicFile.name())
+
+    init {
+        val sprites = game.assets.getSprites()
+        val styles = game.assets.getStyles()
+
+        val container = VerticalGroup()
+        container.setFillParent(true)
+        container.align(Align.center)
+        container.space(UI_SPACE)
+
+        container.addActor(
+            makeHeading(
+                songName,
+                sprites.logo,
+                styles
+            )
+        )
+
+        val topScore = loadHighScore(level)
+
+        val bestLabel = Label("Best", styles.label.medium)
+        val distanceLabel = Label("${(topScore.distancePercent * 100).toInt()}%", styles.label.medium)
+        val scoreLabel = Label("${topScore.points}", styles.label.medium)
+
+        val distanceImage = makeIcon(sprites.right_sign)
+        val scoreImage = makeIcon(sprites.score)
+
+        container.addActor(
+            HorizontalGroup().apply {
+                space(UI_SPACE)
+                addActor(bestLabel)
+                addActor(distanceImage)
+                addActor(distanceLabel)
+                addActor(scoreImage)
+                addActor(scoreLabel)
+            }
+        )
+
+        container.addActor(
+            Label("Loading", styles.label.medium)
+        )
+
+        stage.addActor(container)
+
+    }
+
+    override fun resize(width: Int, height: Int) {
+        stage.viewport.update(width, height, true)
+    }
 
     override fun show() {
         super.show()
@@ -40,44 +92,16 @@ class LoadingScreen(
         }.start()
     }
 
-    override fun otherActor(): WidgetGroup {
+    override fun render(delta: Float) {
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        val topScore = loadHighScore(level)
-
-        val labelStyle = Label.LabelStyle()
-        labelStyle.font = mediumFont
-
-        val verticalGroup = VerticalGroup()
-        verticalGroup.space(SPACING)
-
-        val horizontalGroup = HorizontalGroup()
-        horizontalGroup.space(SPACING)
-
-        val bestLabel = Label("Best", labelStyle)
-        val distanceLabel = Label("${(topScore.distancePercent * 100).toInt()}%", labelStyle)
-        val scoreLabel = Label("${topScore.points}", labelStyle)
-
-        val distanceImage = Image(game.assets.getSprites().right_sign)
-        val scoreImage = Image(game.assets.getSprites().score)
-
-        horizontalGroup.addActor(bestLabel)
-        horizontalGroup.addActor(distanceImage)
-        horizontalGroup.addActor(distanceLabel)
-        horizontalGroup.addActor(scoreImage)
-        horizontalGroup.addActor(scoreLabel)
-
-        verticalGroup.addActor(horizontalGroup)
-
-        return verticalGroup
-
+        stage.act(delta)
+        stage.draw()
     }
 
     companion object {
-
         private const val MIN_LOAD_TIME = 1000
-
-        private const val SPACING = 10f
-
     }
 
 }
