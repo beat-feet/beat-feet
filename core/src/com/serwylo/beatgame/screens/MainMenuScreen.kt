@@ -23,14 +23,13 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
         container.align(Align.center)
         container.space(UI_SPACE)
 
-        val titleRow = HorizontalGroup()
-        titleRow.space(UI_SPACE)
-        titleRow.padBottom(UI_SPACE)
-
-        titleRow.addActor(makeIcon(sprites.logo, 100f))
-        titleRow.addActor(Label("Beat Game", styles.label.huge))
-
-        container.addActor(titleRow)
+        container.addActor(
+            makeHeading(
+                "Beat Game",
+                sprites.logo,
+                styles
+            )
+        )
 
         val buttonTable = Table()
         buttonTable.pad(UI_SPACE)

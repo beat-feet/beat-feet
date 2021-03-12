@@ -15,6 +15,7 @@ import com.serwylo.beatgame.levels.achievements.Achievement
 import com.serwylo.beatgame.levels.achievements.allAchievements
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.ui.UI_SPACE
+import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeStage
 
@@ -32,10 +33,7 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
         table.padBottom(UI_SPACE * 2)
         table.row().align(Align.center).pad(UI_SPACE * 2)
 
-        val headingGroup = HorizontalGroup()
-
-        headingGroup.addActor(makeIcon(sprites.star))
-        headingGroup.addActor(Label("Achievements", styles.label.large))
+        val headingGroup = makeHeading("Achievements", sprites.star, styles)
 
         table.add(headingGroup).colspan(2)
 

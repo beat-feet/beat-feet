@@ -1,22 +1,63 @@
 package com.serwylo.beatgame.screens
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.*
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
+import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.ui.UI_SPACE
+import com.serwylo.beatgame.ui.makeHeading
+import com.serwylo.beatgame.ui.makeStage
 
-class AboutScreen(private val game: BeatGame): InfoScreen(
-        game,
-        "Credits",
-        CREDITS,
-        game.assets.getSprites().logo
-) {
+class AboutScreen(private val game: BeatGame): ScreenAdapter() {
+
+    private val stage = makeStage()
+
+    init {
+        val sprites = game.assets.getSprites()
+        val styles = game.assets.getStyles()
+
+        val container = VerticalGroup()
+        container.setFillParent(true)
+        container.align(Align.center)
+        container.space(UI_SPACE)
+
+        container.addActor(makeHeading("Credits", sprites.logo, styles))
+
+        CREDITS.entries.forEach { entry ->
+
+            val heading = entry.key
+            val values = entry.value
+
+            container.addActor(
+                Label(heading, styles.label.large).apply {
+                    setAlignment(Align.center)
+                }
+            )
+
+            values.forEach { value ->
+
+                container.addActor(
+                    Label(value, styles.label.medium).apply {
+                        setAlignment(Align.center)
+                    }
+                )
+
+            }
+        }
+
+        stage.addActor(container)
+
+    }
+
+    override fun resize(width: Int, height: Int) {
+        stage.viewport.update(width, height, true)
+    }
 
     override fun show() {
-        super.show()
-
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
-        Gdx.input.inputProcessor = object : InputAdapter() {
+        Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
 
             override fun keyDown(keycode: Int): Boolean {
                 if (keycode == Input.Keys.ENTER || keycode == Input.Keys.SPACE || keycode == Input.Keys.BACK) {
@@ -32,8 +73,7 @@ class AboutScreen(private val game: BeatGame): InfoScreen(
                 return true
             }
 
-        }
-
+        })
     }
 
     override fun hide() {
@@ -41,18 +81,30 @@ class AboutScreen(private val game: BeatGame): InfoScreen(
         Gdx.input.setCatchKey(Input.Keys.BACK, false)
     }
 
-    companion object {
-        private const val CREDITS = """
-Music:
-The Haunted Mansion / CC-BY-SA 3.0
-Awakening / CC-BY-SA 3.0
-Health and Safety / CC-BY-SA 3.0
-John Harrison w/ Wichita State University Chamber / CC-BY-SA 3.0
+    override fun render(delta: Float) {
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-Graphics:
-Kenney.nl / CCO 1.0
-disabledpaladin / CC-BY-SA 4.0
-        """
+        stage.act(delta)
+        stage.draw()
+    }
+
+    companion object {
+        private val CREDITS = mapOf(
+
+            "Music" to listOf(
+                "The Haunted Mansion / CC-BY-SA 3.0",
+                "Awakening / CC-BY-SA 3.0",
+                "Health and Safety / CC-BY-SA 3.0",
+                "John Harrison w/ Wichita State University Chamber / CC-BY-SA 3.0"
+            ),
+
+            "Graphics" to listOf(
+                "Kenney.nl / CCO 1.0",
+                "disabledpaladin / CC-BY-SA 4.0"
+            )
+
+        )
     }
 
 }
