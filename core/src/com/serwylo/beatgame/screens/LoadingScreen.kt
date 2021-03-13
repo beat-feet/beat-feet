@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
@@ -12,7 +13,10 @@ import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.loadWorldFromMp3
 import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.loadHighScore
-import com.serwylo.beatgame.ui.*
+import com.serwylo.beatgame.ui.UI_SPACE
+import com.serwylo.beatgame.ui.makeHeading
+import com.serwylo.beatgame.ui.makeIcon
+import com.serwylo.beatgame.ui.makeStage
 
 class LoadingScreen(
     private val game: BeatGame,
@@ -65,6 +69,23 @@ class LoadingScreen(
             Label("Loading", styles.label.medium)
         )
 
+        // All other loading is quite quick, because it is just processing pre-generated JSON data.
+        // Loading a custom level however will be slow the *first* time it runs. Every time afterwards
+        // it will be as fast as others because it will use the cached JSON data however.
+        // After 5 seconds, fade in a polite warning message asking patience.
+        if (songName == "{Custom}") {
+            val slowWarning = Label("Please be patient, it may take some time when analysing your song for the first time...", styles.label.small)
+            container.addActor(slowWarning)
+
+            slowWarning.addAction(
+                sequence(
+                    alpha(0f),
+                    delay(5f),
+                    fadeIn(2f)
+                )
+            )
+        }
+
         stage.addActor(container)
 
     }
@@ -96,8 +117,13 @@ class LoadingScreen(
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
+        Gdx.gl.glEnable(GL20.GL_BLEND)
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+
         stage.act(delta)
         stage.draw()
+
+        Gdx.gl.glDisable(GL20.GL_BLEND)
     }
 
     companion object {
