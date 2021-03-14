@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.Globals
@@ -145,6 +143,38 @@ class PlatformGameScreen(
 
         Gdx.input.inputProcessor = null
         Gdx.input.setCatchKey(Input.Keys.BACK, false)
+    }
+
+    override fun resize(width: Int, height: Int) {
+        stage.viewport.update(width, height)
+
+        hud.resize(width, height)
+
+        val newCamera = makeCamera(20, 10, calcDensityScaleFactor())
+
+        /*
+         * When increasing in size:
+         *  - The player (x) was off centre a little.
+         *  - The new "off centre" (y) is actually to the right
+         *  - If we don't update the camera translation, the player will fall off the screen when
+         *    decreasing the screen size.
+         *  - Calculate the old off centre, the new off centre, and translate to the right that much.
+         *  - Do the reverse when decreasing size.
+         *
+         *            |--------->|
+         * +---------------------+
+         * |   x                 |
+         * |       y             |
+         * +---------------------+
+         */
+        val oldPlayerOffsetFromLeft = camera.viewportWidth / 4
+        val newPlayerOffsetFromLeft = newCamera.viewportWidth / 4
+        val translation = newPlayerOffsetFromLeft - oldPlayerOffsetFromLeft
+
+        camera.viewportWidth = newCamera.viewportWidth
+        camera.viewportHeight = newCamera.viewportHeight
+        camera.translate(translation, 0f)
+        camera.update()
     }
 
     override fun render(delta: Float) {

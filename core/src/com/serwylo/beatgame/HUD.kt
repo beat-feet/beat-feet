@@ -73,6 +73,10 @@ class HUD(private val score: Score, private val styles: Assets.Styles, sprites: 
 
     }
 
+    fun resize(width: Int, height: Int) {
+        stage.viewport.update(width, height, true)
+    }
+
     fun render(delta:Float, health: Int, shield: Int) {
 
         val distance = (score.distancePercent * 100).toInt().toString() + "%"
