@@ -3,9 +3,10 @@ package com.serwylo.beatgame.screens
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.BeatGame
@@ -16,7 +17,6 @@ import com.serwylo.beatgame.levels.achievements.allAchievements
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeHeading
-import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeStage
 
 class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
@@ -43,15 +43,22 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
             val textColor = if (isLocked) Color.GRAY else Color.WHITE
             val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else level.label
 
-            val levelLabel = Label(labelString, styles.label.medium)
-            levelLabel.color = textColor
+            val levelLabel = Label(labelString, styles.label.medium).apply {
+                setAlignment(Align.right)
+                wrap = true
+                color = textColor
+            }
 
-            table.row()
-                    .spaceBottom(UI_SPACE * 1.5f)
+            table.row().apply {
+                spaceBottom(UI_SPACE * 3f)
+            }
 
-            table.add(levelLabel)
-                    .align(Align.right)
-                    .spaceRight(UI_SPACE * 2)
+            table.add(levelLabel).apply {
+                align(Align.top)
+                width(UI_SPACE * 30)
+                padRight(UI_SPACE * 2)
+                spaceRight(UI_SPACE)
+            }
 
             val achievementsWidget: Actor = if (!isLocked) {
                 makeAchievementsTable(styles, achievements, level)
@@ -61,16 +68,19 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
                 toUnlockLabel
             }
 
-            table.add(achievementsWidget)
-                    .align(Align.left)
+            table.add(achievementsWidget).apply {
+                align(Align.left or Align.top)
+            }
 
         }
 
-        val scrollPane = ScrollPane(table)
-        scrollPane.setFillParent(true)
-        scrollPane.setScrollingDisabled(true, false)
-        scrollPane.setupOverscroll(UI_SPACE, 30f, 200f)
-        stage.addActor(scrollPane)
+        stage.addActor(
+            ScrollPane(table).apply {
+                setFillParent(true)
+                setScrollingDisabled(true, false)
+                setupOverscroll(UI_SPACE, 30f, 200f)
+            }
+        )
 
     }
 
