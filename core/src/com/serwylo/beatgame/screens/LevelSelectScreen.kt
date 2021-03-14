@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.audio.customMp3
+import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
@@ -34,10 +35,17 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
     private val achievements = loadAllAchievements()
 
     init {
+        setupStage()
+    }
 
-        val levelsPerRow = 5
+    private fun setupStage() {
+        // Later on, do some proper responsive sizing. However my first attempts struggled with
+        // density independent pixel calculations (even though the math is simple, it didn't
+        // seem to set proper breakpoints, perhaps because of the arbitrary math in calcDensityScaleFactor()
+        // from before it occurred we could use DIPs).
+        val levelsPerRow = if (Gdx.app.type == Application.ApplicationType.Desktop) 5 else 4
         val width = (stage.width - UI_SPACE * 2) / levelsPerRow
-        val height = width * 3 / 4
+        val height = width
 
         var x = 0
         var y = 0
@@ -104,6 +112,12 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
     override fun hide() {
         Gdx.input.inputProcessor = null
         Gdx.input.setCatchKey(Input.Keys.BACK, false)
+    }
+
+    override fun resize(width: Int, height: Int) {
+        stage.viewport.update(width, height, true)
+        stage.clear()
+        setupStage()
     }
 
     override fun render(delta: Float) {

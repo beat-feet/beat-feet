@@ -24,6 +24,10 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
     private val stage = makeStage()
 
     init {
+        setupStage()
+    }
+
+    private fun setupStage() {
         val achievements = loadAllAchievements()
 
         val styles = game.assets.getStyles()
@@ -84,6 +88,12 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
             }
         )
 
+    }
+
+    override fun resize(width: Int, height: Int) {
+        stage.viewport.update(width, height, true)
+        stage.clear()
+        setupStage()
     }
 
     private fun makeAchievementsTable(styles: Assets.Styles, achievements: List<Achievement>, level: Level): Actor {

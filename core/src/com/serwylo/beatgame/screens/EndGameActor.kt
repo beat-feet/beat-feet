@@ -1,10 +1,6 @@
 package com.serwylo.beatgame.screens
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.levels.HighScore
@@ -34,7 +30,7 @@ class EndGameActor(
 
         val replayButton = makeLargeButton("Replay", styles) { onReplay() }
         val changeLevelButton = makeButton("Change level", styles) { onChangeLevel() }
-        val mainMenuButton = makeButton("Change level", styles) { onMainMenu() }
+        val mainMenuButton = makeButton("Main menu", styles) { onMainMenu() }
 
         val secondaryButtons = HorizontalGroup()
         secondaryButtons.addActor(changeLevelButton)
