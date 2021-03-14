@@ -1,30 +1,26 @@
 package com.serwylo.beatgame
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.graphics.ParticleEffectActor
 import com.serwylo.beatgame.levels.Score
+import com.serwylo.beatgame.ui.UI_SPACE
+import com.serwylo.beatgame.ui.makeIcon
+import com.serwylo.beatgame.ui.makeIconDrawable
+import com.serwylo.beatgame.ui.makeStage
 
-class HUD(private val score: Score, skin: Skin, sprites: Assets.Sprites, private val particles: Assets.Particles, private val sounds: Assets.Sounds) {
+class HUD(private val score: Score, private val styles: Assets.Styles, sprites: Assets.Sprites, private val particles: Assets.Particles, private val sounds: Assets.Sounds) {
 
-    private val stage = Stage(ExtendViewport(400f, 300f))
-    private val padding = stage.width / 50
+    private val stage = makeStage()
 
-    private val font = BitmapFont()
-    private val labelStyle = Label.LabelStyle(font, Color.WHITE)
-
-    private val hearts = DiscreteProgressBar(TextureRegionDrawable(sprites.heart), TextureRegionDrawable(sprites.heart_half), TextureRegionDrawable(sprites.heart_empty), particles.health, true)
-    private val shields = DiscreteProgressBar(TextureRegionDrawable(sprites.shield_full), TextureRegionDrawable(sprites.shield_half), TextureRegionDrawable(sprites.shield_empty), particles.shield, false)
+    private val hearts = DiscreteProgressBar(makeIconDrawable(sprites.heart), makeIconDrawable(sprites.heart_half), makeIconDrawable(sprites.heart_empty), particles.health, true)
+    private val shields = DiscreteProgressBar(makeIconDrawable(sprites.shield_full), makeIconDrawable(sprites.shield_half), makeIconDrawable(sprites.shield_empty), particles.shield, false)
 
     private val distanceLabel: Label
     private val scoreLabel: Label
@@ -34,33 +30,45 @@ class HUD(private val score: Score, skin: Skin, sprites: Assets.Sprites, private
 
     init {
 
-        val healthAndShield = VerticalGroup()
-        healthAndShield.space(padding / 2)
-        healthAndShield.pad(padding / 2)
-        healthAndShield.columnAlign(Align.right)
-        healthAndShield.align(Align.right or Align.top)
-        healthAndShield.setFillParent(true)
-        healthAndShield.addActor(hearts)
-        healthAndShield.addActor(shields)
+        val healthAndShield = VerticalGroup().apply {
 
-        distanceLabel = Label("", labelStyle)
-        scoreLabel = Label("", labelStyle)
+            pad(UI_SPACE)
+            space(UI_SPACE)
+
+            addActor(hearts)
+            addActor(shields)
+
+            // Fill the stage and align to the top right.
+            setFillParent(true)
+            setPosition(0f, 0f)
+            columnAlign(Align.right)
+            align(Align.right or Align.top)
+
+        }
+
+        distanceLabel = Label("", styles.label.large)
+        scoreLabel = Label("", styles.label.large)
 
         // It would make much more sense to put all of these widgets (and the ones in the top right)
         // in a Table. However doing so makes it nigh-on impossible to use actions to shake and move
         // them. The reason is that any update to the text of a label (which happens regularly)
         // will always invalidate the label and also its parent (the Table), resetting the position
         // of everything in it, no matter how far through a given Action is from animating it.
-        bottomWidget.setPosition(padding, padding * 2)
-        bottomWidget.space(padding / 2)
-        bottomWidget.addActor(Image(sprites.right_sign))
-        bottomWidget.addActor(distanceLabel)
-        bottomWidget.addActor(Image(sprites.score))
-        bottomWidget.addActor(scoreLabel)
+        bottomWidget.apply {
+
+            pad(UI_SPACE)
+            space(UI_SPACE)
+
+            addActor(makeIcon(sprites.right_sign))
+            addActor(distanceLabel)
+            addActor(makeIcon(sprites.score))
+            addActor(scoreLabel)
+
+            setPosition(UI_SPACE * 2, UI_SPACE * 4)
+
+        }
 
         stage.addActor(bottomWidget)
-
-        healthAndShield.setPosition(0f, 0f)
         stage.addActor(healthAndShield)
 
     }
@@ -104,7 +112,7 @@ class HUD(private val score: Score, skin: Skin, sprites: Assets.Sprites, private
     }
 
     private fun createIncreasedMultiplier(scoreMultiplier: Int): Actor {
-        val label = Container<Label>(Label("x $scoreMultiplier", labelStyle))
+        val label = Container<Label>(Label("x $scoreMultiplier", styles.label.large))
         label.isTransform = true
 
         label.addAction(
@@ -121,8 +129,8 @@ class HUD(private val score: Score, skin: Skin, sprites: Assets.Sprites, private
         // Weird using the score labels height here, but we don't have an exact place to measure this
         // yet, so just sort of guessing. It doesn't really matter, because the animation of this
         // actor makes it hard to see exactly where it started.
-        label.x = padding + bottomWidget.prefWidth - scoreLabel.height
-        label.y = padding
+        label.x = UI_SPACE + bottomWidget.prefWidth - scoreLabel.height
+        label.y = UI_SPACE
 
         return label
     }

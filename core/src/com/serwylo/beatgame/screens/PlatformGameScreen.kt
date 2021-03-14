@@ -122,7 +122,7 @@ class PlatformGameScreen(
             }
         })
 
-        hud = HUD(score, game.assets.getSkin(), sprites, game.assets.getParticles(), game.assets.getSounds())
+        hud = HUD(score, game.assets.getStyles(), sprites, game.assets.getParticles(), game.assets.getSounds())
 
         camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 5, 0f)
         camera.update()

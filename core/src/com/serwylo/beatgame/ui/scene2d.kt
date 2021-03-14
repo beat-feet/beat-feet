@@ -35,10 +35,14 @@ fun makeLargeButton(label: String, styles: Assets.Styles, onClick: () -> Unit): 
 
 fun makeIcon(sprite: TextureRegion, size: Float = UI_SPACE * 4): Image {
     return Image(
-        TextureRegionDrawable(sprite).apply {
-            setMinSize(size, size)
-        }
+        makeIconDrawable(sprite, size)
     )
+}
+
+fun makeIconDrawable(sprite: TextureRegion, size: Float = UI_SPACE * 4): TextureRegionDrawable {
+    return TextureRegionDrawable(sprite).apply {
+        setMinSize(size, size)
+    }
 }
 
 fun makeHeading(title: String, icon: TextureRegion, styles: Assets.Styles): HorizontalGroup {
