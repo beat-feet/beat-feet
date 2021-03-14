@@ -33,7 +33,9 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
         table.padBottom(UI_SPACE * 2)
         table.row().align(Align.center).pad(UI_SPACE * 2)
 
-        val headingGroup = makeHeading("Achievements", sprites.star, styles)
+        val headingGroup = makeHeading("Achievements", sprites.star, styles) {
+            game.showMenu()
+        }
 
         table.add(headingGroup).colspan(2)
 

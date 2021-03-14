@@ -38,11 +38,7 @@ class LoadingScreen(
         container.space(UI_SPACE)
 
         container.addActor(
-            makeHeading(
-                songName,
-                sprites.logo,
-                styles
-            )
+            makeHeading(songName, sprites.logo, styles)
         )
 
         val topScore = loadHighScore(level)

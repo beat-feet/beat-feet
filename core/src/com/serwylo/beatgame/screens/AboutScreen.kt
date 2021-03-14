@@ -23,7 +23,11 @@ class AboutScreen(private val game: BeatGame): ScreenAdapter() {
         container.align(Align.center)
         container.space(UI_SPACE)
 
-        container.addActor(makeHeading("Credits", sprites.logo, styles))
+        container.addActor(
+            makeHeading("Credits", sprites.logo, styles) {
+                game.showMenu()
+            }
+        )
 
         CREDITS.entries.forEach { entry ->
 
@@ -60,17 +64,12 @@ class AboutScreen(private val game: BeatGame): ScreenAdapter() {
         Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
 
             override fun keyDown(keycode: Int): Boolean {
-                if (keycode == Input.Keys.ENTER || keycode == Input.Keys.SPACE || keycode == Input.Keys.BACK) {
+                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
                     game.showMenu()
                     return true
                 }
 
                 return false
-            }
-
-            override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-                game.showMenu()
-                return true
             }
 
         })

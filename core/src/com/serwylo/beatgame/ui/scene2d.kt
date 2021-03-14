@@ -33,6 +33,16 @@ fun makeLargeButton(label: String, styles: Assets.Styles, onClick: () -> Unit): 
     }
 }
 
+fun makeSmallButton(label: String, styles: Assets.Styles, onClick: () -> Unit): Button {
+    return TextButton(label, styles.textButton.small).apply {
+        addListener(object: ChangeListener() {
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                onClick()
+            }
+        })
+    }
+}
+
 fun makeIcon(sprite: TextureRegion, size: Float = UI_SPACE * 4): Image {
     return Image(
         makeIconDrawable(sprite, size)
@@ -45,12 +55,15 @@ fun makeIconDrawable(sprite: TextureRegion, size: Float = UI_SPACE * 4): Texture
     }
 }
 
-fun makeHeading(title: String, icon: TextureRegion, styles: Assets.Styles): HorizontalGroup {
+fun makeHeading(title: String, icon: TextureRegion, styles: Assets.Styles, onBack: (() -> Unit)? = null): HorizontalGroup {
     return HorizontalGroup().apply {
-        space(UI_SPACE)
+        space(UI_SPACE * 2)
         padBottom(UI_SPACE)
         addActor(makeIcon(icon, 75f))
         addActor(Label(title, styles.label.huge))
+        if (onBack != null) {
+            addActor(makeSmallButton("Back", styles, onBack))
+        }
     }
 }
 

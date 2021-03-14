@@ -27,7 +27,9 @@ class ExplainCustomSongsScreen(private val game: BeatGame): ScreenAdapter() {
                 space(UI_SPACE)
 
                 addActor(
-                    makeHeading("Custom Songs", sprites.logo, styles)
+                    makeHeading("Custom Songs", sprites.logo, styles) {
+                        game.showLevelSelectMenu()
+                    }
                 )
 
                 val description = "Want a level that matches your favourite song?\n\nCopy an MP3 file to:\n\n${customMp3().file().absolutePath}\n\nWe'll generate a level just for you!"
@@ -49,17 +51,12 @@ class ExplainCustomSongsScreen(private val game: BeatGame): ScreenAdapter() {
         Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
 
             override fun keyDown(keycode: Int): Boolean {
-                if (keycode == Input.Keys.ENTER || keycode == Input.Keys.SPACE || keycode == Input.Keys.BACK) {
+                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
                     game.showMenu()
                     return true
                 }
 
                 return false
-            }
-
-            override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-                game.showMenu()
-                return true
             }
 
         })

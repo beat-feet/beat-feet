@@ -4,8 +4,8 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.ui.*
@@ -18,33 +18,40 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
         val sprites = game.assets.getSprites()
         val styles = game.assets.getStyles()
 
-        val container = VerticalGroup()
-        container.setFillParent(true)
-        container.align(Align.center)
-        container.space(UI_SPACE)
+        val container = VerticalGroup().apply {
+            setFillParent(true)
+            align(Align.center)
+            space(UI_SPACE)
+        }
 
         container.addActor(
-            makeHeading(
-                "Beat Game",
-                sprites.logo,
-                styles
-            )
+            makeHeading("Beat Game", sprites.logo, styles)
         )
 
         val buttonTable = Table()
-        buttonTable.pad(UI_SPACE)
 
         val playButton = makeLargeButton("Play", styles) { game.showLevelSelectMenu() }
         val achievementsButton = makeButton("Achievements", styles) { game.showAchievements() }
         val aboutButton = makeButton("About", styles) { game.showAboutScreen() }
 
         buttonTable.apply {
+            pad(UI_SPACE)
+
             row()
-            add(playButton).fillX().padBottom(UI_SPACE * 2)
+            add(playButton).apply {
+                fillX()
+                padBottom(UI_SPACE * 2)
+            }
+
             row()
-            add(achievementsButton).fillX()
+            add(achievementsButton).apply {
+                fillX()
+            }
+
             row()
-            add(aboutButton).fillX()
+            add(aboutButton).apply {
+                fillX()
+            }
         }
 
         if (Gdx.app.type == Application.ApplicationType.Desktop) {

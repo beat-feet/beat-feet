@@ -15,6 +15,7 @@ import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.levels.loadHighScore
 import com.serwylo.beatgame.ui.UI_SPACE
+import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeStage
 import java.io.File
@@ -41,15 +42,30 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
         var x = 0
         var y = 0
 
-        val table = Table()
-        table.pad(UI_SPACE)
+        val container = VerticalGroup().apply {
+            space(UI_SPACE)
+            padTop(UI_SPACE * 2)
+        }
 
-        val scrollPane = ScrollPane(table, skin)
-        scrollPane.setFillParent(true)
-        scrollPane.setScrollingDisabled(true, false)
-        scrollPane.setupOverscroll(width / 4, 30f, 200f)
+        val scrollPane = ScrollPane(container, skin).apply {
+            setFillParent(true)
+            setScrollingDisabled(true, false)
+            setupOverscroll(width / 4, 30f, 200f)
+        }
 
         stage.addActor(scrollPane)
+
+        container.addActor(
+            makeHeading("Level Select", sprites.logo, styles) {
+                game.showMenu()
+            }
+        )
+
+        val table = Table().apply {
+            pad(UI_SPACE)
+        }
+
+        container.addActor(table)
 
         Levels.all.forEachIndexed { i, level ->
 
