@@ -16,6 +16,7 @@ import com.serwylo.beatgame.HUD
 import com.serwylo.beatgame.audio.features.Feature
 import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.entities.*
+import com.serwylo.beatgame.graphics.TiledSprite
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.graphics.makeCamera
 import com.serwylo.beatgame.levels.HighScore
@@ -122,7 +123,10 @@ class PlatformGameScreen(
 
         hud = HUD(score, game.assets.getStyles(), sprites, game.assets.getParticles(), game.assets.getSounds())
 
-        camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 5, 0f)
+        // Offset the player to the left a bit (so you can see more of what is coming towards you)
+        // and up a little (to have the space underneath the player shown as blank space - allowing
+        // the HUD to render over the top without issue).
+        camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 2 - TiledSprite.TILE_SIZE * 4, 0f)
         camera.update()
 
         player = Player(score, Vector2(SCALE_X, 0f), sprites, game.assets.getParticles())
