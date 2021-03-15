@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeHeading
@@ -17,6 +18,7 @@ class AboutScreen(private val game: BeatGame): ScreenAdapter() {
     init {
         val sprites = game.assets.getSprites()
         val styles = game.assets.getStyles()
+        val strings = game.assets.getStrings()
 
         val container = VerticalGroup()
         container.setFillParent(true)
@@ -24,12 +26,12 @@ class AboutScreen(private val game: BeatGame): ScreenAdapter() {
         container.space(UI_SPACE)
 
         container.addActor(
-            makeHeading("Credits", sprites.logo, styles) {
+            makeHeading(strings["about.title"], sprites.logo, styles, strings) {
                 game.showMenu()
             }
         )
 
-        CREDITS.entries.forEach { entry ->
+        credits(strings).entries.forEach { entry ->
 
             val heading = entry.key
             val values = entry.value
@@ -89,16 +91,19 @@ class AboutScreen(private val game: BeatGame): ScreenAdapter() {
     }
 
     companion object {
-        private val CREDITS = mapOf(
+        private fun credits(strings: I18NBundle) = mapOf(
 
-            "Music" to listOf(
+            // Intentionally leave these un-internationalised, because they need to refer back
+            // to the original source and license to avoid ambiguity
+
+            strings["about.credits.music"] to listOf(
                 "The Haunted Mansion / CC-BY-SA 3.0",
                 "Awakening / CC-BY-SA 3.0",
                 "Health and Safety / CC-BY-SA 3.0",
                 "John Harrison w/ Wichita State University Chamber / CC-BY-SA 3.0"
             ),
 
-            "Graphics" to listOf(
+            strings["about.credits.graphics"] to listOf(
                 "Kenney.nl / CCO 1.0",
                 "disabledpaladin / CC-BY-SA 4.0"
             )

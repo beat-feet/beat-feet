@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
@@ -55,14 +56,14 @@ fun makeIconDrawable(sprite: TextureRegion, size: Float = UI_SPACE * 4): Texture
     }
 }
 
-fun makeHeading(title: String, icon: TextureRegion, styles: Assets.Styles, onBack: (() -> Unit)? = null): HorizontalGroup {
+fun makeHeading(title: String, icon: TextureRegion, styles: Assets.Styles, strings: I18NBundle, onBack: (() -> Unit)? = null): HorizontalGroup {
     return HorizontalGroup().apply {
         space(UI_SPACE * 2)
         padBottom(UI_SPACE)
         addActor(makeIcon(icon, 75f))
         addActor(Label(title, styles.label.huge))
         if (onBack != null) {
-            addActor(makeSmallButton("Back", styles, onBack))
+            addActor(makeSmallButton(strings["btn.back"], styles, onBack))
         }
     }
 }

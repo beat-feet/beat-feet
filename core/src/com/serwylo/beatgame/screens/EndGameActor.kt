@@ -22,6 +22,7 @@ class EndGameActor(
 ): VerticalGroup() {
 
     private val styles = game.assets.getStyles()
+    private val strings = game.assets.getStrings()
 
     init {
 
@@ -29,9 +30,9 @@ class EndGameActor(
         columnAlign(Align.center)
         space(UI_SPACE)
 
-        val replayButton = makeLargeButton("Replay", styles) { onReplay() }
-        val changeLevelButton = makeButton("Change level", styles) { onChangeLevel() }
-        val mainMenuButton = makeButton("Main menu", styles) { onMainMenu() }
+        val replayButton = makeLargeButton(strings["btn.replay"], styles) { onReplay() }
+        val changeLevelButton = makeButton(strings["btn.change-level"], styles) { onChangeLevel() }
+        val mainMenuButton = makeButton(strings["btn.main-menu"], styles) { onMainMenu() }
 
         val secondaryButtons = HorizontalGroup()
         secondaryButtons.addActor(changeLevelButton)
@@ -48,7 +49,7 @@ class EndGameActor(
             horizontalGroup.space(SPACING)
             horizontalGroup.padTop(SPACING)
 
-            horizontalGroup.addActor(Label("New Record!", styles.label.medium))
+            horizontalGroup.addActor(Label(strings["new-record"], styles.label.medium))
 
             if (distanceRecord) {
                 horizontalGroup.addActor(makeIcon(game.assets.getSprites().right_sign))
@@ -73,7 +74,7 @@ class EndGameActor(
         val icon = game.assets.getSprites().star
 
         achievements.forEachIndexed { i, it ->
-            val label = Label(it.label, styles.label.medium)
+            val label = Label(strings["achievement.${it.id}"], styles.label.medium)
 
             val group = HorizontalGroup()
             group.addActor(makeIcon(icon))

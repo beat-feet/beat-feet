@@ -2,12 +2,16 @@ package com.serwylo.beatgame
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.I18NBundleLoader
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.utils.I18NBundle
+import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
+import java.util.*
 
 
 @Suppress("PropertyName") // Allow underscores in variable names here, because it better reflects the source files things come from.
@@ -20,7 +24,12 @@ class Assets {
     private lateinit var particles: Particles
     private lateinit var sounds: Sounds
 
+    @GDXAssets(propertiesFiles = ["android/assets/i18n/messages.properties"])
+    private lateinit var strings: I18NBundle
+
     init {
+
+        manager.load("i18n/messages", I18NBundle::class.java, I18NBundleLoader.I18NBundleParameter(Locale.FRENCH))
         manager.load("skin.json", Skin::class.java)
         manager.load("sprites.atlas", TextureAtlas::class.java)
         manager.load("effects/rainbow.p", ParticleEffect::class.java)
@@ -39,6 +48,7 @@ class Assets {
 
         manager.finishLoading()
 
+        strings = manager.get("i18n/messages")
         skin = manager.get("skin.json")
 
         styles = Styles(skin)
@@ -50,6 +60,7 @@ class Assets {
 
     }
 
+    fun getStrings() = strings
     fun getSkin() = skin
     fun getStyles() = styles
     fun getSprites() = sprites

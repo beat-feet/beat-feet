@@ -17,6 +17,7 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
     init {
         val sprites = game.assets.getSprites()
         val styles = game.assets.getStyles()
+        val strings = game.assets.getStrings()
 
         val container = VerticalGroup().apply {
             setFillParent(true)
@@ -25,14 +26,14 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
         }
 
         container.addActor(
-            makeHeading("Beat Game", sprites.logo, styles)
+            makeHeading(strings["app.name"], sprites.logo, styles, strings)
         )
 
         val buttonTable = Table()
 
-        val playButton = makeLargeButton("Play", styles) { game.showLevelSelectMenu() }
-        val achievementsButton = makeButton("Achievements", styles) { game.showAchievements() }
-        val aboutButton = makeButton("About", styles) { game.showAboutScreen() }
+        val playButton = makeLargeButton(strings["main-menu.btn.play"], styles) { game.showLevelSelectMenu() }
+        val achievementsButton = makeButton(strings["main-menu.btn.achievements"], styles) { game.showAchievements() }
+        val aboutButton = makeButton(strings["main-menu.btn.about"], styles) { game.showAboutScreen() }
 
         buttonTable.apply {
             pad(UI_SPACE)
@@ -55,7 +56,7 @@ class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
         }
 
         if (Gdx.app.type == Application.ApplicationType.Desktop) {
-            val quitButton = makeButton("Quit", styles) { Gdx.app.exit() }
+            val quitButton = makeButton(strings["main-menu.btn.quit"], styles) { Gdx.app.exit() }
             buttonTable.row()
             buttonTable.add(quitButton).fillX()
         }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.BeatGame
 import com.serwylo.beatgame.levels.Level
@@ -32,12 +33,13 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
 
         val styles = game.assets.getStyles()
         val sprites = game.assets.getSprites()
+        val strings = game.assets.getStrings()
 
         val table = Table()
         table.padBottom(UI_SPACE * 2)
         table.row().align(Align.center).pad(UI_SPACE * 2)
 
-        val headingGroup = makeHeading("Achievements", sprites.star, styles) {
+        val headingGroup = makeHeading(strings["achievements.title"], sprites.star, styles, strings) {
             game.showMenu()
         }
 
@@ -47,7 +49,7 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
 
             val isLocked = level.unlockRequirements.isLocked(achievements)
             val textColor = if (isLocked) Color.GRAY else Color.WHITE
-            val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else level.label
+            val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else strings[level.labelId]
 
             val levelLabel = Label(labelString, styles.label.medium).apply {
                 setAlignment(Align.right)
@@ -67,9 +69,9 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
             }
 
             val achievementsWidget: Actor = if (!isLocked) {
-                makeAchievementsTable(styles, achievements, level)
+                makeAchievementsTable(styles, strings, achievements, level)
             } else {
-                val toUnlockLabel = Label(level.unlockRequirements.describeOutstandingRequirements(achievements) + " to unlock", styles.label.small)
+                val toUnlockLabel = Label(strings.format("achievements.unlock-requirements", level.unlockRequirements.describeOutstandingRequirements(strings, achievements)), styles.label.small)
                 toUnlockLabel.color = Color.GRAY
                 toUnlockLabel
             }
@@ -96,13 +98,13 @@ class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
         setupStage()
     }
 
-    private fun makeAchievementsTable(styles: Assets.Styles, achievements: List<Achievement>, level: Level): Actor {
+    private fun makeAchievementsTable(styles: Assets.Styles, strings: I18NBundle, achievements: List<Achievement>, level: Level): Actor {
 
         val achievementsTable = Table()
 
         allAchievements.forEachIndexed { i, achievement ->
             val isAchieved = achievements.any { it.level == level && it.type.id == achievement.id }
-            val label = Label(achievement.label, styles.label.small)
+            val label = Label(strings["achievement.${achievement.id}"], styles.label.small)
             label.color = if (isAchieved) Color.WHITE else Color.GRAY
 
             if (i > 0 && i % ACHIEVEMENTS_PER_ROW == 0) {
