@@ -28,6 +28,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
     private val sprites = game.assets.getSprites()
     private val styles = game.assets.getStyles()
     private val skin = game.assets.getSkin()
+    private val strings = game.assets.getStrings()
 
     private val distanceTexture = sprites.right_sign
     private val scoreTexture = sprites.score
@@ -64,7 +65,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
         stage.addActor(scrollPane)
 
         container.addActor(
-            makeHeading("Level Select", sprites.logo, styles) {
+            makeHeading(strings["level-select.title"], sprites.logo, styles, strings) {
                 game.showMenu()
             }
         )
@@ -150,7 +151,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
             })
         }
 
-        val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else level.label
+        val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else strings[level.labelId]
 
         val levelLabel = Label(labelString, styles.label.medium).apply {
             wrap = true
@@ -170,7 +171,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
 
         if (isLocked) {
 
-            val unlockDescription = Label(level.unlockRequirements.describeOutstandingRequirements(achievements), styles.label.small)
+            val unlockDescription = Label(level.unlockRequirements.describeOutstandingRequirements(strings, achievements), styles.label.small)
             unlockDescription.color = textColor
 
             table.row()
@@ -208,7 +209,7 @@ class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
                 game.loadGame(file, "{Custom}")
             }
         } else {
-            game.loadGame(Gdx.files.internal("songs${File.separator}mp3${File.separator}${level.mp3Name}"), level.label)
+            game.loadGame(Gdx.files.internal("songs${File.separator}mp3${File.separator}${level.mp3Name}"), strings[level.labelId])
         }
 
         return true

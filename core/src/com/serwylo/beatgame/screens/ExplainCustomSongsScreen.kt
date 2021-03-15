@@ -18,6 +18,7 @@ class ExplainCustomSongsScreen(private val game: BeatGame): ScreenAdapter() {
     init {
         val sprites = game.assets.getSprites()
         val styles = game.assets.getStyles()
+        val strings = game.assets.getStrings()
 
         stage.addActor(
             VerticalGroup().apply {
@@ -27,12 +28,12 @@ class ExplainCustomSongsScreen(private val game: BeatGame): ScreenAdapter() {
                 space(UI_SPACE)
 
                 addActor(
-                    makeHeading("Custom Songs", sprites.logo, styles) {
+                    makeHeading(strings["custom-songs.title"], sprites.logo, styles, strings) {
                         game.showLevelSelectMenu()
                     }
                 )
 
-                val description = "Want a level that matches your favourite song?\n\nCopy an MP3 file to:\n\n${customMp3().file().absolutePath}\n\nWe'll generate a level just for you!"
+                val description = strings.format("custom-songs.description", customMp3().file().absolutePath)
                 addActor(
                     Label(description, styles.label.medium).apply {
                         setAlignment(Align.center)

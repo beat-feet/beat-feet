@@ -31,6 +31,7 @@ class LoadingScreen(
     init {
         val sprites = game.assets.getSprites()
         val styles = game.assets.getStyles()
+        val strings = game.assets.getStrings()
 
         val container = VerticalGroup()
         container.setFillParent(true)
@@ -38,12 +39,12 @@ class LoadingScreen(
         container.space(UI_SPACE)
 
         container.addActor(
-            makeHeading(songName, sprites.logo, styles)
+            makeHeading(songName, sprites.logo, styles, strings)
         )
 
         val topScore = loadHighScore(level)
 
-        val bestLabel = Label("Best", styles.label.medium)
+        val bestLabel = Label(strings["loading-screen.best"], styles.label.medium)
         val distanceLabel = Label("${(topScore.distancePercent * 100).toInt()}%", styles.label.medium)
         val scoreLabel = Label("${topScore.points}", styles.label.medium)
 
@@ -62,7 +63,7 @@ class LoadingScreen(
         )
 
         container.addActor(
-            Label("Loading", styles.label.medium)
+            Label(strings["loading-screen.loading"], styles.label.medium)
         )
 
         // All other loading is quite quick, because it is just processing pre-generated JSON data.
@@ -70,7 +71,7 @@ class LoadingScreen(
         // it will be as fast as others because it will use the cached JSON data however.
         // After 5 seconds, fade in a polite warning message asking patience.
         if (songName == "{Custom}") {
-            val slowWarning = Label("Please be patient, it may take some time when analysing your song for the first time...", styles.label.small)
+            val slowWarning = Label(strings["loading-screen.custom-song-warning"], styles.label.small)
             container.addActor(slowWarning)
 
             slowWarning.addAction(
