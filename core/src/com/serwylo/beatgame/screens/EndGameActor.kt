@@ -8,6 +8,7 @@ import com.serwylo.beatgame.levels.Score
 import com.serwylo.beatgame.levels.achievements.AchievementType
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeButton
+import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeLargeButton
 
 class EndGameActor(
@@ -50,12 +51,12 @@ class EndGameActor(
             horizontalGroup.addActor(Label("New Record!", styles.label.medium))
 
             if (distanceRecord) {
-                horizontalGroup.addActor(Image(game.assets.getSprites().right_sign))
+                horizontalGroup.addActor(makeIcon(game.assets.getSprites().right_sign))
                 horizontalGroup.addActor(Label("${(score.distancePercent * 100).toInt()}%", styles.label.medium))
             }
 
             if (scoreRecord) {
-                horizontalGroup.addActor(Image(game.assets.getSprites().score))
+                horizontalGroup.addActor(makeIcon(game.assets.getSprites().score))
                 horizontalGroup.addActor(Label("${score.getPoints()}", styles.label.medium))
             }
 
@@ -75,7 +76,7 @@ class EndGameActor(
             val label = Label(it.label, styles.label.medium)
 
             val group = HorizontalGroup()
-            group.addActor(Image(icon))
+            group.addActor(makeIcon(icon))
             group.addActor(label)
 
             if (i > 0 && i % 3 == 0) {

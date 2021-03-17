@@ -1,7 +1,9 @@
 package com.serwylo.beatgame
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
@@ -71,6 +73,16 @@ class HUD(private val score: Score, private val styles: Assets.Styles, sprites: 
         stage.addActor(bottomWidget)
         stage.addActor(healthAndShield)
 
+    }
+
+    fun bottomGutterHeightInPixels(): Float {
+        bottomWidget.validate()
+
+        val start = Vector3(0f, 0f, 0f)
+        val end = Vector3(bottomWidget.prefHeight + UI_SPACE, 0f, 0f)
+        stage.camera.project(start)
+        stage.camera.project(end)
+        return end.x - start.x
     }
 
     fun resize(width: Int, height: Int) {

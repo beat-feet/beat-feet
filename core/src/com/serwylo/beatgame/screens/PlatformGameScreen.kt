@@ -126,7 +126,7 @@ class PlatformGameScreen(
         // Offset the player to the left a bit (so you can see more of what is coming towards you)
         // and up a little (to have the space underneath the player shown as blank space - allowing
         // the HUD to render over the top without issue).
-        camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 2 - TiledSprite.TILE_SIZE * 4, 0f)
+        camera.translate(camera.viewportWidth / 4, camera.viewportHeight / 2 - screenToWorld(hud.bottomGutterHeightInPixels()) - TiledSprite.TILE_SIZE, 0f)
         camera.update()
 
         player = Player(score, Vector2(SCALE_X, 0f), sprites, game.assets.getParticles())
@@ -138,6 +138,14 @@ class PlatformGameScreen(
         Globals.animationTimer = 0f
 
         isInitialised = true
+    }
+
+    private fun screenToWorld(size: Float): Float {
+        val screenStart = Vector3(0f, 0f, 0f)
+        val screenEnd = Vector3(size, 0f, 0f)
+        camera.unproject(screenStart)
+        camera.unproject(screenEnd)
+        return screenEnd.x - screenStart.x
     }
 
     override fun hide() {
