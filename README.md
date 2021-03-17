@@ -5,7 +5,7 @@
 [![Liberapay receiving](https://img.shields.io/liberapay/receives/BeatGame)](https://liberapay.com/BeatGame/donate)
 [![F-Droid version](https://img.shields.io/f-droid/v/com.serwylo.beatgame)](https://f-droid.org/packages/com.serwylo.beatgame/)
 
-<img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/01_main_menu.png" alt="Main menu" width="400"> <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/02_in_game.png" alt="Jumping over obstacles" width="400"> <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/03_death.png" alt="Death scene" width="400">
+<img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/01_main_menu.png" alt="Main menu" width="400"> <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/02_in_game.png" alt="Jumping over obstacles" width="400"> <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/03_death.png" alt="Death scene" width="400"> <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/05_level_select.png" alt="Level Select Menu" width="400">
 
 **Jump your way through levels, each automatically generated from the beat of the music.**
 
