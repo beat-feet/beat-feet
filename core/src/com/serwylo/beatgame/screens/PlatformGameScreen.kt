@@ -113,10 +113,7 @@ class PlatformGameScreen(
                         player.performJump()
                     }
                     return true
-                } else if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
-                    game.showMenu()
-                    return true
-                } else if (keycode == Input.Keys.P) {
+                } else if (keycode == Input.Keys.P || keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
                     if (state == State.PAUSED) {
                         resume()
                     } else {
