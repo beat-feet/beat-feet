@@ -89,8 +89,21 @@ class PlatformGameScreen(
 
         obstacles.addAll(generateObstacles(sprites, allFeatures))
 
+        hud = HUD(
+            score,
+            game.assets.getStyles(),
+            game.assets.getStrings(),
+            sprites,
+            game.assets.getParticles(),
+            game.assets.getSounds()
+        ) {
+            if (state != State.PAUSED) {
+                pause()
+            }
+        }
+
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
-        Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
+        Gdx.input.inputProcessor = InputMultiplexer(stage, hud.getInputProcessor(), object : InputAdapter() {
 
             override fun keyDown(keycode: Int): Boolean {
                 if (keycode == Input.Keys.SPACE || keycode == Input.Keys.B || keycode == Input.Keys.J) {
@@ -120,8 +133,6 @@ class PlatformGameScreen(
                 return true
             }
         })
-
-        hud = HUD(score, game.assets.getStyles(), sprites, game.assets.getParticles(), game.assets.getSounds())
 
         // Offset the player to the left a bit (so you can see more of what is coming towards you)
         // and up a little (to have the space underneath the player shown as blank space - allowing
@@ -211,7 +222,7 @@ class PlatformGameScreen(
         Gdx.gl.glEnable(GL20.GL_BLEND)
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
 
-        if (state == State.DYING || state == State.WINNING) {
+        if (state == State.DYING || state == State.WINNING || state == State.PAUSED) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
             shapeRenderer.color = Color(0f, 0f, 0f, 0.5f)
             shapeRenderer.rect(0f, 0f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
@@ -406,10 +417,36 @@ class PlatformGameScreen(
         prePauseState = state
         music.pause()
         state = State.PAUSED
+
+        val leaveGame = { subsequentAction: () -> Unit -> {
+            music.stop()
+            subsequentAction()
+        }}
+
+        val pauseGameInfo = PauseGameActor(
+            game,
+            { resume() },
+            leaveGame { game.startGame(world) },
+            leaveGame { game.showLevelSelectMenu() },
+            leaveGame { game.showMenu() }
+        )
+
+        val scrollView = ScrollPane(pauseGameInfo)
+        scrollView.setFillParent(true)
+        scrollView.setScrollingDisabled(true, false)
+        stage.addActor(scrollView)
     }
 
     override fun resume() {
         super.resume()
+
+        // Although it is likely always PAUSED at this point, perhaps we could be in an end-game
+        // state or something, in which case we don't want to remove all the items.
+        // TODO: Having said that, what happens if you get to the end game screen, leave the android
+        //       app, then resume again? Will that cause issues both for the game state and the UI?
+        if (state == State.PAUSED) {
+            stage.clear()
+        }
 
         music.play()
         state = prePauseState

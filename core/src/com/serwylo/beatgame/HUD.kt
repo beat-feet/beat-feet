@@ -1,6 +1,6 @@
 package com.serwylo.beatgame
 
-import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
@@ -9,15 +9,20 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.graphics.ParticleEffectActor
 import com.serwylo.beatgame.levels.Score
-import com.serwylo.beatgame.ui.UI_SPACE
-import com.serwylo.beatgame.ui.makeIcon
-import com.serwylo.beatgame.ui.makeIconDrawable
-import com.serwylo.beatgame.ui.makeStage
+import com.serwylo.beatgame.ui.*
 
-class HUD(private val score: Score, private val styles: Assets.Styles, sprites: Assets.Sprites, private val particles: Assets.Particles, private val sounds: Assets.Sounds) {
+class HUD(
+    private val score: Score,
+    private val styles: Assets.Styles,
+    strings: I18NBundle,
+    sprites: Assets.Sprites,
+    particles: Assets.Particles,
+    private val sounds: Assets.Sounds,
+    onMenuOpened: () -> Unit
+) {
 
     private val stage = makeStage()
 
@@ -32,21 +37,20 @@ class HUD(private val score: Score, private val styles: Assets.Styles, sprites: 
 
     init {
 
-        val healthAndShield = VerticalGroup().apply {
+        val menuButton = makeSmallButton(strings["btn.menu"], styles, onMenuOpened)
+        stage.addActor(
+            Table().apply {
+                setFillParent(true)
+                pad(UI_SPACE)
 
-            pad(UI_SPACE)
-            space(UI_SPACE)
+                row()
+                add(menuButton).left().expandX()
+                add(hearts).right()
 
-            addActor(hearts)
-            addActor(shields)
-
-            // Fill the stage and align to the top right.
-            setFillParent(true)
-            setPosition(0f, 0f)
-            columnAlign(Align.right)
-            align(Align.right or Align.top)
-
-        }
+                row()
+                add(shields).colspan(2).right().top().expand()
+            }
+        )
 
         distanceLabel = Label("", styles.label.large)
         scoreLabel = Label("", styles.label.large)
@@ -71,9 +75,16 @@ class HUD(private val score: Score, private val styles: Assets.Styles, sprites: 
         }
 
         stage.addActor(bottomWidget)
-        stage.addActor(healthAndShield)
 
     }
+
+    /**
+     * Technically, this returns an instance of the stage, but type it such that the consumer
+     * only has access to the input processor related functionality. This means that a screen
+     * can use the [InputProcessor] in its own [com.badlogic.gdx.InputMultiplexer], but doesn't
+     * really get to accidentally remove or add items to the stage.
+     */
+    fun getInputProcessor(): InputProcessor = stage
 
     fun bottomGutterHeightInPixels(): Float {
         bottomWidget.validate()
