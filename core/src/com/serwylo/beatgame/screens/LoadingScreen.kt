@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
-import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.loadWorldFromMp3
 import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.loadHighScore
@@ -19,7 +19,7 @@ import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeStage
 
 class LoadingScreen(
-    private val game: BeatGame,
+    private val game: BeatFeetGame,
     private val musicFile: FileHandle,
     songName: String
     ): ScreenAdapter() {

@@ -2,7 +2,7 @@ package com.serwylo.beatgame.screens
 
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
-import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.levels.HighScore
 import com.serwylo.beatgame.levels.Score
 import com.serwylo.beatgame.levels.achievements.AchievementType
@@ -12,13 +12,13 @@ import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeLargeButton
 
 class EndGameActor(
-        private val game: BeatGame,
-        existingHighScore: HighScore,
-        score: Score,
-        newAchievements: List<AchievementType>,
-        onReplay: () -> Unit,
-        onChangeLevel: () -> Unit,
-        onMainMenu: () -> Unit
+    private val game: BeatFeetGame,
+    existingHighScore: HighScore,
+    score: Score,
+    newAchievements: List<AchievementType>,
+    onReplay: () -> Unit,
+    onChangeLevel: () -> Unit,
+    onMainMenu: () -> Unit
 ): VerticalGroup() {
 
     private val styles = game.assets.getStyles()

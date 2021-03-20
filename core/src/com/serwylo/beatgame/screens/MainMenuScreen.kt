@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
-import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.ui.*
 
-class MainMenuScreen(private val game: BeatGame): ScreenAdapter() {
+class MainMenuScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
     private val stage = makeStage()
 

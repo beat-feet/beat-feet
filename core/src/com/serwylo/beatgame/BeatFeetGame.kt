@@ -7,10 +7,9 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.audio.features.World
-import com.serwylo.beatgame.levels.Score
 import com.serwylo.beatgame.screens.*
 
-class BeatGame(private val verbose: Boolean) : Game() {
+class BeatFeetGame(private val verbose: Boolean) : Game() {
 
     val assets = Assets()
 

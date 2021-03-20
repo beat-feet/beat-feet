@@ -117,6 +117,6 @@ Thumbs.db
 /ios/IOSLauncher.app
 /ios/IOSLauncher.app.dSYM
 
-## Beat game specific
+## Beat feet specific
 # Cached world files, used to avoid having to FFT songs each time we load a level.
 .cache

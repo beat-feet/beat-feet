@@ -5,13 +5,13 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
-import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeStage
 
-class ExplainCustomSongsScreen(private val game: BeatGame): ScreenAdapter() {
+class ExplainCustomSongsScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
     private val stage = makeStage()
 

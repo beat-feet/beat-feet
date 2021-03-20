@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.Assets
-import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.achievements.Achievement
@@ -20,7 +20,7 @@ import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeStage
 
-class AchievementsScreen(private val game: BeatGame): ScreenAdapter() {
+class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
     private val stage = makeStage()
 

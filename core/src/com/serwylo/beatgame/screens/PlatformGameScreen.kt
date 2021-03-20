@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.serwylo.beatgame.Assets
-import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.HUD
 import com.serwylo.beatgame.audio.features.Feature
@@ -32,8 +32,8 @@ import kotlin.math.sin
 
 
 class PlatformGameScreen(
-        private val game: BeatGame,
-        private val world: World
+    private val game: BeatFeetGame,
+    private val world: World
 ) : ScreenAdapter() {
 
     private val camera = makeCamera(20, 10, calcDensityScaleFactor())

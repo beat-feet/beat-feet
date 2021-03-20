@@ -4,13 +4,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
-import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeButton
 import com.serwylo.beatgame.ui.makeLargeButton
 
 class PauseGameActor(
-    game: BeatGame,
+    game: BeatFeetGame,
     onResume: () -> Unit,
     onReplay: () -> Unit,
     onChangeLevel: () -> Unit,

@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
-import com.serwylo.beatgame.BeatGame
+import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Levels
@@ -20,7 +20,7 @@ import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeStage
 import java.io.File
 
-class LevelSelectScreen(private val game: BeatGame): ScreenAdapter() {
+class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
     private val stage = makeStage()
 
