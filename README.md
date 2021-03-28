@@ -30,11 +30,11 @@ If you wish to support the development financially, donations are welcome via:
 
 ### Reporting Issues
 
-Please report any issues or suggest features on the [issue tracker](https://github.com/beat-game/beat-game/issues).
+Please report any issues or suggest features on the [issue tracker](https://github.com/beat-feet/beat-feet/issues).
 
 ### Submitting changes
 
-Pull requests will be warmly received at [https://github.com/beat-game/beat-game](https://github.com/beat-game/beat-game).
+Pull requests will be warmly received at [https://github.com/beat-feet/beat-feet](https://github.com/beat-feet/beat-feet).
 
 ## Compiling
 
