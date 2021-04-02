@@ -1,0 +1,13 @@
+Hopp deg gjennom byer som genereres fra rytmen av musikken deres.
+
+Treff mange bygninger og du tar din død av det. Hopp hva tak til tak og se poengsummen fly avgårde.
+
+Spill deg gjennom dusinvis av nivåer, eller bruk dine egne MP3-filer for å generere egne verdener.
+
+Ingen reklame. Ingen kjøp i programmet. Kun flott musikk og hygge.
+
+Hvert nivå består av hindre som samsvarer med musikken i bakgrunnen. Hver gang du spiller samme nivå vil hindrene være like, men verdenen vil ha en annen stil. Ingen økter er like.
+
+Tilbakemelding tas varmt imot på <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
+
+Støtt utviklingen på <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a> eller <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
