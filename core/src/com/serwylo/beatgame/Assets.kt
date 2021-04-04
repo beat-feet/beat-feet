@@ -29,7 +29,7 @@ class Assets {
 
     init {
 
-        manager.load("i18n/messages", I18NBundle::class.java, I18NBundleLoader.I18NBundleParameter(Locale.FRENCH))
+        manager.load("i18n/messages", I18NBundle::class.java, I18NBundleLoader.I18NBundleParameter(Locale.getDefault()))
         manager.load("skin.json", Skin::class.java)
         manager.load("sprites.atlas", TextureAtlas::class.java)
         manager.load("effects/rainbow.p", ParticleEffect::class.java)

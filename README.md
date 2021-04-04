@@ -32,6 +32,14 @@ If you wish to support the development financially, donations are welcome via:
 
 Please report any issues or suggest features on the [issue tracker](https://github.com/beat-feet/beat-feet/issues).
 
+### Translating
+
+We use [Weblate](https://hosted.weblate.org/engage/beat-feet/) to manage translations. Please see [these instructions for using Weblate](https://hosted.weblate.org/engage/beat-feet/) to translate BabyDots.
+
+|Game strings|F-Droid metadata|
+|------------|----------------|
+|[![Translation status](https://hosted.weblate.org/widgets/beat-feet/-/game-strings/multi-auto.svg)](https://hosted.weblate.org/engage/beat-feet/)|[![Translation status](https://hosted.weblate.org/widgets/beat-feet/-/app-metadata/multi-auto.svg)](https://hosted.weblate.org/engage/beat-feet/)|
+
 ### Submitting changes
 
 Pull requests will be warmly received at [https://github.com/beat-feet/beat-feet](https://github.com/beat-feet/beat-feet).
