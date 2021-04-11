@@ -18,7 +18,7 @@ import java.io.File
 import java.util.*
 
 
-class BeatFeetGameForScreenshots(private val verbose: Boolean) : BeatFeetGame(verbose) {
+class BeatFeetGameForScreenshots(private val verbose: Boolean) : BeatFeetGame(DesktopPlatformListener(), verbose) {
 
     private val input = MockInput()
 

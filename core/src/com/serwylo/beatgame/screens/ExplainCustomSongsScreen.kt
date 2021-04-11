@@ -2,12 +2,14 @@ package com.serwylo.beatgame.screens
 
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.ui.UI_SPACE
+import com.serwylo.beatgame.ui.makeButton
 import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeStage
 
@@ -20,25 +22,65 @@ class ExplainCustomSongsScreen(private val game: BeatFeetGame): ScreenAdapter() 
         val styles = game.assets.getStyles()
         val strings = game.assets.getStrings()
 
+        val table = Table().apply {
+
+            pad(UI_SPACE * 2)
+
+            val title = makeHeading(strings["custom-songs.title"], sprites.logo, styles, strings) {
+                game.showLevelSelectMenu()
+            }
+
+            row()
+            add(title).center().pad(UI_SPACE)
+
+            val mp3File = customMp3().file()
+            val description = Label(strings["custom-songs.description"], styles.label.medium).apply {
+                setAlignment(Align.center)
+                wrap = true
+            }
+
+            row()
+            add(description).prefWidth(Value.percentWidth(1f)).pad(UI_SPACE * 2)
+
+            val path = Label(mp3File.absolutePath, styles.label.small).apply {
+                setAlignment(Align.center)
+                wrap = true
+            }
+
+            row()
+            add(path).center().pad(UI_SPACE * 2)
+
+            val copied = Label("Copied to clipboard!", styles.label.small).apply {
+                setAlignment(Align.center)
+                color = color.cpy().apply { a = 0f }
+            }
+
+            val copyPath = makeButton(strings["custom-songs.copy-folder"], styles) {
+                game.platformListener.copyToClipboard(mp3File.parentFile?.absolutePath ?: mp3File.absolutePath)
+                copied.clearActions()
+                copied.addAction(
+                    sequence(
+                        alpha(0f),
+                        fadeIn(0.1f),
+                        delay(1f),
+                        fadeOut(0.8f)
+                    )
+                )
+            }
+
+            row()
+            add(copyPath).center()
+
+            row()
+            add(copied).center()
+
+        }
+
         stage.addActor(
-            VerticalGroup().apply {
-
+            ScrollPane(table).apply {
                 setFillParent(true)
-                align(Align.center)
-                space(UI_SPACE)
-
-                addActor(
-                    makeHeading(strings["custom-songs.title"], sprites.logo, styles, strings) {
-                        game.showLevelSelectMenu()
-                    }
-                )
-
-                val description = strings.format("custom-songs.description", customMp3().file().absolutePath)
-                addActor(
-                    Label(description, styles.label.medium).apply {
-                        setAlignment(Align.center)
-                    }
-                )
+                setScrollingDisabled(true, false)
+                setupOverscroll(UI_SPACE, 30f, 200f)
             }
         )
     }

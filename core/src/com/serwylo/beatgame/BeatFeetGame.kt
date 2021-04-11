@@ -10,7 +10,7 @@ import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.screens.*
 import java.util.*
 
-open class BeatFeetGame(private val verbose: Boolean) : Game() {
+open class BeatFeetGame(val platformListener: PlatformListener, private val verbose: Boolean) : Game() {
 
     val assets = Assets(getLocale())
 

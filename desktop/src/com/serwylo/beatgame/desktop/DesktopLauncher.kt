@@ -20,7 +20,7 @@ fun main(arg: Array<String>) {
         config.title = "Beat Feet - Screenshots"
         BeatFeetGameForScreenshots(verbose)
     } else {
-        BeatFeetGame(verbose)
+        BeatFeetGame(DesktopPlatformListener(), verbose)
     }
 
     LwjglApplication(game, config)

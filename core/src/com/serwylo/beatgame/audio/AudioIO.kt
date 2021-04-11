@@ -35,7 +35,7 @@ fun loadWorldFromMp3(musicFile: FileHandle): World {
 }
 
 fun customMp3(): FileHandle {
-    return Gdx.files.external("BeatChange${File.separator}custom.mp3")
+    return Gdx.files.external("BeatFeet${File.separator}custom.mp3")
 }
 
 fun loadFromDisk(musicFile: FileHandle): World {
