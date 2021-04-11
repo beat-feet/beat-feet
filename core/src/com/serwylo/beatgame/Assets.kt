@@ -15,7 +15,7 @@ import java.util.*
 
 
 @Suppress("PropertyName") // Allow underscores in variable names here, because it better reflects the source files things come from.
-class Assets {
+class Assets(locale: Locale) {
 
     private val manager = AssetManager()
     private lateinit var skin: Skin
@@ -29,7 +29,7 @@ class Assets {
 
     init {
 
-        manager.load("i18n/messages", I18NBundle::class.java, I18NBundleLoader.I18NBundleParameter(Locale.getDefault()))
+        manager.load("i18n/messages", I18NBundle::class.java, I18NBundleLoader.I18NBundleParameter(locale))
         manager.load("skin.json", Skin::class.java)
         manager.load("sprites.atlas", TextureAtlas::class.java)
         manager.load("effects/rainbow.p", ParticleEffect::class.java)

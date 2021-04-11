@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Levels
 
-fun saveAchievements(achievements: List<AchievementType>, level: Level) {
+fun saveAchievements(level: Level, achievements: List<AchievementType>) {
 
     Gdx.app.log(LOGGER, "Saving achievements: ${achievements.map { it.id }.joinToString(", ")}")
 
@@ -16,6 +16,10 @@ fun saveAchievements(achievements: List<AchievementType>, level: Level) {
             .putString("achievements", json)
             .flush()
 
+}
+
+fun clearAllAchievements() {
+    prefs().putString("achievements", "").flush()
 }
 
 fun loadAchievementsForLevel(level: Level): List<AchievementType> {

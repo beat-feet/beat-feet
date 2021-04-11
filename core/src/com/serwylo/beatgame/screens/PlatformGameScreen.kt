@@ -50,7 +50,7 @@ class PlatformGameScreen(
 
     private var background = Background(game.assets.getSprites(), SCALE_X)
     private lateinit var ground: Ground
-    private lateinit var player: Player
+    lateinit var player: Player
     private lateinit var deadPlayer: DeadPlayer
     private lateinit var successPlayer: SuccessPlayer
     private val shapeRenderer = ShapeRenderer()
@@ -483,7 +483,7 @@ class PlatformGameScreen(
             it.isAchieved(score, newHighScore) && existingAchievements.all { existing -> existing.id != it.id }
         }
 
-        saveAchievements(newAchievements, world.level())
+        saveAchievements(world.level(), newAchievements)
 
         val leaveGame = { subsequentAction: () -> Unit -> {
             music.stop()

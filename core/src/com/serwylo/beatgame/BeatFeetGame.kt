@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.audio.features.World
 import com.serwylo.beatgame.screens.*
+import java.util.*
 
-class BeatFeetGame(private val verbose: Boolean) : Game() {
+open class BeatFeetGame(private val verbose: Boolean) : Game() {
 
-    val assets = Assets()
+    val assets = Assets(getLocale())
 
     @Suppress("LibGDXLogLevel") // Optional flag to make more verbose.
     override fun create() {
@@ -25,6 +26,8 @@ class BeatFeetGame(private val verbose: Boolean) : Game() {
         assets.initSync()
         setScreen(MainMenuScreen(this))
     }
+
+    protected open fun getLocale(): Locale = Locale.getDefault()
 
     fun loadGame(musicFile: FileHandle, songName: String) {
         Gdx.app.postRunnable {

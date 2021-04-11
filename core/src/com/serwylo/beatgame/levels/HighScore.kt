@@ -11,6 +11,10 @@ data class HighScore(val distancePercent: Float, val points: Int, val timestamp:
 
 }
 
+fun clearAllHighScores() {
+    prefs().clear()
+}
+
 fun loadHighScore(level: Level): HighScore {
     val json = prefs().getString(level.mp3Name, "")
     return if (json == "") {

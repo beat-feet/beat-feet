@@ -12,7 +12,16 @@ fun main(arg: Array<String>) {
 
     // The playground is used to explore fourier transforms and various analysis based on the
     // results of fourier transforms. It is not intended as part of the playable game.
-    val game = if (arg.contains("playground")) AudioAnalysisPlaygroundGame() else BeatFeetGame(verbose)
+    val game = if (arg.contains("playground")) {
+        AudioAnalysisPlaygroundGame()
+    } else if (arg.contains("screenshots")) {
+        config.width = 2148
+        config.height = 1080
+        config.title = "Beat Feet - Screenshots"
+        BeatFeetGameForScreenshots(verbose)
+    } else {
+        BeatFeetGame(verbose)
+    }
 
     LwjglApplication(game, config)
 }

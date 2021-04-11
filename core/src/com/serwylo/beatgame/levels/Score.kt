@@ -1,14 +1,15 @@
 package com.serwylo.beatgame.levels
 
-class Score {
-
+class Score(
     /**
      * Although we only really want to work in integer points, because the score
      * is updated depending on fractions of a second, it seems we should probably store it as
      * a float and truncate when required.
      */
-    private var points: Float = 0f
+    private var points: Float = 0f,
     var distancePercent: Float = 0f
+) {
+
     private var multiplier: Float = 1f
     private var maxMultiplier: Int = 1
 
