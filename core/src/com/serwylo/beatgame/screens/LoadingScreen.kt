@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
+import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.audio.loadWorldFromMp3
 import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.loadHighScore
@@ -66,6 +67,12 @@ class LoadingScreen(
             Label(strings["loading-screen.loading"], styles.label.medium)
         )
 
+        if (level === Levels.Custom) {
+            container.addActor(
+                Label(customMp3().file().absolutePath, styles.label.small)
+            )
+        }
+
         // All other loading is quite quick, because it is just processing pre-generated JSON data.
         // Loading a custom level however will be slow the *first* time it runs. Every time afterwards
         // it will be as fast as others because it will use the cached JSON data however.
@@ -102,8 +109,14 @@ class LoadingScreen(
             val startTime = System.currentTimeMillis()
             val world = loadWorldFromMp3(musicFile)
             val loadTime = System.currentTimeMillis() - startTime
-            if (loadTime < MIN_LOAD_TIME) {
-                Thread.sleep(MIN_LOAD_TIME - loadTime)
+
+            // Stay around for just a little longer with custom songs, because we show the file path
+            // that you need to change in order to change the song. Once you've used custom songs
+            // the first time, this is the only place where you can see this information, so if it
+            // disappears too quickly, the user will never be able to find the path again.
+            val minTime = if (level === Levels.Custom) MIN_LOAD_TIME * 2 else MIN_LOAD_TIME
+            if (loadTime < minTime) {
+                Thread.sleep(minTime - loadTime)
             }
             game.startGame(world)
 
