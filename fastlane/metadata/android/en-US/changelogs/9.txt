@@ -1,0 +1,10 @@
+Translations!
+
+ * Beat Feet is now available in Norwegian (thanks kingu).
+ * Help translate Beat Feet into your language at https://hosted.weblate.org/engage/beat-feet.
+
+Bug fixes:
+
+ * The help screen for custom songs did not show the folder name properly.
+
+Support further development via GitHub Sponsors or Liberapay.
