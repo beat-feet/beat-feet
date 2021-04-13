@@ -30,7 +30,7 @@ class EndGameActor(
         columnAlign(Align.center)
         space(UI_SPACE)
 
-        val replayButton = makeLargeButton(strings["btn.replay"], styles) { onReplay() }
+        val playAgainButton = makeLargeButton(strings["btn.play-again"], styles) { onReplay() }
         val changeLevelButton = makeButton(strings["btn.change-level"], styles) { onChangeLevel() }
         val mainMenuButton = makeButton(strings["btn.main-menu"], styles) { onMainMenu() }
 
@@ -38,7 +38,7 @@ class EndGameActor(
         secondaryButtons.addActor(changeLevelButton)
         secondaryButtons.addActor(mainMenuButton)
 
-        addActor(replayButton)
+        addActor(playAgainButton)
         addActor(secondaryButtons)
 
         val distanceRecord = (score.distancePercent * 100).toInt() > (existingHighScore.distancePercent * 100).toInt()

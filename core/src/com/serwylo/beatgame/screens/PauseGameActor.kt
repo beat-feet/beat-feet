@@ -27,14 +27,14 @@ class PauseGameActor(
         space(UI_SPACE)
 
         val resumeButton = makeLargeButton(strings["btn.resume"], styles) { onResume() }
-        val replayButton = makeButton(strings["btn.replay"], styles) { onReplay() }
+        val restartButton = makeButton(strings["btn.restart"], styles) { onReplay() }
         val changeLevelButton = makeButton(strings["btn.change-level"], styles) { onChangeLevel() }
         val mainMenuButton = makeButton(strings["btn.main-menu"], styles) { onMainMenu() }
 
         addActor(Label(strings["paused"], styles.label.huge))
         addActor(resumeButton)
         addActor(HorizontalGroup().apply {
-            addActor(replayButton)
+            addActor(restartButton)
             addActor(changeLevelButton)
             addActor(mainMenuButton)
         })
