@@ -6,5 +6,6 @@ Translations!
 Bug fixes:
 
  * The help screen for custom songs did not show the folder name properly.
+ * Clarify 'Replay' means 'Play Again', not 'Show a replay'.
 
 Support further development via GitHub Sponsors or Liberapay.
