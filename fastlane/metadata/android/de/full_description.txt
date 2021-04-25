@@ -1,0 +1,13 @@
+Springe durch Städte, die jeweils automatisch aus dem Takt der Musik generiert werden.
+
+Wenn du zu viele Gebäude triffst, stirbst du. Springe erfolgreich von Dach zu Dach und beobachte, wie deine Punktzahl in die Höhe schießt!
+
+Spiele durch Dutzende von Levels, oder verwende deine eigenen MP3-Dateien, um eigene Welten zu erstellen.
+
+Keine Werbung. Keine In-Spiel-Käufe. Nur tolle Musik und viel Spaß.
+
+Jeder Level besteht aus Hindernissen, die der im Hintergrund spielenden Musik entsprechen. Jedes Mal, wenn Sie denselben Level spielen, wird die Größe der Hindernisse gleich sein, aber die Welt wird einen anderen Stil haben. Keine zwei Sitzungen werden gleich aussehen.
+
+Jeder Kommentar ist auf <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a> sehr willkommen.
+
+Bitte unterstützt die weitere Entwicklung unter <a href="https://github.com/sponsors/pserwylo>GitHub Sponsoren</a> oder <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
