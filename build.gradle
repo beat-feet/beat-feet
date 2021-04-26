@@ -111,5 +111,12 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
         implementation 'com.gmail.blueboxware:libgdxpluginannotations:1.16'
+
+        testImplementation 'junit:junit:4.13.2'
+        testImplementation "org.mockito:mockito-all:1.9.0"
+
+        testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
