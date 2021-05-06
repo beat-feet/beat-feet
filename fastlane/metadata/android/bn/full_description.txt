@@ -1,0 +1,13 @@
+Jump your way through cities, each automatically generated from the beat of the music.
+
+Hit too many buildings, and you will die. Successfully jump from roof to roof, and watch your score soar!
+
+Play through dozens of levels, or use your own MP3 files to generate custom worlds.
+
+No ads. No in game purchases. Just great music and fun times.
+
+Each level consists of obstacles that correspond to the music playing in the background. Every time you play the same level, the size of the obstacles will be the same, but the world will have a different style. No two sessions will look the same.
+
+যেকোনো প্রতিক্রিয়া ও মতামতকে স্বাগত জানাই <a href="https://github.com/beat-game/beat-game/discussions">গিটহাবে</a>.
+
+গেম বানাতে সাহায্য করার জন্য অনুগ্রহ করে অনুদান দাও <a href="https://github.com/sponsors/pserwylo>গিটহাব স্পন্সরে</a> or <a href="https://liberapay.com/BeatFeet/">Liberapay</a>।
