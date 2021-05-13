@@ -10,4 +10,4 @@ Each level consists of obstacles that correspond to the music playing in the bac
 
 যেকোনো প্রতিক্রিয়া ও মতামতকে স্বাগত জানাই <a href="https://github.com/beat-game/beat-game/discussions">গিটহাবে</a>.
 
-গেম বানাতে সাহায্য করার জন্য অনুগ্রহ করে অনুদান দাও <a href="https://github.com/sponsors/pserwylo>গিটহাব স্পন্সরে</a> or <a href="https://liberapay.com/BeatFeet/">Liberapay</a>।
+গেম বানাতে সাহায্য করার জন্য অনুগ্রহ করে অনুদান দাও <a href="https://github.com/sponsors/pserwylo>গিটহাব বিজ্ঞাপকে</a> or <a href="https://liberapay.com/BeatFeet/">Liberapay</a>।
