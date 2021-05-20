@@ -11,13 +11,15 @@ class I18nTests {
 
     private fun locales() = listOf(
         Locale.ENGLISH,
-        Locale("es"),
+        Locale("bn"),
         Locale("de"),
+        Locale("es"),
         Locale("fa"),
         Locale("fr"),
         Locale("it"),
         Locale("mk"),
-        Locale("nb", "NO")
+        Locale("nb", "NO"),
+        Locale("pl")
     )
 
     @Test

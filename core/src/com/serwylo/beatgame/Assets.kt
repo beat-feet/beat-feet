@@ -15,7 +15,7 @@ import java.util.*
 
 
 @Suppress("PropertyName") // Allow underscores in variable names here, because it better reflects the source files things come from.
-class Assets(locale: Locale) {
+class Assets(private val locale: Locale) {
 
     private val manager = AssetManager()
     private lateinit var skin: Skin
@@ -27,7 +27,7 @@ class Assets(locale: Locale) {
     @GDXAssets(propertiesFiles = ["android/assets/i18n/messages.properties"])
     private lateinit var strings: I18NBundle
 
-    init {
+    fun initSync() {
 
         manager.load("i18n/messages", I18NBundle::class.java, I18NBundleLoader.I18NBundleParameter(locale))
         manager.load("skin.json", Skin::class.java)
@@ -39,9 +39,6 @@ class Assets(locale: Locale) {
         // TODO: This doubles the loading time on my PC from 200ms to 400ms. Is it worth it?
         //       Perhaps we could procedurally generate the sound instead as it is relatively straightforward.
         manager.load("sounds/vibraphone_base_pitch.mp3", Sound::class.java)
-    }
-
-    fun initSync() {
 
         val startTime = System.currentTimeMillis()
         Gdx.app.debug(TAG, "Loading assets...")
@@ -269,6 +266,55 @@ class Assets(locale: Locale) {
     companion object {
 
         private const val TAG = "Assets"
+
+        /**
+         * Unfortunately despite the awesome effort of community translators, some languages
+         * are yet to be supported.
+         *
+         * Part of that is something we can solve, by choosing a bitmap font with a wider set of
+         * characters. This can be done, e.g. using tools such as Heiro (https://github.com/libgdx/libgdx/wiki/Hiero)
+         * and fonts such as Noto. Using such a font will cover a bigger range of characters, but
+         * lose the nice styles provided by the Kenney fonts used now. Therefore, it would be great
+         * to only enable these fonts for languages which require them, and leave Kenney fonts for others.
+         *
+         * The other part is an issue with libgdx, whereby it doesn't natively support RTL languages,
+         * or languages where glyphs are combined together such as Persian. This will be harder to
+         * accomplish unfortunately.
+         */
+        private val supportedLocales = setOf(
+            // "bn", // Glyphs are currently unsupported.
+            "de",
+            "en",
+            "es",
+            // "fa", // Glyphs and RTL currently not supported.
+            "fr",
+            "it",
+            // "mk",
+            "nb",
+            // "pl" // Just a few unsupported Glyphs
+            "pt"
+        )
+
+        private fun isLocaleSupported(locale: Locale): Boolean {
+            val country = locale.language.toLowerCase(Locale.ENGLISH)
+            return supportedLocales.contains(country)
+        }
+
+        fun getLocale(): Locale {
+
+            // Even though Weblate is allowing this game to be translated into many different languages,
+            // only some of them are supported by libgdx. Ensure that we don't pick up an unsupported locale
+            // which *does* have translation files available, because it will render invalid glyphs and
+            // make the game unusable.
+            val systemLocale = Locale.getDefault()
+
+            return if (isLocaleSupported(systemLocale)) {
+                systemLocale
+            } else {
+                Gdx.app.error(TAG, "Unsupported locale: $systemLocale, falling back to English.")
+                Locale.ENGLISH
+            }
+        }
 
         private val SCALE_SOUND_FILES = listOf(
                 "n01.mp3",
