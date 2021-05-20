@@ -4501,7 +4501,7 @@ jsonData: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
 						name: background
 						optional: true
-						value: window-c
+						value: window
 					}
 					titleFont: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont

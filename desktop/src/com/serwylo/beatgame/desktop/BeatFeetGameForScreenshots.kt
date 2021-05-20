@@ -22,10 +22,6 @@ class BeatFeetGameForScreenshots(private val verbose: Boolean) : BeatFeetGame(De
 
     private val input = MockInput()
 
-    override fun getLocale(): Locale {
-        return Locale("nb", "NO")
-    }
-
     @Suppress("LibGDXLogLevel") // Optional flag to make more verbose.
     override fun create() {
         super.create()

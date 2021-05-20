@@ -3,7 +3,7 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../android/assets"]
 
 project.ext.mainClassName = "com.serwylo.beatgame.desktop.DesktopLauncher"
-project.ext.assetsDir = new File("../android/assets")
+project.ext.assetsDir = new File("testRes/")
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName

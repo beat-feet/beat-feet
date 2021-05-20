@@ -12,7 +12,7 @@ import java.util.*
 
 open class BeatFeetGame(val platformListener: PlatformListener, private val verbose: Boolean) : Game() {
 
-    val assets = Assets(getLocale())
+    val assets = Assets(Assets.getLocale())
 
     @Suppress("LibGDXLogLevel") // Optional flag to make more verbose.
     override fun create() {
@@ -26,8 +26,6 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         assets.initSync()
         setScreen(MainMenuScreen(this))
     }
-
-    protected open fun getLocale(): Locale = Locale.getDefault()
 
     fun loadGame(musicFile: FileHandle, songName: String) {
         Gdx.app.postRunnable {
