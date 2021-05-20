@@ -1,0 +1,18 @@
+👍 More translations!
+
+* New (thanks to):
+  - French (Edanas + SwaFou)
+  - German (SwaFou)
+  - Italian (Edanas)
+  - Portuguese (Brazil) (Daniel)
+  - Spanish (jethro.sgr9)
+
+☹️ Some translations unsupported
+
+* Despite amazing contributions, these are currently unsupported (lack of RTL or font support):
+  - Bengali (thanks Oymate)
+  - Macedonian (thanks primarto24c8a9c6889c407b)
+  - Persian (thanks majid)
+  - Polish (thanks Michaldariusznowakowski)
+
+Support via GitHub Sponsors or Liberapay.
