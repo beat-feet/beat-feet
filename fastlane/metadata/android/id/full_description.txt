@@ -1,0 +1,13 @@
+Lompati kota-kota, masing-masing dihasilkan berdasarkan irama musik secara otomatis.
+
+Tabrak terlalu banyak bangunan, dan kau akan mati. Berhasil melompat dari atap ke atap, dan lihat skor kamu melambung!
+
+Mainkan lusinan level, atau gunakan berkas MP3mu untuk menghasilkan dunia kustom.
+
+Tak ada iklan. Tak ada pembelian dalam game. Hanya musik yang hebat dan keseruan.
+
+Setiap level terdiri dari rintangan yang sesuai dengan musik yang diputar di latar belakang. Setiap kali kamu memainkan level yang sama, ukuran rintangan akan sama, tetapi dunianya akan memiliki gaya yang berbeda. Tidak ada dua sesi yang terlihat sama.
+
+Masukan apapun sangat diterima di <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
+
+Harap dukung pengembangan lebih lanjut di <a href="https://github.com/sponsors/pserwylo>Github sponsor</a> atau <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
