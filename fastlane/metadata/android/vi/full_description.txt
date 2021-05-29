@@ -1,0 +1,14 @@
+Nhảy qua các thành phố, mỗi thành phố được tạo tự động từ tiết tấu của âm nhạc.
+
+Đâm trúng quá nhiều toà nhà, và bạn sẽ chết. Nhảy thành công từ mái nhà này đến mái nhà khác, và xem điểm số của bạn bay lên!
+
+Chơi hàng tá các level, hoặc sử dụng các tệp MP3 của bạn để tạo các thế giới tuỳ chỉnh.
+
+
+Không có quảng cáo. Không có mua hàng trong trò chơi. Chỉ có âm nhạc hay và thời gian vui vẻ thôi.
+
+Mỗi level chứa các chướng ngại vật tương ứng với âm nhạc đang phát trong nền. Mỗi lần bạn chơi một level nào đó, kích thước các chướng ngại vật sẽ như nhau, nhưng thế giới sẽ có một phong cách khác nhau. Không có hai lần chơi nào sẽ trông giống nhau cả.
+
+Bất kỳ phản hồi nào cũng được chào đón tại <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
+
+Hãy vui lòng hỗ trợ sự phát triển xa hơn tại <a href="https://github.com/sponsors/pserwylo>Nhà tài trợ GitHub</a> hoặc <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
