@@ -12,13 +12,18 @@ import java.util.*
 
 open class BeatFeetGame(val platformListener: PlatformListener, private val verbose: Boolean) : Game() {
 
-    val assets = Assets(Assets.getLocale())
+    // Initialize this in the create() method so that we can access Gdx logging. Helps to diagnose
+    // issues with asset loading if we can log meaningful messages.
+    // See https://github.com/beat-feet/beat-feet/issues/97.
+    lateinit var assets: Assets
 
     @Suppress("LibGDXLogLevel") // Optional flag to make more verbose.
     override fun create() {
         if (verbose) {
             Gdx.app.logLevel = Application.LOG_DEBUG
         }
+
+        assets = Assets(Assets.getLocale())
 
         Globals.shapeRenderer = ShapeRenderer()
         Globals.spriteBatch = SpriteBatch()
