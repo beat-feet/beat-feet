@@ -265,7 +265,7 @@ class DiscreteProgressBar(
                 sequence(
                     moveBy(shakeDistance / 2, 0f, shakeTime),
                     moveBy( - shakeDistance, 0f, shakeTime * 2),
-                    Actions.moveBy(shakeDistance / 2, shakeTime)
+                    moveBy(shakeDistance / 2, 0f, shakeTime)
                 )
             )
         )
