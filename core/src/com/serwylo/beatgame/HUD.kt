@@ -175,9 +175,9 @@ class HUD(
         label.addAction(
                 sequence(
                         parallel(
-                                alpha(0.3f, 1f),
-                                scaleBy(3f, 3f, 1f),
-                                moveBy(0f, scoreLabel.height * 4, 1f)
+                                alpha(0.3f, 0.8f),
+                                scaleBy(2f, 2f, 0.8f),
+                                moveBy(0f, scoreLabel.height * 3, 0.8f)
                         ),
                         removeActor()
                 )
