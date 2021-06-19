@@ -4,12 +4,16 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader
 import com.badlogic.gdx.audio.Sound
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.I18NBundle
+import com.crashinvaders.vfx.VfxManager
+import com.crashinvaders.vfx.effects.VignettingEffect
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import java.util.*
 
@@ -23,6 +27,7 @@ class Assets(private val locale: Locale) {
     private lateinit var sprites: Sprites
     private lateinit var particles: Particles
     private lateinit var sounds: Sounds
+    private lateinit var effects: Effects
 
     @GDXAssets(propertiesFiles = ["android/assets/i18n/messages.properties"])
     private lateinit var strings: I18NBundle
@@ -45,6 +50,7 @@ class Assets(private val locale: Locale) {
 
         manager.finishLoading()
 
+        effects = Effects()
         strings = manager.get("i18n/messages")
         skin = manager.get("skin.json")
 
@@ -63,6 +69,44 @@ class Assets(private val locale: Locale) {
     fun getSprites() = sprites
     fun getParticles() = particles
     fun getSounds() = sounds
+    fun getEffects() = effects
+
+    class Effects {
+
+        private val manager = VfxManager(Pixmap.Format.RGBA8888)
+
+        init {
+            manager.addEffect(VignettingEffect(false).apply {
+                setCenter(0.4f, 0.5f)
+                vignetteX = 0.85f
+                vignetteY = 0.15f
+            })
+        }
+
+        fun render(closure: () -> Unit) {
+            Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+            Gdx.gl.glEnable(GL20.GL_BLEND)
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+
+            manager.cleanUpBuffers()
+            manager.beginInputCapture()
+
+            closure()
+
+            manager.endInputCapture()
+            manager.applyEffects()
+            manager.renderToScreen()
+
+            Gdx.gl.glDisable(GL20.GL_BLEND)
+        }
+
+        fun resize(width: Int, height: Int) {
+            manager.resize(width, height)
+        }
+
+    }
 
     class Styles(private val skin: Skin) {
         val label = Labels()

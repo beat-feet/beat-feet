@@ -1,0 +1,13 @@
+Improvements:
+* Fullscreen
+* Three word tutorial at start of level: "Tap to jump"
+* Reduce size of combo multiplier a little (was overlaying a bit too much over the character).
+* Adding special effects (for now just vignetting)
+
+Bug fixes:
+* Stop health bars shaking off screen
+* Prevent pause screen showing over the end game screen
+
+Updated translations.
+
+Support further development via GitHub Sponsors or Liberapay.

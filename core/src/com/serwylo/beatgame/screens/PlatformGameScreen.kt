@@ -184,6 +184,9 @@ class PlatformGameScreen(
     }
 
     override fun resize(width: Int, height: Int) {
+
+        game.assets.getEffects().resize(width, height)
+
         stage.viewport.update(width, height)
 
         hud.resize(width, height)
@@ -228,7 +231,10 @@ class PlatformGameScreen(
         stage.act(delta)
         processInput()
         updateEntities(delta)
-        renderEntities()
+
+        game.assets.getEffects().render {
+            renderEntities()
+        }
 
         score.progress((playTime / world.duration).coerceAtMost(1f))
 
