@@ -114,10 +114,17 @@ class PlatformGameScreen(
                     }
                     return true
                 } else if (keycode == Input.Keys.P || keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
-                    if (state == State.PAUSED) {
-                        resume()
-                    } else {
-                        pause()
+                    when (state) {
+                        State.PAUSED -> resume()
+                        State.PLAYING -> pause()
+                        State.WARMING_UP -> pause()
+
+                        // Game hasn't even started, player hasn't interacted with the game at all, so just go back to the level select screen.
+                        State.PENDING -> leaveGame { game.showLevelSelectMenu() }
+
+                        // Do nothing, we already have a "Play Again" screen showing here.
+                        State.WINNING -> { }
+                        State.DYING -> { }
                     }
                     return true
                 }
@@ -415,23 +422,23 @@ class PlatformGameScreen(
         music.pause()
         state = State.PAUSED
 
-        val leaveGame = { subsequentAction: () -> Unit -> {
-            music.stop()
-            subsequentAction()
-        }}
-
         val pauseGameInfo = PauseGameActor(
             game,
             { resume() },
-            leaveGame { game.startGame(world) },
-            leaveGame { game.showLevelSelectMenu() },
-            leaveGame { game.showMenu() }
+            { leaveGame { game.startGame(world) } },
+            { leaveGame { game.showLevelSelectMenu() } },
+            { leaveGame { game.showMenu() } }
         )
 
         val scrollView = ScrollPane(pauseGameInfo)
         scrollView.setFillParent(true)
         scrollView.setScrollingDisabled(true, false)
         stage.addActor(scrollView)
+    }
+
+    private fun leaveGame(subsequentAction: () -> Unit) {
+        music.stop()
+        subsequentAction()
     }
 
     override fun resume() {
