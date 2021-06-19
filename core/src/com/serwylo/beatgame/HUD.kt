@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.graphics.ParticleEffectActor
 import com.serwylo.beatgame.levels.Score
@@ -33,6 +34,15 @@ class HUD(
     private val scoreLabel: Label
     private val bottomWidget = HorizontalGroup()
 
+    private var descriptionHeading = Label(null, styles.label.large).apply { setAlignment(Align.center) }
+    private var descriptionBody  = Label(null, styles.label.medium).apply { setAlignment(Align.center) }
+    private var description = VerticalGroup().apply {
+        addActor(descriptionHeading)
+        addActor(descriptionBody)
+        align(Align.top)
+        padTop(UI_SPACE * 10)
+    }
+
     private var previousMultiplier = 1
 
     init {
@@ -48,7 +58,12 @@ class HUD(
                 add(hearts).right()
 
                 row()
-                add(shields).colspan(2).right().top().expand()
+                add(shields).colspan(2).right().top()
+
+                row()
+                add(description).colspan(2).expand().top()
+
+                debug()
             }
         )
 
@@ -85,6 +100,23 @@ class HUD(
      * really get to accidentally remove or add items to the stage.
      */
     fun getInputProcessor(): InputProcessor = stage
+
+    /**
+     * Overlay a message in large text with an optional description below.
+     * Examples include a nice single line of text when first starting the game (e.g. "Defend the cities" or "Destroy the asteroids")
+     */
+    fun showMessage(heading: String, body: String? = null) {
+        this.descriptionHeading.setText(heading)
+        this.descriptionBody.setText(body)
+        this.description.addAction(
+            sequence(
+                alpha(0f, 0f), // Start at 0f alpha (hence duration 0f)...
+                alpha(1f, 0.2f), // ... and animate to 1.0f quite quickly.
+                delay(2f),
+                alpha(0f, 0.5f)
+            )
+        )
+    }
 
     fun bottomGutterHeightInPixels(): Float {
         bottomWidget.validate()

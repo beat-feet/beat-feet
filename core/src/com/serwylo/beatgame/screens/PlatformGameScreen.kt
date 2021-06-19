@@ -102,6 +102,17 @@ class PlatformGameScreen(
             }
         }
 
+        val strings = game.assets.getStrings()
+        hud.showMessage(
+            strings["game.tap-to-jump"],
+            listOf(
+                strings["game.enjoy-the-music-1"],
+                strings["game.enjoy-the-music-2"],
+                strings["game.enjoy-the-music-3"],
+                strings["game.enjoy-the-music-4"]
+            ).random()
+        )
+
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
         Gdx.input.inputProcessor = InputMultiplexer(stage, hud.getInputProcessor(), object : InputAdapter() {
 
