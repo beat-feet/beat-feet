@@ -9,7 +9,9 @@ import com.badlogic.gdx.math.Vector3
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.graphics.ParallaxCamera
 
-class Background(private val sprites: Assets.Sprites, private val maxSpeed: Float) : Entity {
+class
+
+Background(private val sprites: Assets.Sprites, private val maxSpeed: Float) : Entity {
 
     /**
      * Postpone initialisation until the first render, because we need to know the camera

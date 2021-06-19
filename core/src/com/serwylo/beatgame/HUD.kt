@@ -62,8 +62,6 @@ class HUD(
 
                 row()
                 add(description).colspan(2).expand().top()
-
-                debug()
             }
         )
 
