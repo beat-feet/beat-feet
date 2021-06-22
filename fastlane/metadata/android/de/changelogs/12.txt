@@ -1,0 +1,13 @@
+Verbesserungen:
+* Vollbild
+* Tutorial am Anfang des Levels: „Tippe, um zu springen“
+* Kombo-Multiplikator etwas verkleinern (hat sich etwas zu sehr über den Charakter gelegt).
+* Hinzufügen von Spezialeffekten (im Moment nur Vignettierung)
+
+Fehlerbehebungen:
+* Gesundheitsbalken wackeln nicht mehr vom Bildschirm
+* Verhindert, dass der Pausenbildschirm über dem Endspielbildschirm angezeigt wird
+
+Aktualisierte Übersetzungen.
+
+Unterstütze die weitere Entwicklung über GitHub-Sponsoren oder Liberapay.
