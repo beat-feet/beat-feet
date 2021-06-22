@@ -1,0 +1,13 @@
+Miglioramenti:
+* Schermo intero
+* Tutorial di tre parole all'inizio del livello: «Tocca per saltare».
+* Ridurre un po' le dimensioni del moltiplicatore combo (si sovrapponeva un po' troppo al personaggio).
+* Aggiunta di effetti speciali (per ora solo vignettatura)
+
+Correzioni di errori:
+* Barre di salute che scuotono fuori dallo schermo
+* Impedire che la schermata di pausa appaia sopra la schermata di fine gioco
+
+Traduzioni aggiornate.
+
+Supporta lo sviluppo tramite GitHub Sponsors o Liberapay.
