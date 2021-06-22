@@ -1,0 +1,13 @@
+Améliorations :
+* Plein écran
+* Tutoriel au début du niveau : « Touchez pour sauter »
+* Réduire un peu la taille du multiplicateur de combo (il se superposait un peu trop au personnage).
+* Ajout d'effets spéciaux (pour l'instant juste du vignettage).
+
+Correction d'erreurs :
+* Empêcher les barres de vie de bouger hors de l'écran
+* Empêcher l'écran de pause de s'afficher sur l'écran de fin de partie.
+
+Traductions mises à jour.
+
+Soutenez la poursuite du développement via GitHub ou Liberapay.
