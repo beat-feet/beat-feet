@@ -1,0 +1,13 @@
+Melhorias:
+* Ecrã inteiro
+* Tutorial de três palavras no início do nível: "Toca para saltar"
+* Tamanho do número de combinações ligeiramente reduzido (estava a sobrepor-se um pouco demais sobre a personagem).
+* Efeitos especiais adicionados (por enquanto só a vinheta)
+
+Correções de erros:
+* Parar as barras de vida a abanarem o ecrã.
+* Impedir que o ecrã de pausa seja mostrado sobre o ecrã do final do jogo.
+
+Traduções atualizadas.
+
+Apoia o desenvolvimento através do GitHub Sponsors ou Liberapay.
