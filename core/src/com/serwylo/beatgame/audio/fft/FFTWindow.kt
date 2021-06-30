@@ -49,7 +49,7 @@ open class FFTWindow(
                     q3 = stats.getPercentile(0.75),
                     kurtosis = stats.kurtosis,
                     skewness = stats.skewness,
-                    dominantFrequency = values.maxBy { it.absValue }!!.frequency,
+                    dominantFrequency = values.maxByOrNull { it.absValue }!!.frequency,
 
                     // https://maelfabien.github.io/machinelearning/Speech9/#3-root-mean-square-energy
                     rmse = sqrt(values.map { it.absValue * it.absValue }.sum() / values.size),

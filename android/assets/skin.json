@@ -3,14 +3,26 @@ BitmapFont: {
 	font_huge: {
 		file: kenney_high_square_72.fnt
 	}
+	font_huge_noto: {
+		file: noto_mono_72.fnt
+	}
 	font_large: {
 		file: kenney_pixel_72.fnt
+	}
+	font_large_noto: {
+		file: noto_mono_58.fnt
 	}
 	font_medium: {
 		file: kenney_pixel_42.fnt
 	}
+	font_medium_noto: {
+		file: noto_mono_26.fnt
+	}
 	font_small: {
 		file: kenney_mini_18.fnt
+	}
+	font_small_noto: {
+		file: noto_mono_18.fnt
 	}
 }
 Color: {
@@ -302,6 +314,22 @@ LabelStyle: {
 		parent: default
 		font: font_huge
 	}
+	huge-noto: {
+		parent: huge
+		font: font_huge_noto
+	}
+	large-noto: {
+		parent: large
+		font: font_large_noto
+	}
+	small-noto: {
+		parent: small
+		font: font_small_noto
+	}
+	default-noto: {
+		parent: default
+		font: font_medium_noto
+	}
 }
 ListStyle: {
 	default: {
@@ -388,6 +416,22 @@ TextButtonStyle: {
 		parent: default
 		font: font_huge
 	}
+	huge-noto: {
+		parent: huge
+		font: font_huge_noto
+	}
+	large-noto: {
+		parent: large
+		font: font_large_noto
+	}
+	small-noto: {
+		parent: small
+		font: font_small_noto
+	}
+	default-noto: {
+		parent: default
+		font: font_medium_noto
+	}
 }
 TextFieldStyle: {
 	default: {
@@ -436,7 +480,7 @@ TreeStyle: {
 }
 WindowStyle: {
 	default: {
-		background: window-c
+		background: window
 		titleFont: font_medium
 	}
 }

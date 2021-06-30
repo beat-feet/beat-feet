@@ -1,7 +1,9 @@
 package com.serwylo.beatgame
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.assets.AssetLoaderParameters
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.AssetLoader
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
@@ -12,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.I18NBundle
+import com.badlogic.gdx.utils.Logger
 import com.crashinvaders.vfx.VfxManager
 import com.crashinvaders.vfx.effects.VignettingEffect
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
@@ -54,7 +57,7 @@ class Assets(private val locale: Locale) {
         strings = manager.get("i18n/messages")
         skin = manager.get("skin.json")
 
-        styles = Styles(skin)
+        styles = Styles(skin, locale)
         sprites = Sprites(manager.get("sprites.atlas"))
         particles = Particles(manager)
         sounds = Sounds(manager)
@@ -108,15 +111,39 @@ class Assets(private val locale: Locale) {
 
     }
 
-    class Styles(private val skin: Skin) {
+    /**
+     * Depending on the [locale], we may need to use some different fonts.
+     * The default font set is based on Kenney's great pixel fonts. However, they are only able to
+     * maintain a character set that is so large. Therefore, to cater for a broader range of
+     * characters beyond the bulk of the ASCII set, we fall back to using the Google Noto font family.
+     */
+    class Styles(private val skin: Skin, private val locale: Locale) {
+
+        private val useNoto = localeRequiresNotoFonts(locale)
+
         val label = Labels()
         val textButton = TextButtons()
 
         inner class Labels {
+
             val small = skin.get("small", Label.LabelStyle::class.java)
             val medium = skin.get("default", Label.LabelStyle::class.java)
             val large = skin.get("large", Label.LabelStyle::class.java)
             val huge = skin.get("huge", Label.LabelStyle::class.java)
+
+            init {
+                if (useNoto) {
+                    val smallNoto = skin.get("small-noto", Label.LabelStyle::class.java)
+                    val mediumNoto = skin.get("default-noto", Label.LabelStyle::class.java)
+                    val largeNoto = skin.get("large-noto", Label.LabelStyle::class.java)
+                    val hugeNoto = skin.get("huge-noto", Label.LabelStyle::class.java)
+
+                    huge.font = hugeNoto.font
+                    large.font = largeNoto.font
+                    medium.font = mediumNoto.font
+                    small.font = smallNoto.font
+                }
+            }
         }
 
         inner class TextButtons {
@@ -124,6 +151,21 @@ class Assets(private val locale: Locale) {
             val medium = skin.get("default", TextButton.TextButtonStyle::class.java)
             val large = skin.get("large", TextButton.TextButtonStyle::class.java)
             val huge = skin.get("huge", TextButton.TextButtonStyle::class.java)
+
+            init {
+                if (useNoto) {
+
+                    val smallNoto = skin.get("small-noto", TextButton.TextButtonStyle::class.java)
+                    val mediumNoto = skin.get("default-noto", TextButton.TextButtonStyle::class.java)
+                    val largeNoto = skin.get("large-noto", TextButton.TextButtonStyle::class.java)
+                    val hugeNoto = skin.get("huge-noto", TextButton.TextButtonStyle::class.java)
+
+                    huge.font = hugeNoto.font
+                    large.font = largeNoto.font
+                    medium.font = mediumNoto.font
+                    small.font = smallNoto.font
+                }
+            }
         }
     }
 
@@ -329,14 +371,22 @@ class Assets(private val locale: Locale) {
             // "bn", // Glyphs are currently unsupported.
             "de",
             "en",
+            "eo",
             "es",
             // "fa", // Glyphs and RTL currently not supported.
             "fr",
+            "id",
             "it",
-            // "mk",
+            "mk",
             "nb",
-            // "pl" // Just a few unsupported Glyphs
-            "pt"
+            "pl",
+            "pt",
+            "ru",
+            "vi"
+        )
+
+        private val notoLocales = setOf(
+            "vi", "ru", "pl", "mk"
         )
 
         private fun isLocaleSupported(locale: Locale): Boolean {
@@ -344,8 +394,12 @@ class Assets(private val locale: Locale) {
             return supportedLocales.contains(country)
         }
 
-        fun getLocale(): Locale {
+        private fun localeRequiresNotoFonts(locale: Locale): Boolean {
+            val country = locale.language.toLowerCase(Locale.ENGLISH)
+            return notoLocales.contains(country)
+        }
 
+        fun getLocale(): Locale {
             // Even though Weblate is allowing this game to be translated into many different languages,
             // only some of them are supported by libgdx. Ensure that we don't pick up an unsupported locale
             // which *does* have translation files available, because it will render invalid glyphs and
