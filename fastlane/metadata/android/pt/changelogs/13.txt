@@ -1,0 +1,18 @@
+👍 Mais traduções!
+
+* Novo (graças a):
+ - Esperanto (chtabs2k19)
+ - Indonésio (liimee + rezaalmanda)
+ - Português (larcansal)
+ - Russo (chtabs2k19)
+ - Vietnamita (quangtrung02hn16)
+
+* Ativada uma nova fonte:
+  - Macedónio (primarto24c8a9c6889c407b)
+  - Polaco (Michaldariusznowakowski)
+
+* Infelizmente, estes ainda não são suportados (falta de RTL ou suporte de fontes):
+  - Bengali (obrigado Oymate)
+  - Persa (obrigado majid)
+
+Apoie o desenvolvimento no GitHub Sponsors ou Liberapay.
