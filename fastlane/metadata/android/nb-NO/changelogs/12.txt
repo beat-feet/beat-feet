@@ -1,0 +1,13 @@
+Forbedringer:
+* Fullskjermsvisning
+* Fire veiledende ord på begunnelsen av et nivå: «Trykk for å hoppe»
+* Reduser størrelse av kombomultiplikator (dekket over spillkarakteren for mye).
+* Spesialeffekter (kun vignettering for øyeblikket)
+
+Feilfikser:
+* Slutt på at helsebjelker rister seg bort fra skjermen
+* Forhindre pauseskjerm fra å vises over skjermen for spillets slutt
+
+Oppdaterte oversettelser.
+
+Støtt videre utvikling på Liberapay eller GitHub Sponsors.
