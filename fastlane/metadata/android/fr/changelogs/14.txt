@@ -1,0 +1,18 @@
+👍 Plus de traductions !
+
+* Nouveau (grâce à) :
+ - Espéranto (chtabs2k19)
+ - Indonésien (liimee + rezaalmanda)
+ - Portugais (larcansal)
+ - Russe (chtabs2k19)
+ - Vietnamien (quangtrung02hn16)
+
+* Nouvelle police :
+  - Macédonien (primarto24c8a9c6889c407b)
+  - Polonais (Michaldariusznowakowski)
+
+* Malheureusement, ces langues ne sont toujours pas prises en charge (problème de direction ou de police) :
+  - Bengali (merci Oymate)
+  - Persan (merci majid)
+
+Soutenez le projet via GitHub ou Liberapay.
