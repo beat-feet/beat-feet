@@ -1,0 +1,18 @@
+👍 Mehr Übersetzungen!
+
+* Neu (Dank an):
+ - Esperanto (chtabs2k19)
+ - Indonesisch (liimee + rezaalmanda)
+ - Portugiesisch (larcansal)
+ - Russisch (chtabs2k19)
+ - Vietnamesisch (quangtrung02hn16)
+
+* Neue Schriftart aktiviert:
+  - Mazedonisch (primarto24c8a9c6889c407b)
+  - Polnisch (Michaldariusznowakowski)
+
+* Leider werden diese noch nicht unterstützt (fehlende Richtung- oder Font-Unterstützung):
+  - Bengalisch (danke Oymate)
+  - Persisch (danke Majid)
+
+Unterstütze uns über GitHub oder Liberapay.
