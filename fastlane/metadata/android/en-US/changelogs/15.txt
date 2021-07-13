@@ -1,0 +1,18 @@
+👍 More translations!
+
+* New (thanks to):
+ - Esperanto (chtabs2k19)
+ - Indonesian (liimee + rezaalmanda)
+ - Portuguese (larcansal)
+ - Russian (chtabs2k19)
+ - Vietnamese (quangtrung02hn16)
+
+* A new font has enabled:
+  - Macedonian (primarto24c8a9c6889c407b)
+  - Polish (Michaldariusznowakowski)
+
+* Unfortunately, these are still unsupported (lack of RTL or font support):
+  - Bengali (thanks Oymate)
+  - Persian (thanks majid)
+
+Support further development via GitHub Sponsors or Liberapay.

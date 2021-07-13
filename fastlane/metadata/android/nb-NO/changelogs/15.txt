@@ -1,0 +1,18 @@
+👍 Flere oversettelser!
+
+* Nye (takket være):
+ - Esperanto (chtabs2k19)
+ - Indonesisk (liimee + rezaalmanda)
+ - Portugisisk (larcansal)
+ - Russisk (chtabs2k19)
+ - Vietnamesisk (quangtrung02hn16)
+
+* Ny skrift:
+  - Makedonsk (primarto24c8a9c6889c407b)
+  - Polsk (Michaldariusznowakowski)
+
+* Beklageligvis støttes ikke disse (på grunn av mangel på VTH-støtte):
+  - Bengalsk (Oymate)
+  - Persisk (majid)
+
+Støtt videre utvikling på Liberapay eller GitHub Sponsors.
