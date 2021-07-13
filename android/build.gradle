@@ -20,8 +20,8 @@ android {
         applicationId "com.serwylo.beatgame"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 14
-        versionName "0.12.1"
+        versionCode 15
+        versionName "0.12.2"
     }
     buildTypes {
         release {
@@ -66,7 +66,7 @@ tasks.whenTaskAdded { packageTask ->
     // See:
     //  * https://github.com/yairm210/Unciv/issues/3946 for the problem, and
     //  * https://github.com/yairm210/Unciv/pull/4090/files for the solution
-    if (packageTask.name.contains("package")) {
+    if (packageTask.name.contains("package") || packageTask.name.contains("assemble")) {
         packageTask.dependsOn 'copyAndroidNatives'
     }
 }
