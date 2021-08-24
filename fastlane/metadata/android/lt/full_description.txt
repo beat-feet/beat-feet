@@ -1,0 +1,13 @@
+Šokinėkite per miestus, kurių kiekvienas automatiškai sukuriamas pagal muzikos ritmą.
+
+Jei pataikysite į per daug pastatų, žūsite. Sėkmingai šokinėkite nuo stogo ant stogo ir stebėkite, kaip auga jūsų rezultatas!
+
+Žaiskite per dešimtis lygių arba naudokite savo MP3 failus, kad sukurtumėte pasirinktinius pasaulius.
+
+Jokių reklamų. Jokių pirkinių žaidime. Tik puiki muzika ir smagus laikas.
+
+Kiekviename lygyje yra kliūčių, atitinkančių fone grojančią muziką. Kiekvieną kartą žaidžiant tą patį lygį kliūčių dydis bus toks pat, bet pasaulis bus skirtingo stiliaus. Nė vienas iš dviejų seansų neatrodys vienodai.
+
+Bet kokių atsiliepimų labai laukiame <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
+
+Prašome paremti tolesnį vystymą <a href="https://github.com/sponsors/pserwylo>GitHub rėmėjai</a> arba <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.

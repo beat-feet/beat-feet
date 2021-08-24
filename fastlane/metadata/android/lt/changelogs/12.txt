@@ -1,0 +1,13 @@
+Patobulinimai:
+* Visas ekranas
+* Trijų žodžių pamoka lygio pradžioje: „Bakstelėkite, jei norite šokinėti“
+* Šiek tiek sumažintas kombo daugiklio dydis (jis šiek tiek per daug persidengdavo per veikėją).
+* Pridėta specialiųjų efektų (kol kas tik vinjetavimas)
+
+Klaidų taisymai:
+* Sustabdytas sveikatos juostos drebėjimą nuo ekrano
+* Užkirstas kelias pauzės ekrano rodymui virš žaidimo pabaigos ekrano
+
+Atnaujinti vertimai.
+
+Paremkite tolesnę plėtrą per GitHub rėmėjus arba Liberapay.

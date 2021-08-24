@@ -1,0 +1,18 @@
+👍 Daugiau vertimų!
+
+* Nauja (ačiū):
+ - Esperanto (chtabs2k19)
+ - Indoneziečių (liimee + rezaalmanda)
+ - Portugalų (larcansal)
+ - Rusų (chtabs2k19)
+ - Vietnamiečių (quangtrung02hn16)
+
+* Įjungtas naujas šriftas:
+  - Makedonų (primarto24c8a9c6889c407b)
+  - Lenkų (Michaldariusznowakowski)
+
+* Deja, šie šriftai vis dar nepalaikomi (nėra RTL arba šrifto palaikymo):
+  - Bengalų (ačiū Oymate)
+  - Persų (ačiū majid)
+
+Paremkite tolesnę plėtrą per GitHub rėmėjus arba Liberapay.
