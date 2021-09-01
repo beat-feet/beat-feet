@@ -410,7 +410,7 @@ class Assets(private val locale: Locale) {
                 systemLocale
             } else {
                 Gdx.app.error(TAG, "Unsupported locale: $systemLocale, falling back to English.")
-                Locale.ENGLISH
+                Locale.ROOT
             }
         }
 
