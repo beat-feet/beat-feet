@@ -377,6 +377,7 @@ class Assets(private val locale: Locale) {
             "fr",
             "id",
             "it",
+            "lt",
             "mk",
             "nb",
             "pl",
@@ -386,6 +387,7 @@ class Assets(private val locale: Locale) {
         )
 
         private val notoLocales = setOf(
+            "lt", // The characters Ž, ę, š, and perhaps others are not supported with Kenney fonts.
             "vi", "ru", "pl", "mk"
         )
 

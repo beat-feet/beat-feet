@@ -22,3 +22,13 @@ bitmap fonts are included in the skins texture atlas.
 
 If a new language is added, or translations are modified, the above process should be repeated in
 case there are any new characters that require glyphs.
+
+Some considerations when adding languages and regenerating fonts:
+* The font data and .png files are first created by running `./gradlew :texture-packer:pack-textures`
+* This writes files into the `./skin/` directory.
+* Using the libgdx SkinComposer tool, open the `.scmp` file in `./skin/`.
+* Warning: If the texture packer needed extra `.png` files now that new characters have been added,
+  you will want to manually edit the `.scmp` file and make sure that the corresponding `noto_mono_*.png`
+  files are accounted for. Do a git diff to see what files have been modified and check all are in
+  the `.scmp` file.
+* From SkinComposer, export the skin to the `./android/assets` directory.
