@@ -1,0 +1,10 @@
+👍 More translations!
+
+* New:
+ - Bulgarian (thanks to YavBav09)
+ - Lithuanian (thanks to g)
+
+* Fixed:
+ - Persian (thanks to doondoondoondoon for reporting the issue)
+
+Support further development via GitHub Sponsors or Liberapay.
