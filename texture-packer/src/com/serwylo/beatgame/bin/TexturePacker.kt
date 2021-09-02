@@ -53,6 +53,7 @@ private fun generateFonts() {
     })
 }
 
+
 /**
  * Parse every i18n properties file, and gather up every unique character that is in use.
  * Will remove duplicates and sort somewhat.
@@ -109,5 +110,4 @@ private fun outputFont(size: Int, chars: String, pageSize: Int) {
     )
 
 }
-
 

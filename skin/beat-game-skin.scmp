@@ -1924,7 +1924,7 @@ atlasData: {
 			hidden: false
 		}
 		{
-			file: "/home/pete/code/beat-game/skin/beat-game-skin_data/noto_mono_26.png"
+			file: "/home/pete/code/beat-game/skin/beat-game-skin_data/noto_mono_26_0.png"
 			bgColor: {
 				r: 0
 				g: 0
@@ -1933,7 +1933,26 @@ atlasData: {
 			}
 			tint: null
 			tintName: null
-			name: noto_mono_26
+			name: noto_mono_26_0
+			tiled: false
+			minWidth: -1
+			minHeight: -1
+			customized: false
+			tenPatchData: null
+			type: FONT
+			hidden: false
+		}
+		{
+			file: "/home/pete/code/beat-game/skin/beat-game-skin_data/noto_mono_26_1.png"
+			bgColor: {
+				r: 0
+				g: 0
+				b: 0
+				a: 1
+			}
+			tint: null
+			tintName: null
+			name: noto_mono_26_1
 			tiled: false
 			minWidth: -1
 			minHeight: -1
