@@ -368,6 +368,7 @@ class Assets(private val locale: Locale) {
          * accomplish unfortunately.
          */
         private val supportedLocales = setOf(
+            "bg",
             // "bn", // Glyphs are currently unsupported.
             "de",
             "en",
@@ -388,7 +389,7 @@ class Assets(private val locale: Locale) {
 
         private val notoLocales = setOf(
             "lt", // The characters Ž, ę, š, and perhaps others are not supported with Kenney fonts.
-            "vi", "ru", "pl", "mk"
+            "bg", "vi", "ru", "pl", "mk"
         )
 
         private fun isLocaleSupported(locale: Locale): Boolean {
