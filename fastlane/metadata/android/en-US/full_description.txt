@@ -4,7 +4,7 @@ Hit too many buildings, and you will die. Successfully jump from roof to roof, a
 
 Play through dozens of levels, or use your own MP3 files to generate custom worlds.
 
-No ads. No in game purchases. Just great music and fun times.
+No ads. No in-game purchases. Just great music and fun times.
 
 Each level consists of obstacles that correspond to the music playing in the background. Every time you play the same level, the size of the obstacles will be the same, but the world will have a different style. No two sessions will look the same.
 
