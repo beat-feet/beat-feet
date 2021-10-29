@@ -1,0 +1,13 @@
+Ugorj végig a városokon, amelyek mindegyike automatikusan készül a zene ütemére.
+
+Ne ugorj bele az épületekbe mert meghalsz. Sikeresen ugorj tetőről tetőre, és figyeld, ahogy a pontszámod szárnyal!
+
+Játssz több tucat pályán, vagy használd saját MP3 fájljaid egyéni világok létrehozásához.
+
+Nincsenek hirdetések. Nincs játékon belüli vásárlás. Csak nagyszerű zene és szórakoztató időtöltés.
+
+Minden pálya akadályokból áll, amelyek megfelelnek a háttérben szóló zenének. Minden alkalommal, amikor ugyanazt a pályát játszod, az akadályok mérete ugyanaz lesz, de a világ más stílusban fog megjelenni. Nincs két egyforma játékmenet.
+
+Bármilyen visszajelzést szívesen fogadunk a <a href="https://github.com/beat-game/beat-game/discussions">GitHubon</a>.
+
+Kérjük, támogasd a további fejlesztést a <a href="https://github.com/sponsors/pserwylo>GitHub-szponzorok</a> vagy a <a href="https://liberapay.com/BeatFeet/">Liberapay</a> oldalon. >.
