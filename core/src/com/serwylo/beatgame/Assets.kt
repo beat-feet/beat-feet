@@ -376,6 +376,7 @@ class Assets(private val locale: Locale) {
             "es",
             // "fa", // Glyphs and RTL currently not supported.
             "fr",
+            "hu",
             "id",
             "it",
             "lt",
@@ -384,12 +385,13 @@ class Assets(private val locale: Locale) {
             "pl",
             "pt",
             "ru",
-            "vi"
+            "vi",
         )
 
         private val notoLocales = setOf(
             "lt", // The characters Ž, ę, š, and perhaps others are not supported with Kenney fonts.
-            "bg", "vi", "ru", "pl", "mk"
+            "hu", // The characters ő, and perhaps others are not supported with Kenney fonts.
+            "bg", "vi", "ru", "pl", "mk",
         )
 
         private fun isLocaleSupported(locale: Locale): Boolean {
