@@ -4,25 +4,37 @@ BitmapFont: {
 		file: kenney_high_square_72.fnt
 	}
 	font_huge_noto: {
-		file: noto_mono_72.fnt
+		file: noto_72.fnt
+	}
+	font_huge_noto_cjk: {
+		file: noto_cjk_72.fnt
 	}
 	font_large: {
 		file: kenney_pixel_72.fnt
 	}
 	font_large_noto: {
-		file: noto_mono_58.fnt
+		file: noto_58.fnt
+	}
+	font_large_noto_cjk: {
+		file: noto_cjk_58.fnt
 	}
 	font_medium: {
 		file: kenney_pixel_42.fnt
 	}
 	font_medium_noto: {
-		file: noto_mono_26.fnt
+		file: noto_26.fnt
+	}
+	font_medium_noto_cjk: {
+		file: noto_cjk_26.fnt
 	}
 	font_small: {
 		file: kenney_mini_18.fnt
 	}
 	font_small_noto: {
-		file: noto_mono_18.fnt
+		file: noto_18.fnt
+	}
+	font_small_noto_cjk: {
+		file: noto_cjk_18.fnt
 	}
 }
 Color: {
@@ -330,6 +342,22 @@ LabelStyle: {
 		parent: default
 		font: font_medium_noto
 	}
+	default-noto-cjk: {
+		parent: default
+		font: font_medium_noto_cjk
+	}
+	small-noto-cjk: {
+		parent: small
+		font: font_small_noto_cjk
+	}
+	large-noto-cjk: {
+		parent: large
+		font: font_large_noto_cjk
+	}
+	huge-noto-cjk: {
+		parent: huge
+		font: font_huge_noto_cjk
+	}
 }
 ListStyle: {
 	default: {
@@ -431,6 +459,22 @@ TextButtonStyle: {
 	default-noto: {
 		parent: default
 		font: font_medium_noto
+	}
+	default-noto-cjk: {
+		parent: default
+		font: font_medium_noto_cjk
+	}
+	small-noto-cjk: {
+		parent: small
+		font: font_small_noto_cjk
+	}
+	large-noto-cjk: {
+		parent: large
+		font: font_large_noto_cjk
+	}
+	huge-noto-cjk: {
+		parent: huge
+		font: font_huge_noto_cjk
 	}
 }
 TextFieldStyle: {

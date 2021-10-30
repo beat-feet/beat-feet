@@ -1,9 +1,7 @@
 package com.serwylo.beatgame
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetLoaderParameters
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.AssetLoader
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
@@ -14,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.I18NBundle
-import com.badlogic.gdx.utils.Logger
 import com.crashinvaders.vfx.VfxManager
 import com.crashinvaders.vfx.effects.VignettingEffect
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
@@ -119,52 +116,48 @@ class Assets(private val locale: Locale) {
      */
     class Styles(private val skin: Skin, private val locale: Locale) {
 
-        private val useNoto = localeRequiresNotoFonts(locale)
+        private val font = localeFont(locale)
+        private val fontStyleNameSuffix = font?.styleNameSuffix() ?: ""
 
         val label = Labels()
         val textButton = TextButtons()
 
         inner class Labels {
 
-            val small = skin.get("small", Label.LabelStyle::class.java)
-            val medium = skin.get("default", Label.LabelStyle::class.java)
-            val large = skin.get("large", Label.LabelStyle::class.java)
-            val huge = skin.get("huge", Label.LabelStyle::class.java)
+            val small = skin.get("small", Label.LabelStyle::class.java)!!
+            val medium = skin.get("default", Label.LabelStyle::class.java)!!
+            val large = skin.get("large", Label.LabelStyle::class.java)!!
+            val huge = skin.get("huge", Label.LabelStyle::class.java)!!
 
             init {
-                if (useNoto) {
-                    val smallNoto = skin.get("small-noto", Label.LabelStyle::class.java)
-                    val mediumNoto = skin.get("default-noto", Label.LabelStyle::class.java)
-                    val largeNoto = skin.get("large-noto", Label.LabelStyle::class.java)
-                    val hugeNoto = skin.get("huge-noto", Label.LabelStyle::class.java)
+                val smallFont = skin.get("small${fontStyleNameSuffix}", Label.LabelStyle::class.java)
+                val mediumFont = skin.get("default${fontStyleNameSuffix}", Label.LabelStyle::class.java)
+                val largeFont = skin.get("large${fontStyleNameSuffix}", Label.LabelStyle::class.java)
+                val hugeFont = skin.get("huge${fontStyleNameSuffix}", Label.LabelStyle::class.java)
 
-                    huge.font = hugeNoto.font
-                    large.font = largeNoto.font
-                    medium.font = mediumNoto.font
-                    small.font = smallNoto.font
-                }
+                huge.font = hugeFont.font
+                large.font = largeFont.font
+                medium.font = mediumFont.font
+                small.font = smallFont.font
             }
         }
 
         inner class TextButtons {
-            val small = skin.get("small", TextButton.TextButtonStyle::class.java)
-            val medium = skin.get("default", TextButton.TextButtonStyle::class.java)
-            val large = skin.get("large", TextButton.TextButtonStyle::class.java)
-            val huge = skin.get("huge", TextButton.TextButtonStyle::class.java)
+            val small = skin.get("small", TextButton.TextButtonStyle::class.java)!!
+            val medium = skin.get("default", TextButton.TextButtonStyle::class.java)!!
+            val large = skin.get("large", TextButton.TextButtonStyle::class.java)!!
+            val huge = skin.get("huge", TextButton.TextButtonStyle::class.java)!!
 
             init {
-                if (useNoto) {
+                val smallFont = skin.get("small${fontStyleNameSuffix}", TextButton.TextButtonStyle::class.java)
+                val mediumFont = skin.get("default${fontStyleNameSuffix}", TextButton.TextButtonStyle::class.java)
+                val largeFont = skin.get("large${fontStyleNameSuffix}", TextButton.TextButtonStyle::class.java)
+                val hugeFont = skin.get("huge${fontStyleNameSuffix}", TextButton.TextButtonStyle::class.java)
 
-                    val smallNoto = skin.get("small-noto", TextButton.TextButtonStyle::class.java)
-                    val mediumNoto = skin.get("default-noto", TextButton.TextButtonStyle::class.java)
-                    val largeNoto = skin.get("large-noto", TextButton.TextButtonStyle::class.java)
-                    val hugeNoto = skin.get("huge-noto", TextButton.TextButtonStyle::class.java)
-
-                    huge.font = hugeNoto.font
-                    large.font = largeNoto.font
-                    medium.font = mediumNoto.font
-                    small.font = smallNoto.font
-                }
+                huge.font = hugeFont.font
+                large.font = largeFont.font
+                medium.font = mediumFont.font
+                small.font = smallFont.font
             }
         }
     }
@@ -367,31 +360,26 @@ class Assets(private val locale: Locale) {
          * or languages where glyphs are combined together such as Persian. This will be harder to
          * accomplish unfortunately.
          */
-        private val supportedLocales = setOf(
-            "bg",
+        private val supportedLocales = mapOf(
+            "bg" to Font.Noto(),
             // "bn", // Glyphs are currently unsupported.
-            "de",
-            "en",
-            "eo",
-            "es",
+            "de" to Font.Kenney(),
+            "en" to Font.Kenney(),
+            "eo" to Font.Kenney(),
+            "es" to Font.Kenney(),
             // "fa", // Glyphs and RTL currently not supported.
-            "fr",
-            "hu",
-            "id",
-            "it",
-            "lt",
-            "mk",
-            "nb",
-            "pl",
-            "pt",
-            "ru",
-            "vi",
-        )
-
-        private val notoLocales = setOf(
-            "lt", // The characters Ž, ę, š, and perhaps others are not supported with Kenney fonts.
-            "hu", // The characters ő, and perhaps others are not supported with Kenney fonts.
-            "bg", "vi", "ru", "pl", "mk",
+            "fr" to Font.Kenney(),
+            "hu" to Font.Noto(), // ő is not supported by Kenney.
+            "id" to Font.Kenney(),
+            "it" to Font.Kenney(),
+            "lt" to Font.Noto(), // Ž, ę, š not supported by Kenney.
+            "mk" to Font.Noto(),
+            "nb" to Font.Kenney(),
+            "pl" to Font.Noto(),
+            "pt" to Font.Kenney(),
+            "ru" to Font.Noto(),
+            "vi" to Font.Noto(),
+            "zh" to Font.NotoCjk(),
         )
 
         private fun isLocaleSupported(locale: Locale): Boolean {
@@ -399,9 +387,9 @@ class Assets(private val locale: Locale) {
             return supportedLocales.contains(country)
         }
 
-        private fun localeRequiresNotoFonts(locale: Locale): Boolean {
+        private fun localeFont(locale: Locale): Font? {
             val country = locale.language.toLowerCase(Locale.ENGLISH)
-            return notoLocales.contains(country)
+            return supportedLocales[country]
         }
 
         fun getLocale(): Locale {
@@ -411,8 +399,14 @@ class Assets(private val locale: Locale) {
             // make the game unusable.
             val systemLocale = Locale.getDefault()
 
-            return if (isLocaleSupported(systemLocale)) {
+            val localeToUse = if (systemLocale.language == "zh" && systemLocale.script == "Hans") {
+                Locale("zh", "", "Hans")
+            } else {
                 systemLocale
+            }
+
+            return if (isLocaleSupported(localeToUse)) {
+                localeToUse
             } else {
                 Gdx.app.error(TAG, "Unsupported locale: $systemLocale, falling back to English.")
                 Locale.ROOT
@@ -448,4 +442,20 @@ class Assets(private val locale: Locale) {
 
     }
 
+}
+
+sealed class Font {
+    class Kenney : Font() {
+        override fun styleNameSuffix() = ""
+    }
+
+    class Noto : Font() {
+        override fun styleNameSuffix() = "-noto"
+    }
+
+    class NotoCjk : Font() {
+        override fun styleNameSuffix() = "-noto-cjk"
+    }
+
+    abstract fun styleNameSuffix(): String
 }
