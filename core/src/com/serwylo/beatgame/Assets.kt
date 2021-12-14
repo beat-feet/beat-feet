@@ -399,6 +399,7 @@ class Assets(private val locale: Locale) {
             // make the game unusable.
             val systemLocale = Locale.getDefault()
 
+            Try this on an older device
             val localeToUse = if (systemLocale.language == "zh" && systemLocale.script == "Hans") {
                 Locale("zh", "", "Hans")
             } else {
