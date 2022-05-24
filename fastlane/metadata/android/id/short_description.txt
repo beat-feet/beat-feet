@@ -1,1 +1,1 @@
-Lompati kota-kota, masing-masing dihasilkan berdasarkan irama musik.
+Lompati kota-kota yang dihasilkan mengikuti irama musik.
