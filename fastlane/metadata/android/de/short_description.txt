@@ -1,1 +1,1 @@
-Springe durch Städte, die automatisch aus dem Takt der Musik generiert werden.
+Springe durch Städte, die im Takt der Musik generiert wurden.
