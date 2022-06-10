@@ -1,0 +1,13 @@
+Spring je een weg door steden, elk automatisch gegenereerd op het ritme van de muziek.
+
+Raak te veel gebouwen en je zult sterven. Spring met succes van dak naar dak en zie hoe je score stijgt!
+
+Speel door tientallen niveaus of gebruik je eigen MP3-bestanden om aangepaste werelden te genereren.
+
+Geen advertenties. Geen in-game aankopen. Gewoon geweldige muziek en leuke tijden.
+
+Elk niveau bestaat uit obstakels die overeenkomen met de muziek op de achtergrond. Elke keer dat je hetzelfde niveau speelt, zullen de obstakels hetzelfde zijn, maar de wereld zal een andere stijl hebben. Geen twee sessies zullen er hetzelfde uitzien.
+
+Alle feedback is zeer welkom op <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
+
+Ondersteun de verdere ontwikkeling op <a href="https://github.com/sponsors/pserwylo>GitHub-sponsors</a> of <a href="https://liberapay.com/BeatFeet/">Liberapay</a >.
