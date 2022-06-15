@@ -376,18 +376,23 @@ class Assets(private val locale: Locale) {
             "es",
             // "fa", // Glyphs and RTL currently not supported.
             "fr",
+            "hu",
             "id",
             "it",
             "lt",
             "mk",
             "nb",
+            "nl",
             "pl",
             "pt",
+            // "pt_BR", // Need to figure out how to get libgdx to load this translation.
             "ru",
-            "vi"
+            "vi",
+            // "zh", // Need additional fonts for this, and should also investigate what to call it so libgdx knows the difference between simplified and traditional Chinese.
         )
 
         private val notoLocales = setOf(
+            "hu", // The character ő and perhaps others are not supported with Kenney fonts.
             "lt", // The characters Ž, ę, š, and perhaps others are not supported with Kenney fonts.
             "bg", "vi", "ru", "pl", "mk"
         )
