@@ -1,9 +1,7 @@
 package com.serwylo.beatgame
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetLoaderParameters
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.AssetLoader
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
@@ -14,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.I18NBundle
-import com.badlogic.gdx.utils.Logger
 import com.crashinvaders.vfx.VfxManager
 import com.crashinvaders.vfx.effects.VignettingEffect
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
@@ -119,7 +116,7 @@ class Assets(private val locale: Locale) {
      */
     class Styles(private val skin: Skin, private val locale: Locale) {
 
-        private val useNoto = localeRequiresNotoFonts(locale)
+        private val font = fontForLocale(locale) ?: Font.KENNEY
 
         val label = Labels()
         val textButton = TextButtons()
@@ -132,16 +129,16 @@ class Assets(private val locale: Locale) {
             val huge = skin.get("huge", Label.LabelStyle::class.java)
 
             init {
-                if (useNoto) {
-                    val smallNoto = skin.get("small-noto", Label.LabelStyle::class.java)
-                    val mediumNoto = skin.get("default-noto", Label.LabelStyle::class.java)
-                    val largeNoto = skin.get("large-noto", Label.LabelStyle::class.java)
-                    val hugeNoto = skin.get("huge-noto", Label.LabelStyle::class.java)
+                if (font != Font.KENNEY) {
+                    val smallAlternative = skin.get("small-${font.id}", Label.LabelStyle::class.java)
+                    val mediumAlternative = skin.get("default-${font.id}", Label.LabelStyle::class.java)
+                    val largeAlternative = skin.get("large-${font.id}", Label.LabelStyle::class.java)
+                    val hugeAlternative = skin.get("huge-${font.id}", Label.LabelStyle::class.java)
 
-                    huge.font = hugeNoto.font
-                    large.font = largeNoto.font
-                    medium.font = mediumNoto.font
-                    small.font = smallNoto.font
+                    huge.font = hugeAlternative.font
+                    large.font = largeAlternative.font
+                    medium.font = mediumAlternative.font
+                    small.font = smallAlternative.font
                 }
             }
         }
@@ -153,17 +150,17 @@ class Assets(private val locale: Locale) {
             val huge = skin.get("huge", TextButton.TextButtonStyle::class.java)
 
             init {
-                if (useNoto) {
+                if (font != Font.KENNEY) {
 
-                    val smallNoto = skin.get("small-noto", TextButton.TextButtonStyle::class.java)
-                    val mediumNoto = skin.get("default-noto", TextButton.TextButtonStyle::class.java)
-                    val largeNoto = skin.get("large-noto", TextButton.TextButtonStyle::class.java)
-                    val hugeNoto = skin.get("huge-noto", TextButton.TextButtonStyle::class.java)
+                    val smallAlternative = skin.get("small-${font.id}", TextButton.TextButtonStyle::class.java)
+                    val mediumAlternative = skin.get("default-${font.id}", TextButton.TextButtonStyle::class.java)
+                    val largeAlternative = skin.get("large-${font.id}", TextButton.TextButtonStyle::class.java)
+                    val hugeAlternative = skin.get("huge-${font.id}", TextButton.TextButtonStyle::class.java)
 
-                    huge.font = hugeNoto.font
-                    large.font = largeNoto.font
-                    medium.font = mediumNoto.font
-                    small.font = smallNoto.font
+                    huge.font = hugeAlternative.font
+                    large.font = largeAlternative.font
+                    medium.font = mediumAlternative.font
+                    small.font = smallAlternative.font
                 }
             }
         }
@@ -349,6 +346,12 @@ class Assets(private val locale: Locale) {
         val window_wood_j = atlas.findRegion("window_wood_j")
     }
 
+    enum class Font(val id: String) {
+        KENNEY("kenney"),
+        NOTO_MONO("noto_mono"),
+        NOTO_ZH("noto_zh"),
+    }
+
     companion object {
 
         private const val TAG = "Assets"
@@ -367,44 +370,33 @@ class Assets(private val locale: Locale) {
          * or languages where glyphs are combined together such as Persian. This will be harder to
          * accomplish unfortunately.
          */
-        private val supportedLocales = setOf(
-            "bg",
+        val supportedLocales = mapOf(
+            "bg" to Font.NOTO_MONO,
             // "bn", // Glyphs are currently unsupported.
-            "de",
-            "en",
-            "eo",
-            "es",
+            "de" to Font.KENNEY,
+            "en" to Font.KENNEY,
+            "eo" to Font.KENNEY,
+            "es" to Font.KENNEY,
             // "fa", // Glyphs and RTL currently not supported.
-            "fr",
-            "hu",
-            "id",
-            "it",
-            "lt",
-            "mk",
-            "nb",
-            "nl",
-            "pl",
-            "pt",
+            "fr" to Font.KENNEY,
+            "hu" to Font.NOTO_MONO, // The character ő and perhaps others are not supported with Kenney fonts.
+            "id" to Font.KENNEY,
+            "it" to Font.KENNEY,
+            "lt" to Font.NOTO_MONO, // The characters Ž, ę, š, and perhaps others are not supported with Kenney fonts.
+            "mk" to Font.NOTO_MONO,
+            "nb" to Font.KENNEY,
+            "nl" to Font.KENNEY,
+            "pl" to Font.NOTO_MONO,
+            "pt" to Font.KENNEY,
             // "pt_BR", // Need to figure out how to get libgdx to load this translation.
-            "ru",
-            "vi",
-            // "zh", // Need additional fonts for this, and should also investigate what to call it so libgdx knows the difference between simplified and traditional Chinese.
+            "ru" to Font.NOTO_MONO,
+            "vi" to Font.NOTO_MONO,
+            "zh" to Font.NOTO_ZH, // Should also investigate what to call it so libgdx knows the difference between simplified and traditional Chinese.
         )
 
-        private val notoLocales = setOf(
-            "hu", // The character ő and perhaps others are not supported with Kenney fonts.
-            "lt", // The characters Ž, ę, š, and perhaps others are not supported with Kenney fonts.
-            "bg", "vi", "ru", "pl", "mk"
-        )
-
-        private fun isLocaleSupported(locale: Locale): Boolean {
+        private fun fontForLocale(locale: Locale): Font? {
             val country = locale.language.toLowerCase(Locale.ENGLISH)
-            return supportedLocales.contains(country)
-        }
-
-        private fun localeRequiresNotoFonts(locale: Locale): Boolean {
-            val country = locale.language.toLowerCase(Locale.ENGLISH)
-            return notoLocales.contains(country)
+            return supportedLocales[country]
         }
 
         fun getLocale(): Locale {
@@ -414,7 +406,9 @@ class Assets(private val locale: Locale) {
             // make the game unusable.
             val systemLocale = Locale.getDefault()
 
-            return if (isLocaleSupported(systemLocale)) {
+            val font = fontForLocale(systemLocale)
+
+            return if (font != null) {
                 systemLocale
             } else {
                 Gdx.app.error(TAG, "Unsupported locale: $systemLocale, falling back to English.")

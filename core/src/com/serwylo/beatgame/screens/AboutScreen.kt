@@ -97,15 +97,15 @@ class AboutScreen(private val game: BeatFeetGame): ScreenAdapter() {
             // to the original source and license to avoid ambiguity
 
             strings["about.credits.music"] to listOf(
-                "The Haunted Mansion / CC-BY-SA 3.0",
-                "Awakening / CC-BY-SA 3.0",
-                "Health and Safety / CC-BY-SA 3.0",
-                "John Harrison w/ Wichita State University Chamber / CC-BY-SA 3.0"
+                strings["about.credits.music-the-haunted-mansion"],
+                strings["about.credits.music-awakening"],
+                strings["about.credits.music-health-and-safety"],
+                strings["about.credits.music-john-harrison-wichita-state-university-chamber"],
             ),
 
             strings["about.credits.graphics"] to listOf(
-                "Kenney.nl / CCO 1.0",
-                "disabledpaladin / CC-BY-SA 4.0"
+                strings["about.credits.graphics-kenney"],
+                strings["about.credits.graphics-disabledpaladin"],
             )
 
         )
