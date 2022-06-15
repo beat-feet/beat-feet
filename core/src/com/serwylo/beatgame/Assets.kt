@@ -347,6 +347,70 @@ class Assets(private val locale: Locale) {
         val window_wood_h = atlas.findRegion("window_wood_h")
         val window_wood_i = atlas.findRegion("window_wood_i")
         val window_wood_j = atlas.findRegion("window_wood_j")
+
+        // Map sprites
+        val road_down_horizontal_marker = atlas.findRegion("road_down_horizontal_marker")!!
+        val road_down_horizontal = atlas.findRegion("road_down_horizontal")!!
+        val road_down_left_curved = atlas.findRegion("road_down_left_curved")!!
+        val road_down_left_marker_curved = atlas.findRegion("road_down_left_marker_curved")!!
+        val road_down_left_marker = atlas.findRegion("road_down_left_marker")!!
+        val road_down_left = atlas.findRegion("road_down_left")!!
+        val road_down_marker = atlas.findRegion("road_down_marker")!!
+        val road_down = atlas.findRegion("road_down")!!
+        val road_down_right_curved = atlas.findRegion("road_down_right_curved")!!
+        val road_down_right_marker_curved = atlas.findRegion("road_down_right_marker_curved")!!
+        val road_down_right_marker = atlas.findRegion("road_down_right_marker")!!
+        val road_down_right = atlas.findRegion("road_down_right")!!
+        val road_horizontal_marker = atlas.findRegion("road_horizontal_marker")!!
+        val road_horizontal = atlas.findRegion("road_horizontal")!!
+        val road_left_marker = atlas.findRegion("road_left_marker")!!
+        val road_left = atlas.findRegion("road_left")!!
+        val road_right_marker = atlas.findRegion("road_right_marker")!!
+        val road_right = atlas.findRegion("road_right")!!
+        val road_up_horizontal_marker = atlas.findRegion("road_up_horizontal_marker")!!
+        val road_up_horizontal = atlas.findRegion("road_up_horizontal")!!
+        val road_up_left_curved = atlas.findRegion("road_up_left_curved")!!
+        val road_up_left_marker_curved = atlas.findRegion("road_up_left_marker_curved")!!
+        val road_up_left_marker = atlas.findRegion("road_up_left_marker")!!
+        val road_up_left = atlas.findRegion("road_up_left")!!
+        val road_up_marker = atlas.findRegion("road_up_marker")!!
+        val road_up = atlas.findRegion("road_up")!!
+        val road_up_right_curved = atlas.findRegion("road_up_right_curved")!!
+        val road_up_right_marker_curved = atlas.findRegion("road_up_right_marker_curved")!!
+        val road_up_right_marker = atlas.findRegion("road_up_right_marker")!!
+        val road_up_right = atlas.findRegion("road_up_right")!!
+        val road_vertical_horizontal_marker = atlas.findRegion("road_vertical_horizontal_marker")!!
+        val road_vertical_horizontal = atlas.findRegion("road_vertical_horizontal")!!
+        val road_vertical_left_marker = atlas.findRegion("road_vertical_left_marker")!!
+        val road_vertical_left = atlas.findRegion("road_vertical_left")!!
+        val road_vertical_marker = atlas.findRegion("road_vertical_marker")!!
+        val road_vertical = atlas.findRegion("road_vertical")!!
+        val road_vertical_right_marker = atlas.findRegion("road_vertical_right_marker")!!
+        val road_vertical_right = atlas.findRegion("road_vertical_right")!!
+
+        val marker_a = atlas.findRegion("marker_a")!!
+        val marker_b = atlas.findRegion("marker_b")!!
+        val marker_c = atlas.findRegion("marker_c")!!
+        val marker_d = atlas.findRegion("marker_d")!!
+        val marker_e = atlas.findRegion("marker_e")!!
+        val marker_f = atlas.findRegion("marker_f")!!
+        val marker_g = atlas.findRegion("marker_g")!!
+        val marker_h = atlas.findRegion("marker_h")!!
+        val marker_i = atlas.findRegion("marker_i")!!
+        val marker_j = atlas.findRegion("marker_j")!!
+        val marker_k = atlas.findRegion("marker_k")!!
+        val marker_l = atlas.findRegion("marker_l")!!
+        val marker_m = atlas.findRegion("marker_m")!!
+        val marker_n = atlas.findRegion("marker_n")!!
+        val marker_o = atlas.findRegion("marker_o")!!
+        val marker_p = atlas.findRegion("marker_p")!!
+        val marker_q = atlas.findRegion("marker_q")!!
+        val marker_r = atlas.findRegion("marker_r")!!
+        val marker_s = atlas.findRegion("marker_s")!!
+        val marker_t = atlas.findRegion("marker_t")!!
+        val marker_blank_small = atlas.findRegion("marker_blank_small")!!
+        val marker_blank_large = atlas.findRegion("marker_blank_large")!!
+
     }
 
     companion object {
