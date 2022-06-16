@@ -3,26 +3,38 @@ BitmapFont: {
 	font_huge: {
 		file: kenney_high_square_72.fnt
 	}
-	font_huge_noto: {
+	font_huge_noto_mono: {
 		file: noto_mono_72.fnt
+	}
+	font_huge_noto_zh: {
+		file: noto_zh_72.fnt
 	}
 	font_large: {
 		file: kenney_pixel_72.fnt
 	}
-	font_large_noto: {
+	font_large_noto_mono: {
 		file: noto_mono_58.fnt
+	}
+	font_large_noto_zh: {
+		file: noto_zh_58.fnt
 	}
 	font_medium: {
 		file: kenney_pixel_42.fnt
 	}
-	font_medium_noto: {
+	font_medium_noto_mono: {
 		file: noto_mono_26.fnt
+	}
+	font_medium_noto_zh: {
+		file: noto_zh_26.fnt
 	}
 	font_small: {
 		file: kenney_mini_18.fnt
 	}
-	font_small_noto: {
+	font_small_noto_mono: {
 		file: noto_mono_18.fnt
+	}
+	font_small_noto_zh: {
+		file: noto_zh_18.fnt
 	}
 }
 Color: {
@@ -314,21 +326,37 @@ LabelStyle: {
 		parent: default
 		font: font_huge
 	}
-	huge-noto: {
+	huge-noto_mono: {
 		parent: huge
-		font: font_huge_noto
+		font: font_huge_noto_mono
 	}
-	large-noto: {
+	large-noto_mono: {
 		parent: large
-		font: font_large_noto
+		font: font_large_noto_mono
 	}
-	small-noto: {
+	small-noto_mono: {
 		parent: small
-		font: font_small_noto
+		font: font_small_noto_mono
 	}
-	default-noto: {
+	default-noto_mono: {
 		parent: default
-		font: font_medium_noto
+		font: font_medium_noto_mono
+	}
+	huge-noto_zh: {
+		parent: huge
+		font: font_huge_noto_zh
+	}
+	large-noto_zh: {
+		parent: large
+		font: font_large_noto_zh
+	}
+	small-noto_zh: {
+		parent: small
+		font: font_small_noto_zh
+	}
+	default-noto_zh: {
+		parent: default
+		font: font_medium_noto_zh
 	}
 }
 ListStyle: {
@@ -416,21 +444,37 @@ TextButtonStyle: {
 		parent: default
 		font: font_huge
 	}
-	huge-noto: {
+	huge-noto_mono: {
 		parent: huge
-		font: font_huge_noto
+		font: font_huge_noto_mono
 	}
-	large-noto: {
+	large-noto_mono: {
 		parent: large
-		font: font_large_noto
+		font: font_large_noto_mono
 	}
-	small-noto: {
+	small-noto_mono: {
 		parent: small
-		font: font_small_noto
+		font: font_small_noto_mono
 	}
-	default-noto: {
+	default-noto_mono: {
 		parent: default
-		font: font_medium_noto
+		font: font_medium_noto_mono
+	}
+	huge-noto_zh: {
+		parent: huge
+		font: font_huge_noto_zh
+	}
+	large-noto_zh: {
+		parent: large
+		font: font_large_noto_zh
+	}
+	small-noto_zh: {
+		parent: small
+		font: font_small_noto_zh
+	}
+	default-noto_zh: {
+		parent: default
+		font: font_medium_noto_zh
 	}
 }
 TextFieldStyle: {
