@@ -20,8 +20,8 @@ android {
         applicationId "com.serwylo.beatgame"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 18
-        versionName "0.12.5"
+        versionCode 19
+        versionName "0.13.0"
     }
     buildTypes {
         release {
