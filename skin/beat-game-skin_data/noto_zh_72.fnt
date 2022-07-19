@@ -5,7 +5,7 @@ page id=1 file="noto_zh_72_1.png"
 page id=2 file="noto_zh_72_2.png"
 page id=3 file="noto_zh_72_3.png"
 page id=4 file="noto_zh_72_4.png"
-chars count=249
+chars count=250
 char id=32    x=0    y=0    width=0    height=0    xoffset=-1   yoffset=83   xadvance=16   page=4    chnl=0
 char id=33    x=499  y=66   width=10   height=55   xoffset=6    yoffset=29   xadvance=24   page=3    chnl=0
 char id=35    x=437  y=251  width=35   height=53   xoffset=2    yoffset=31   xadvance=40   page=3    chnl=0
@@ -35,6 +35,7 @@ char id=69    x=423  y=415  width=32   height=53   xoffset=6    yoffset=30   xad
 char id=70    x=391  y=415  width=31   height=53   xoffset=6    yoffset=30   xadvance=40   page=3    chnl=0
 char id=71    x=238  y=307  width=40   height=55   xoffset=3    yoffset=29   xadvance=49   page=3    chnl=0
 char id=72    x=350  y=415  width=38   height=53   xoffset=6    yoffset=30   xadvance=52   page=3    chnl=0
+char id=73    x=185  y=315  width=7    height=53   xoffset=6    yoffset=30   xadvance=21   page=3    chnl=0
 char id=74    x=171  y=432  width=30   height=54   xoffset=1    yoffset=30   xadvance=39   page=3    chnl=0
 char id=75    x=350  y=361  width=40   height=53   xoffset=6    yoffset=30   xadvance=46   page=3    chnl=0
 char id=76    x=319  y=361  width=30   height=53   xoffset=6    yoffset=30   xadvance=39   page=3    chnl=0

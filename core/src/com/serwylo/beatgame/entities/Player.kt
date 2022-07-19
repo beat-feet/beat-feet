@@ -70,6 +70,7 @@ class Player(
     fun performJump() {
 
         if (jumpCount < 2 && abs(velocity.y) <= DOUBLE_JUMP_THRESHOLD) {
+            println("Jumping (current jump count: $jumpCount)")
 
             if (jumpCount == 0) {
                 jumpParticles.reset()
@@ -93,6 +94,8 @@ class Player(
                 shield = (shield + increaseJumpPower).coerceAtMost(SHIELD_MAX_AMOUNT)
             }
 
+        } else {
+            println("NOT jumping (jump count: $jumpCount, abs(velocity.y) <= DOUBLE_JUMP_THRESHOLD: ${abs(velocity.y)} <= $DOUBLE_JUMP_THRESHOLD)")
         }
 
     }

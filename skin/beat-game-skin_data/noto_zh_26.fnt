@@ -3,15 +3,15 @@ common lineHeight=38 base=31 scaleW=256 scaleH=256 pages=3 packed=0 alphaChnl=0 
 page id=0 file="noto_zh_26_0.png"
 page id=1 file="noto_zh_26_1.png"
 page id=2 file="noto_zh_26_2.png"
-chars count=249
+chars count=250
 char id=32    x=0    y=0    width=0    height=0    xoffset=-1   yoffset=30   xadvance=6    page=2    chnl=0
 char id=33    x=249  y=76   width=3    height=20   xoffset=1    yoffset=10   xadvance=7    page=1    chnl=0
 char id=35    x=1    y=1    width=13   height=20   xoffset=0    yoffset=10   xadvance=15   page=2    chnl=0
 char id=37    x=15   y=1    width=22   height=20   xoffset=0    yoffset=10   xadvance=24   page=2    chnl=0
-char id=39    x=27   y=106  width=3    height=8    xoffset=1    yoffset=9    xadvance=7    page=2    chnl=0
+char id=39    x=250  y=1    width=3    height=8    xoffset=1    yoffset=9    xadvance=7    page=2    chnl=0
 char id=44    x=25   y=211  width=5    height=9    xoffset=0    yoffset=27   xadvance=7    page=2    chnl=0
 char id=45    x=15   y=247  width=7    height=3    xoffset=0    yoffset=20   xadvance=9    page=2    chnl=0
-char id=46    x=246  y=17   width=3    height=4    xoffset=1    yoffset=26   xadvance=7    page=2    chnl=0
+char id=46    x=250  y=10   width=3    height=4    xoffset=1    yoffset=26   xadvance=7    page=2    chnl=0
 char id=47    x=12   y=1    width=10   height=26   xoffset=-1   yoffset=9    xadvance=10   page=0    chnl=0
 char id=48    x=1    y=22   width=12   height=20   xoffset=0    yoffset=10   xadvance=14   page=2    chnl=0
 char id=49    x=1    y=43   width=10   height=20   xoffset=1    yoffset=10   xadvance=14   page=2    chnl=0
@@ -23,7 +23,7 @@ char id=54    x=1    y=148  width=12   height=20   xoffset=0    yoffset=10   xad
 char id=55    x=1    y=169  width=12   height=20   xoffset=0    yoffset=10   xadvance=14   page=2    chnl=0
 char id=56    x=1    y=190  width=12   height=20   xoffset=0    yoffset=10   xadvance=14   page=2    chnl=0
 char id=57    x=1    y=211  width=12   height=20   xoffset=0    yoffset=10   xadvance=14   page=2    chnl=0
-char id=60    x=196  y=22   width=13   height=14   xoffset=0    yoffset=13   xadvance=15   page=2    chnl=0
+char id=60    x=205  y=22   width=13   height=14   xoffset=0    yoffset=13   xadvance=15   page=2    chnl=0
 char id=63    x=1    y=232  width=10   height=20   xoffset=0    yoffset=10   xadvance=12   page=2    chnl=0
 char id=65    x=31   y=22   width=16   height=20   xoffset=-1   yoffset=10   xadvance=16   page=2    chnl=0
 char id=66    x=15   y=190  width=14   height=20   xoffset=2    yoffset=10   xadvance=18   page=2    chnl=0
@@ -33,6 +33,7 @@ char id=69    x=15   y=127  width=12   height=20   xoffset=2    yoffset=10   xad
 char id=70    x=15   y=106  width=11   height=20   xoffset=2    yoffset=10   xadvance=15   page=2    chnl=0
 char id=71    x=15   y=85   width=15   height=20   xoffset=1    yoffset=10   xadvance=18   page=2    chnl=0
 char id=72    x=15   y=64   width=14   height=20   xoffset=2    yoffset=10   xadvance=20   page=2    chnl=0
+char id=73    x=246  y=1    width=3    height=20   xoffset=2    yoffset=10   xadvance=8    page=2    chnl=0
 char id=74    x=15   y=43   width=12   height=20   xoffset=-1   yoffset=10   xadvance=14   page=2    chnl=0
 char id=75    x=15   y=22   width=15   height=20   xoffset=2    yoffset=10   xadvance=17   page=2    chnl=0
 char id=76    x=234  y=1    width=11   height=20   xoffset=2    yoffset=10   xadvance=15   page=2    chnl=0
@@ -63,10 +64,10 @@ char id=107   x=234  y=217  width=12   height=21   xoffset=1    yoffset=9    xad
 char id=108   x=72   y=226  width=4    height=21   xoffset=1    yoffset=9    xadvance=7    page=1    chnl=0
 char id=109   x=48   y=22   width=20   height=15   xoffset=1    yoffset=15   xadvance=24   page=2    chnl=0
 char id=110   x=157  y=22   width=12   height=15   xoffset=1    yoffset=15   xadvance=16   page=2    chnl=0
-char id=111   x=182  y=22   width=13   height=15   xoffset=0    yoffset=15   xadvance=15   page=2    chnl=0
+char id=111   x=191  y=22   width=13   height=15   xoffset=0    yoffset=15   xadvance=15   page=2    chnl=0
 char id=112   x=220  y=217  width=13   height=21   xoffset=1    yoffset=15   xadvance=16   page=1    chnl=0
 char id=113   x=206  y=217  width=13   height=21   xoffset=0    yoffset=15   xadvance=16   page=1    chnl=0
-char id=114   x=246  y=1    width=8    height=15   xoffset=1    yoffset=15   xadvance=10   page=2    chnl=0
+char id=114   x=182  y=22   width=8    height=15   xoffset=1    yoffset=15   xadvance=10   page=2    chnl=0
 char id=115   x=170  y=22   width=11   height=15   xoffset=0    yoffset=15   xadvance=12   page=2    chnl=0
 char id=116   x=15   y=211  width=9    height=19   xoffset=0    yoffset=11   xadvance=10   page=2    chnl=0
 char id=117   x=144  y=22   width=12   height=15   xoffset=1    yoffset=15   xadvance=16   page=2    chnl=0
@@ -77,7 +78,7 @@ char id=121   x=177  y=195  width=14   height=21   xoffset=-1   yoffset=15   xad
 char id=123   x=4    y=29   width=7    height=26   xoffset=0    yoffset=9    xadvance=9    page=0    chnl=0
 char id=124   x=1    y=1    width=2    height=30   xoffset=2    yoffset=8    xadvance=8    page=0    chnl=0
 char id=125   x=4    y=56   width=7    height=26   xoffset=0    yoffset=9    xadvance=9    page=0    chnl=0
-char id=19968 x=217  y=22   width=24   height=3    xoffset=0    yoffset=18   xadvance=26   page=2    chnl=0
+char id=19968 x=226  y=22   width=24   height=3    xoffset=0    yoffset=18   xadvance=26   page=2    chnl=0
 char id=19978 x=102  y=125  width=24   height=23   xoffset=0    yoffset=8    xadvance=26   page=1    chnl=0
 char id=19979 x=153  y=218  width=23   height=22   xoffset=1    yoffset=10   xadvance=26   page=1    chnl=0
 char id=19982 x=47   y=28   width=24   height=25   xoffset=0    yoffset=8    xadvance=26   page=0    chnl=0
@@ -251,6 +252,6 @@ char id=38899 x=23   y=28   width=23   height=25   xoffset=1    yoffset=7    xad
 char id=39318 x=230  y=210  width=24   height=24   xoffset=0    yoffset=8    xadvance=26   page=0    chnl=0
 char id=39640 x=230  y=132  width=24   height=24   xoffset=0    yoffset=8    xadvance=26   page=0    chnl=0
 char id=65281 x=250  y=51   width=4    height=21   xoffset=10   yoffset=10   xadvance=26   page=1    chnl=0
-char id=65292 x=210  y=22   width=6    height=9    xoffset=2    yoffset=24   xadvance=26   page=2    chnl=0
+char id=65292 x=219  y=22   width=6    height=9    xoffset=2    yoffset=24   xadvance=26   page=2    chnl=0
 char id=65311 x=234  y=76   width=14   height=21   xoffset=5    yoffset=10   xadvance=26   page=1    chnl=0
 kernings count=0

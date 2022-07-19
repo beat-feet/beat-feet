@@ -117,6 +117,7 @@ class PlatformGameScreen(
         Gdx.input.inputProcessor = InputMultiplexer(stage, hud.getInputProcessor(), object : InputAdapter() {
 
             override fun keyDown(keycode: Int): Boolean {
+                println("Key pressed: $keycode")
                 if (keycode == Input.Keys.SPACE || keycode == Input.Keys.B || keycode == Input.Keys.J) {
                     if (state == State.PAUSED) {
                         resume()

@@ -11,6 +11,94 @@ data class Level(
 
 object Levels {
 
+    object SpaceJacked {
+
+        val Tutorial = Level(
+            "spacejacked_01_tutorial.mp3",
+            "levels.spacejacked.tutorial",
+            Unlocked()
+        )
+
+        val Splash = Level(
+            "spacejacked_02_splash.mp3",
+            "levels.spacejacked.splash",
+            Unlocked()
+        )
+
+        val Ship = Level(
+            "spacejacked_03_ship.mp3",
+            "levels.spacejacked.ship",
+            Unlocked()
+        )
+
+        val ShipUnderAttack = Level(
+            "spacejacked_04_ship_under_attack.mp3",
+            "levels.spacejacked.ship-under-attack",
+            Unlocked()
+        )
+
+        val GoGoGo = Level(
+            "spacejacked_05_go_go_go.mp3",
+            "levels.spacejacked.go-go-go",
+            Unlocked()
+        )
+
+        val GoGoFasterFaster = Level(
+            "spacejacked_06_go_go_faster_faster.mp3",
+            "levels.spacejacked.go-go-faster-faster",
+            Unlocked()
+        )
+
+        val LetsRest = Level(
+            "spacejacked_07_lets_rest.mp3",
+            "levels.spacejacked.lets-rest",
+            Unlocked()
+        )
+
+        val Rescued = Level(
+            "spacejacked_08_rescued.mp3",
+            "levels.spacejacked.rescued",
+            Unlocked()
+        )
+
+        val Metallius = Level(
+            "spacejacked_09_metallius.mp3",
+            "levels.spacejacked.metallius",
+            Unlocked()
+        )
+
+        val GoGoMetallius = Level(
+            "spacejacked_10_go_go_metallius.mp3",
+            "levels.spacejacked.go_go_metallius",
+            Unlocked()
+        )
+
+        val WhereAmI = Level(
+            "spacejacked_11_where_am_i.mp3",
+            "levels.spacejacked.where-am-i",
+            Unlocked()
+        )
+
+        val WhereverAliens = Level(
+            "spacejacked_12_wherever_aliens.mp3",
+            "levels.spacejacked.wherever-aliens",
+            Unlocked()
+        )
+
+        val MoreAliens = Level(
+            "spacejacked_13_more_aliens.mp3",
+            "levels.spacejacked.more-aliens",
+            Unlocked()
+        )
+
+        val SuperSuper = Level(
+            "spacejacked_15_super_super.mp3",
+            "levels.spacejacked.super-super",
+            Unlocked()
+        )
+
+    }
+
     val TheLaundryRoom = Level(
             "the_haunted_mansion_the_laundry_room.mp3",
             "levels.the-laundry-room",
@@ -120,6 +208,20 @@ object Levels {
     )
 
     val all = listOf(
+            SpaceJacked.Tutorial,
+            SpaceJacked.Splash,
+            SpaceJacked.Ship,
+            SpaceJacked.ShipUnderAttack,
+            SpaceJacked.GoGoGo,
+            SpaceJacked.GoGoFasterFaster,
+            SpaceJacked.LetsRest,
+            SpaceJacked.Rescued,
+            SpaceJacked.Metallius,
+            SpaceJacked.GoGoMetallius,
+            SpaceJacked.WhereAmI,
+            SpaceJacked.WhereverAliens,
+            SpaceJacked.MoreAliens,
+            SpaceJacked.SuperSuper,
             TheLaundryRoom,
             TheCourtyard,
             Maintenance,
