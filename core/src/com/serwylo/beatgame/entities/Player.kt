@@ -35,6 +35,7 @@ class Player(
     private var jumpCount = 0
 
     private val textureJump = sprites.character_a_jump
+    private val textureJump2 = sprites.character_a_duck
     private val textureHit = sprites.character_a_hit
     private val walkAnimation: Animation<TextureRegion> = Animation(0.2f, sprites.character_a_walk)
     private val deathAnimation = Animation(
@@ -114,7 +115,11 @@ class Player(
             }
         }
 
-        return textureJump
+        return if (jumpCount == 2) {
+            textureJump2
+        } else {
+            textureJump
+        }
 
     }
 
@@ -272,7 +277,7 @@ class Player(
          * Only allow double jumps when you are close to the top of your first jump. Seems to
          * offer a nice experience.
          */
-        const val DOUBLE_JUMP_THRESHOLD = 6f
+        const val DOUBLE_JUMP_THRESHOLD = 10f
 
         const val SHIELD_INITIAL_AMOUNT = 40
         const val SHIELD_MAX_AMOUNT = 100

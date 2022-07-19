@@ -258,11 +258,11 @@ class PlatformGameScreen(
 
     private fun processInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            // TODO: Move this to the input procesesor instead. Unlikely that we need both of these
+            //       ways of listening to input.
             if (state == State.PENDING) {
                 state = State.WARMING_UP
                 startTime = Globals.animationTimer
-            } else if (state == State.PLAYING || state == State.WARMING_UP) {
-                player.performJump()
             }
         }
     }
