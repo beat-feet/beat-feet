@@ -1,0 +1,6 @@
+Lompatan ganda yang lebih ramah.
+
+ * Lompatan kedua lebih lama setelah lompatan pertama.
+ * Menampilkan gambar yang berbeda untuk lompatan kedua untuk mengingatkan Anda bahwa Anda telah menggunakan lompatan kedua.
+
+Terima kasih kepada mereka yang memberikan umpan balik mengenai hal ini di GitHub.
