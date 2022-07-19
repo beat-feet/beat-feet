@@ -1,0 +1,6 @@
+🦘 More generous double jumps.
+
+ * Allow the second jump a greater time after the first jump.
+ * Show a different image for the second jump to remind you that you've used the second jump.
+
+Thanks to those who provided feedback regarding this on GitHub.
