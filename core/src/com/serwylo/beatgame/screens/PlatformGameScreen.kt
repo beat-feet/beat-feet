@@ -19,14 +19,11 @@ import com.serwylo.beatgame.entities.*
 import com.serwylo.beatgame.graphics.TiledSprite
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.graphics.makeCamera
-import com.serwylo.beatgame.levels.HighScore
-import com.serwylo.beatgame.levels.Score
+import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.levels.achievements.AchievementType
 import com.serwylo.beatgame.levels.achievements.allAchievements
 import com.serwylo.beatgame.levels.achievements.loadAchievementsForLevel
 import com.serwylo.beatgame.levels.achievements.saveAchievements
-import com.serwylo.beatgame.levels.loadHighScore
-import com.serwylo.beatgame.levels.saveHighScore
 import com.serwylo.beatgame.ui.makeStage
 import kotlin.math.sin
 
@@ -104,7 +101,7 @@ class PlatformGameScreen(
 
         val strings = game.assets.getStrings()
         hud.showMessage(
-            strings["game.tap-to-jump"],
+            if (loadHasPerformedDoubleJump()) strings["game.tap-to-jump"] else strings["game.double-tap-to-jump-higher"],
             listOf(
                 strings["game.enjoy-the-music-1"],
                 strings["game.enjoy-the-music-2"],
@@ -502,6 +499,8 @@ class PlatformGameScreen(
         val newAchievements: List<AchievementType>
         val existingHighScore: HighScore = loadHighScore(world.level())
         val newHighScore: HighScore = saveHighScore(world.level(), score)
+
+        saveHasPerformedDoubleJump(player.hasPerformedDoubleJump())
 
         newAchievements = allAchievements.filter {
             it.isAchieved(score, newHighScore) && existingAchievements.all { existing -> existing.id != it.id }

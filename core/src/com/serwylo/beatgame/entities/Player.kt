@@ -9,6 +9,7 @@ import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.Globals
 import com.serwylo.beatgame.graphics.ParallaxCamera
 import com.serwylo.beatgame.levels.Score
+import com.serwylo.beatgame.levels.loadHasPerformedDoubleJump
 import kotlin.math.abs
 
 class Player(
@@ -67,6 +68,13 @@ class Player(
     private var deathTime = 0f
     private var lastMultiplerTime = 0f
 
+    /**
+     * @see loadHasPerformedDoubleJump
+     */
+    private var hasDoubleJumped = false
+
+    fun hasPerformedDoubleJump() = hasDoubleJumped
+
     fun performJump() {
 
         if (jumpCount < 2 && abs(velocity.y) <= DOUBLE_JUMP_THRESHOLD) {
@@ -79,6 +87,10 @@ class Player(
             state = State.JUMPING
             jumpCount ++
             currentlyOnObstacles.clear()
+
+            if (jumpCount == 2) {
+                hasDoubleJumped = true
+            }
 
             if (score.getMultiplier() >= MIN_MULTIPLIER_FOR_RAINBOW) {
                 jumpParticles.emitters.forEach {
