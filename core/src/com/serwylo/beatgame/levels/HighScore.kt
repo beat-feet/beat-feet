@@ -45,4 +45,23 @@ fun saveHighScore(level: Level, score: Score, force: Boolean = false): HighScore
     return toSave
 }
 
+/**
+ * @see loadHasPerformedDoubleJump
+ */
+fun saveHasPerformedDoubleJump(value: Boolean) {
+    prefs().putBoolean("didDoubleJump", value).flush()
+}
+
+/**
+ * Each game, keep track of whether or not a player managed to double jump at all during the game.
+ * If not, assume that the player is new and hasn't yet figured out how to double jump.
+ * This information will be used to change the start game message hinting at the fact you can
+ * double tap to jump higher.
+ *
+ * Defaults to true because the first time we ask this question, we don't want to show this
+ * additional help message.
+ */
+fun loadHasPerformedDoubleJump() =
+    prefs().getBoolean("didDoubleJump", true)
+
 private fun prefs() = Gdx.app.getPreferences("com.serwylo.beat-game.scores")
