@@ -1,0 +1,13 @@
+Proskákej si cestu městy, z nichž každé je automaticky generováno podle rytmu hudby.
+
+Když narazíš do příliš mnoha budov, zemřeš. Úspěšně přeskákej ze střechy na střechu a sleduj, jak tvé skóre stoupá!
+
+Projdi si desítky úrovní nebo si pomocí vlastních MP3 souborů vygeneruj vlastní světy.
+
+Žádné reklamy. Žádné mikrotransakce. Jen skvělá hudba a zábava.
+
+Každá úroveň se skládá z překážek, které odpovídají hudbě hrající v pozadí. Pokaždé, když budeš hrát stejnou úroveň, bude velikost překážek stejná, ale svět bude mít jiný styl. Žádné dvě hry nebudou vypadat stejně.
+
+Jakákoli zpětná vazba je vítána na <a href="https://github.com/beat-game/beat-game/discussions">GitHubu</a>.
+
+Podpořte prosím další vývoj přes <a href="https://github.com/sponsors/pserwylo>GitHub Sponsors</a> nebo <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
