@@ -9,6 +9,12 @@ data class Level(
         val unlockRequirements: UnlockRequirements
 )
 
+data class LevelGroup(
+    val number: Int,
+    val labelId: String,
+    val levels: List<Level>,
+)
+
 object Levels {
 
     object SpaceJacked {
@@ -207,21 +213,8 @@ object Levels {
             Unlocked()
     )
 
-    val all = listOf(
-            SpaceJacked.Tutorial,
-            SpaceJacked.Splash,
-            SpaceJacked.Ship,
-            SpaceJacked.ShipUnderAttack,
-            SpaceJacked.GoGoGo,
-            SpaceJacked.GoGoFasterFaster,
-            SpaceJacked.LetsRest,
-            SpaceJacked.Rescued,
-            SpaceJacked.Metallius,
-            SpaceJacked.GoGoMetallius,
-            SpaceJacked.WhereAmI,
-            SpaceJacked.WhereverAliens,
-            SpaceJacked.MoreAliens,
-            SpaceJacked.SuperSuper,
+    val groups = listOf(
+        LevelGroup(1, "level-group.1", listOf(
             TheLaundryRoom,
             TheCourtyard,
             Maintenance,
@@ -240,12 +233,33 @@ object Levels {
             Vivaldi,
             ReorientTheReceivingAntenna,
             Custom
+        )),
+        LevelGroup(2, "level-group.2", listOf(
+            SpaceJacked.Tutorial,
+            SpaceJacked.Splash,
+            SpaceJacked.Ship,
+            SpaceJacked.ShipUnderAttack,
+            SpaceJacked.GoGoGo,
+            SpaceJacked.GoGoFasterFaster,
+            SpaceJacked.LetsRest,
+            SpaceJacked.Rescued,
+            SpaceJacked.Metallius,
+            SpaceJacked.GoGoMetallius,
+            SpaceJacked.WhereAmI,
+            SpaceJacked.WhereverAliens,
+            SpaceJacked.MoreAliens,
+            SpaceJacked.SuperSuper,
+        )),
     )
+
+    val all = groups.map { it.levels }.flatten()
 
     fun bySong(mp3Name: String): Level {
         return all.find { it.mp3Name == mp3Name }
                 ?: error("Could not find level corresponding to mp3 $mp3Name")
     }
+
+    fun groupForLevel(level: Level) = groups.find { it.levels.contains(level) } ?: error("Could not find world for level: ${level.labelId}")
 
 }
 

@@ -12,15 +12,17 @@ import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.levels.Level
+import com.serwylo.beatgame.levels.LevelGroup
 import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.achievements.Achievement
 import com.serwylo.beatgame.levels.achievements.allAchievements
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeHeading
+import com.serwylo.beatgame.ui.makeLevelGroupSelector
 import com.serwylo.beatgame.ui.makeStage
 
-class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
+class AchievementsScreen(private val game: BeatFeetGame, private val levelGroup: LevelGroup): ScreenAdapter() {
 
     private val stage = makeStage()
 
@@ -37,7 +39,8 @@ class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
         val table = Table()
         table.padBottom(UI_SPACE * 2)
-        table.row().align(Align.center).pad(UI_SPACE * 2)
+        table.padTop(UI_SPACE * 2)
+        table.row().align(Align.center)
 
         val headingGroup = makeHeading(strings["achievements.title"], sprites.star, styles, strings) {
             game.showMenu()
@@ -45,7 +48,16 @@ class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
         table.add(headingGroup).colspan(2)
 
-        Levels.all.forEach { level ->
+        table.row().padBottom(UI_SPACE * 2)
+
+        table.add(
+            makeLevelGroupSelector(
+                styles,
+                levelGroup,
+            ) { newGroup -> game.showAchievements(newGroup) }
+        ).colspan(2)
+
+        levelGroup.levels.forEach { level ->
 
             val isLocked = level.unlockRequirements.isLocked(achievements)
             val textColor = if (isLocked) Color.GRAY else Color.WHITE

@@ -11,16 +11,13 @@ import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.Levels
+import com.serwylo.beatgame.levels.LevelGroup
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.levels.loadHighScore
-import com.serwylo.beatgame.ui.UI_SPACE
-import com.serwylo.beatgame.ui.makeHeading
-import com.serwylo.beatgame.ui.makeIcon
-import com.serwylo.beatgame.ui.makeStage
+import com.serwylo.beatgame.ui.*
 import java.io.File
 
-class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
+class LevelSelectScreen(private val game: BeatFeetGame, private val levelGroup: LevelGroup): ScreenAdapter() {
 
     private val stage = makeStage()
 
@@ -69,13 +66,20 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
             }
         )
 
+        container.addActor(
+            makeLevelGroupSelector(
+                styles,
+                levelGroup,
+            ) { newGroup -> game.showLevelSelectMenu(newGroup) }
+        )
+
         val table = Table().apply {
             pad(UI_SPACE)
         }
 
         container.addActor(table)
 
-        Levels.all.forEachIndexed { i, level ->
+        levelGroup.levels.forEachIndexed { i, level ->
 
             if (i % levelsPerRow == 0) {
                 table.row()

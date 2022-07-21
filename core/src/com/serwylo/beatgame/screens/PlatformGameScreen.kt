@@ -19,14 +19,11 @@ import com.serwylo.beatgame.entities.*
 import com.serwylo.beatgame.graphics.TiledSprite
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.graphics.makeCamera
-import com.serwylo.beatgame.levels.HighScore
-import com.serwylo.beatgame.levels.Score
+import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.levels.achievements.AchievementType
 import com.serwylo.beatgame.levels.achievements.allAchievements
 import com.serwylo.beatgame.levels.achievements.loadAchievementsForLevel
 import com.serwylo.beatgame.levels.achievements.saveAchievements
-import com.serwylo.beatgame.levels.loadHighScore
-import com.serwylo.beatgame.levels.saveHighScore
 import com.serwylo.beatgame.ui.makeStage
 import kotlin.math.sin
 
@@ -132,7 +129,7 @@ class PlatformGameScreen(
                         State.WARMING_UP -> pause()
 
                         // Game hasn't even started, player hasn't interacted with the game at all, so just go back to the level select screen.
-                        State.PENDING -> leaveGame { game.showLevelSelectMenu() }
+                        State.PENDING -> leaveGame { returnToLevelSelect() }
 
                         // Do nothing, we already have a "Play Again" screen showing here.
                         State.WINNING -> { }
@@ -165,6 +162,10 @@ class PlatformGameScreen(
         Globals.animationTimer = 0f
 
         isInitialised = true
+    }
+
+    private fun returnToLevelSelect() {
+        game.showLevelSelectMenu(Levels.groupForLevel(world.level()))
     }
 
     private fun screenToWorld(size: Float): Float {
@@ -444,7 +445,7 @@ class PlatformGameScreen(
             game,
             { resume() },
             { leaveGame { game.startGame(world) } },
-            { leaveGame { game.showLevelSelectMenu() } },
+            { leaveGame { returnToLevelSelect() } },
             { leaveGame { game.showMenu() } }
         )
 
@@ -521,7 +522,7 @@ class PlatformGameScreen(
             score,
             newAchievements,
             leaveGame { game.startGame(world) },
-            leaveGame { game.showLevelSelectMenu() },
+            leaveGame { returnToLevelSelect() },
             leaveGame { game.showMenu() }
         )
 

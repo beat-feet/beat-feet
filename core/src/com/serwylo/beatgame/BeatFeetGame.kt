@@ -7,6 +7,8 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.audio.features.World
+import com.serwylo.beatgame.levels.LevelGroup
+import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.screens.*
 import java.util.*
 
@@ -50,9 +52,9 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         }
     }
 
-    fun showLevelSelectMenu() {
+    fun showLevelSelectMenu(levelGroup: LevelGroup = Levels.groups.first()) {
         Gdx.app.postRunnable {
-            setScreen(LevelSelectScreen(this))
+            setScreen(LevelSelectScreen(this, levelGroup))
         }
     }
 
@@ -68,9 +70,9 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         }
     }
 
-    fun showAchievements() {
+    fun showAchievements(levelGroup: LevelGroup = Levels.groups.first()) {
         Gdx.app.postRunnable {
-            setScreen(AchievementsScreen(this))
+            setScreen(AchievementsScreen(this, levelGroup))
         }
     }
 

@@ -76,10 +76,10 @@ class BeatFeetGameForScreenshots(private val verbose: Boolean) : BeatFeetGame(De
         saveHighScore(Levels.Maintenance, Score(19634f, 0.66f))
         saveHighScore(Levels.ForcingTheGamecard, Score(16948f, 0.25f))
 
-        setScreen(LevelSelectScreen(this))
+        setScreen(LevelSelectScreen(this, Levels.groups.first()))
         screenshot("05_level_select.png")
 
-        setScreen(AchievementsScreen(this))
+        setScreen(AchievementsScreen(this, Levels.groups.first()))
         screenshot("07_achievements.png")
 
         Gdx.app.exit()
