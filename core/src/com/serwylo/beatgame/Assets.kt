@@ -373,6 +373,7 @@ class Assets(private val locale: Locale) {
         val supportedLocales = mapOf(
             "bg" to Font.NOTO_MONO,
             // "bn", // Glyphs are currently unsupported.
+            "cs" to Font.NOTO_MONO, // The character ř, ě, and perhaps others are not supported with Kenney fonts.
             "de" to Font.KENNEY,
             "en" to Font.KENNEY,
             "eo" to Font.KENNEY,
