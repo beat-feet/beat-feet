@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.google.gson.Gson
 import com.serwylo.beatgame.audio.features.Feature
-import com.serwylo.beatgame.audio.features.World
+import com.serwylo.beatgame.audio.features.LevelData
 import com.serwylo.beatgame.audio.fft.FFTWindow
 import com.serwylo.beatgame.audio.fft.calculateMp3FFTWithValues
 import com.serwylo.beatgame.audio.playground.*
@@ -13,7 +13,7 @@ import kotlin.math.ln
 
 private const val TAG = "WorldCache"
 
-fun loadWorldFromMp3(musicFile: FileHandle): World {
+fun loadWorldFromMp3(musicFile: FileHandle): LevelData {
 
     val precompiled = loadPrecompiled(musicFile)
     if (precompiled != null) {
@@ -38,7 +38,7 @@ fun customMp3(): FileHandle {
     return Gdx.files.external("BeatFeet${File.separator}custom.mp3")
 }
 
-fun loadFromDisk(musicFile: FileHandle): World {
+fun loadFromDisk(musicFile: FileHandle): LevelData {
 
     Gdx.app.debug(TAG, "Generating world from ${musicFile.path()}...")
 
@@ -72,11 +72,11 @@ fun loadFromDisk(musicFile: FileHandle): World {
     val duration = spectogram.mp3Data.pcmSamples.size / spectogram.mp3Data.sampleRate
 
     Gdx.app.debug(TAG, "Finished generating world")
-    return World(musicFile, duration, heightMap, features[0], features[1], features[2])
+    return LevelData(musicFile, duration, heightMap, features[0], features[1], features[2])
 
 }
 
-private fun loadFromCache(musicFile: FileHandle): World? {
+private fun loadFromCache(musicFile: FileHandle): LevelData? {
 
     val file = getCacheFile(musicFile).file()
     if (!file.exists()) {
@@ -95,7 +95,7 @@ private fun loadFromCache(musicFile: FileHandle): World? {
             return null
         }
 
-        return World(musicFile, data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
+        return LevelData(musicFile, data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
@@ -107,7 +107,7 @@ private fun loadFromCache(musicFile: FileHandle): World? {
 
 }
 
-private fun loadPrecompiled(musicFile: FileHandle): World? {
+private fun loadPrecompiled(musicFile: FileHandle): LevelData? {
 
     val file = getPrecompiledFile(musicFile)
     if (file == null || !file.exists()) {
@@ -125,7 +125,7 @@ private fun loadPrecompiled(musicFile: FileHandle): World? {
             error("Precompiled world data is version ${data.version}, whereas we only know how to handle version ${CachedWorldData.currentVersion} with certainty. Perhaps we need to compile again using :song-extract:processSongs?")
         }
 
-        return World(musicFile, data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
+        return LevelData(musicFile, data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
@@ -135,19 +135,19 @@ private fun loadPrecompiled(musicFile: FileHandle): World? {
 
 }
 
-private fun cacheWorld(musicFile: FileHandle, world: World) {
+private fun cacheWorld(musicFile: FileHandle, levelData: LevelData) {
 
     val file = getCacheFile(musicFile)
 
     Gdx.app.debug(TAG, "Caching world for ${musicFile.path()} to ${file.file().absolutePath}")
 
-    saveWorldToDisk(file, world)
+    saveWorldToDisk(file, levelData)
 
 }
 
-fun saveWorldToDisk(file: FileHandle, world: World) {
+fun saveWorldToDisk(file: FileHandle, levelData: LevelData) {
 
-    val json = Gson().toJson(CachedWorldData(world.duration, world.featuresLow, world.featuresMid, world.featuresHigh))
+    val json = Gson().toJson(CachedWorldData(levelData.duration, levelData.featuresLow, levelData.featuresMid, levelData.featuresHigh))
     file.writeString(json, false)
 
 }

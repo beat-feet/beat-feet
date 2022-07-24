@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.Levels
 
-class World(
+class LevelData(
         val musicFile: FileHandle,
         val duration: Int,
         val heightMap: Array<Vector2>,

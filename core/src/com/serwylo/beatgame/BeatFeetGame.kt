@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.serwylo.beatgame.audio.features.World
+import com.serwylo.beatgame.audio.features.LevelData
 import com.serwylo.beatgame.screens.*
 import java.util.*
 
@@ -38,9 +38,9 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         }
     }
 
-    fun startGame(world: World) {
+    fun startGame(levelData: LevelData) {
         Gdx.app.postRunnable {
-            setScreen(PlatformGameScreen(this, world))
+            setScreen(PlatformGameScreen(this, levelData))
         }
     }
 
