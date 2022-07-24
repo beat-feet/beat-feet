@@ -16,7 +16,7 @@ fun clearAllHighScores() {
 }
 
 fun loadHighScore(level: Level): HighScore {
-    val json = prefs().getString(level.mp3Name, "")
+    val json = prefs().getString(level.getId(), "")
     return if (json == "") {
         HighScore(0f, 0, 0, 0)
     } else {
@@ -40,7 +40,7 @@ fun saveHighScore(level: Level, score: Score, force: Boolean = false): HighScore
 
     val json = Gson().toJson(toSave)
 
-    prefs().putString(level.mp3Name, json).flush()
+    prefs().putString(level.getId(), json).flush()
 
     return toSave
 }

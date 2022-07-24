@@ -27,7 +27,7 @@ class LoadingScreen(
 
     private val stage = makeStage()
 
-    private val level = Levels.bySong(musicFile.name())
+    private val level = Levels.byId(musicFile.name())
 
     init {
         val sprites = game.assets.getSprites()

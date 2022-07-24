@@ -14,11 +14,9 @@ import com.serwylo.beatgame.levels.achievements.*
 import com.serwylo.beatgame.levels.clearAllHighScores
 import com.serwylo.beatgame.levels.saveHighScore
 import com.serwylo.beatgame.screens.*
-import java.io.File
-import java.util.*
 
 
-class BeatFeetGameForScreenshots(private val verbose: Boolean) : BeatFeetGame(DesktopPlatformListener(), verbose) {
+class BeatFeetGameForScreenshots(verbose: Boolean) : BeatFeetGame(DesktopPlatformListener(), verbose) {
 
     private val input = MockInput()
 
@@ -32,7 +30,7 @@ class BeatFeetGameForScreenshots(private val verbose: Boolean) : BeatFeetGame(De
         screenshot("01_main_menu.png")
 
         val level = Levels.Maintenance
-        val file = Gdx.files.internal("songs${File.separator}mp3${File.separator}${level.mp3Name}")
+        val file = level.getMp3File()
         val world = loadWorldFromMp3(file)
 
         val courtyardGame = PlatformGameScreen(this, world)

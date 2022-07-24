@@ -47,9 +47,9 @@ class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
         Levels.all.forEach { level ->
 
-            val isLocked = level.unlockRequirements.isLocked(achievements)
+            val isLocked = level.getUnlockRequirements().isLocked(achievements)
             val textColor = if (isLocked) Color.GRAY else Color.WHITE
-            val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else strings[level.labelId]
+            val labelString = if (isLocked && !level.getUnlockRequirements().isAlmostUnlocked(achievements)) "???" else level.getLabel(strings)
 
             val levelLabel = Label(labelString, styles.label.medium).apply {
                 setAlignment(Align.right)
@@ -71,7 +71,7 @@ class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
             val achievementsWidget: Actor = if (!isLocked) {
                 makeAchievementsTable(styles, strings, achievements, level)
             } else {
-                val toUnlockLabel = Label(strings.format("achievements.unlock-requirements", level.unlockRequirements.describeOutstandingRequirements(strings, achievements)), styles.label.small)
+                val toUnlockLabel = Label(strings.format("achievements.unlock-requirements", level.getUnlockRequirements().describeOutstandingRequirements(strings, achievements)), styles.label.small)
                 toUnlockLabel.color = Color.GRAY
                 toUnlockLabel
             }

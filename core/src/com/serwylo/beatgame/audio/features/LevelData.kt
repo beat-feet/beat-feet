@@ -15,7 +15,7 @@ class LevelData(
 ) {
 
     fun level(): Level {
-        return Levels.bySong(musicFile.name())
+        return Levels.byId(musicFile.name())
     }
 
 }

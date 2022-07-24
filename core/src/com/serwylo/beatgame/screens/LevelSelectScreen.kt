@@ -136,7 +136,7 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
     private fun makeButton(level: Level): WidgetGroup {
 
-        val isLocked = level.unlockRequirements.isLocked(achievements)
+        val isLocked = level.getUnlockRequirements().isLocked(achievements)
         val buttonStyle = if (isLocked) "locked" else "default"
         val textColor = if (isLocked) Color.GRAY else Color.WHITE
 
@@ -150,7 +150,7 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
             })
         }
 
-        val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else strings[level.labelId]
+        val labelString = if (isLocked && !level.getUnlockRequirements().isAlmostUnlocked(achievements)) "???" else level.getLabel(strings)
 
         val levelLabel = Label(labelString, styles.label.medium).apply {
             wrap = true
@@ -170,7 +170,7 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
         if (isLocked) {
 
-            val unlockDescription = Label(level.unlockRequirements.describeOutstandingRequirements(strings, achievements), styles.label.small)
+            val unlockDescription = Label(level.getUnlockRequirements().describeOutstandingRequirements(strings, achievements), styles.label.small)
             unlockDescription.color = textColor
 
             table.row()
@@ -200,7 +200,7 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
     }
 
     fun onLevelSelected(level: Level): Boolean {
-        if (level.mp3Name == "custom.mp3") {
+        if (level.getId() == "custom.mp3") {
             val file = customMp3()
             if (!file.exists()) {
                 game.explainCustomSongs()
@@ -208,7 +208,7 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
                 game.loadGame(file, "{Custom}")
             }
         } else {
-            game.loadGame(Gdx.files.internal("songs${File.separator}mp3${File.separator}${level.mp3Name}"), strings[level.labelId])
+            game.loadGame(level.getMp3File(), level.getLabel(strings))
         }
 
         return true

@@ -33,7 +33,7 @@ fun loadAchievementsForLevel(level: Level): List<AchievementType> {
 fun loadAllAchievements(): List<Achievement> {
     return loadPersistedAchievements().achievements.map { persisted ->
         val level: Level? = try {
-            Levels.bySong(persisted.levelId)
+            Levels.byId(persisted.levelId)
         } catch(exception: Exception) {
             // For development purposes, sometimes we find ourselves installing newer versions
             // with different levels, then going back to old versions. It is helpful without having
@@ -81,13 +81,13 @@ private data class PersistedAchievements(
 
         val toAdd = newAchievements
                 .filterNot { newAchievement -> existing.any { existingAchievement -> existingAchievement.achievementId == newAchievement.id } }
-                .map { PersistedAchievement(it.id, level.mp3Name) }
+                .map { PersistedAchievement(it.id, level.getId()) }
 
         return PersistedAchievements(achievements.plus(toAdd))
     }
 
     fun forLevel(level: Level): List<PersistedAchievement> {
-        return achievements.filter { it.levelId == level.mp3Name }
+        return achievements.filter { it.levelId == level.getId() }
     }
 
     val version = currentVersion
