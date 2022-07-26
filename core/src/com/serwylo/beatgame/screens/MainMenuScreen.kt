@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
+import com.serwylo.beatgame.levels.TheOriginalWorld
 import com.serwylo.beatgame.ui.*
 
 class MainMenuScreen(private val game: BeatFeetGame): ScreenAdapter() {
@@ -31,7 +32,7 @@ class MainMenuScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
         val buttonTable = Table()
 
-        val playButton = makeLargeButton(strings["main-menu.btn.play"], styles) { game.showLevelSelectMenu() }
+        val playButton = makeLargeButton(strings["main-menu.btn.play"], styles) { game.showLevelSelectMenu(TheOriginalWorld) }
         val achievementsButton = makeButton(strings["main-menu.btn.achievements"], styles) { game.showAchievements() }
         val aboutButton = makeButton(strings["main-menu.btn.about"], styles) { game.showAboutScreen() }
 

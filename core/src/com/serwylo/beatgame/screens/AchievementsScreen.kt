@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.BeatFeetGame
+import com.serwylo.beatgame.levels.TheOriginalWorld
 import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.Levels
 import com.serwylo.beatgame.levels.achievements.Achievement
 import com.serwylo.beatgame.levels.achievements.allAchievements
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
@@ -23,6 +23,7 @@ import com.serwylo.beatgame.ui.makeStage
 class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
     private val stage = makeStage()
+    private val world = TheOriginalWorld
 
     init {
         setupStage()
@@ -45,7 +46,7 @@ class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
         table.add(headingGroup).colspan(2)
 
-        Levels.all.forEach { level ->
+        world.getLevels().forEach { level ->
 
             val isLocked = level.getUnlockRequirements().isLocked(achievements)
             val textColor = if (isLocked) Color.GRAY else Color.WHITE

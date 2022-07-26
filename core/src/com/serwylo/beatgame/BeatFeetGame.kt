@@ -7,6 +7,8 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.serwylo.beatgame.audio.features.LevelData
+import com.serwylo.beatgame.levels.Level
+import com.serwylo.beatgame.levels.World
 import com.serwylo.beatgame.screens.*
 
 open class BeatFeetGame(val platformListener: PlatformListener, private val verbose: Boolean) : Game() {
@@ -31,15 +33,15 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         setScreen(MainMenuScreen(this))
     }
 
-    fun loadGame(musicFile: FileHandle, songName: String) {
+    fun loadGame(level: Level) {
         Gdx.app.postRunnable {
-            setScreen(LoadingScreen(this, musicFile, songName))
+            setScreen(LoadingScreen(this, level))
         }
     }
 
-    fun startGame(levelData: LevelData) {
+    fun startGame(level: Level, levelData: LevelData) {
         Gdx.app.postRunnable {
-            setScreen(PlatformGameScreen(this, levelData))
+            setScreen(PlatformGameScreen(this, level, levelData))
         }
     }
 
@@ -49,9 +51,9 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         }
     }
 
-    fun showLevelSelectMenu() {
+    fun showLevelSelectMenu(world: World) {
         Gdx.app.postRunnable {
-            setScreen(LevelSelectScreen(this))
+            setScreen(LevelSelectScreen(this, world))
         }
     }
 

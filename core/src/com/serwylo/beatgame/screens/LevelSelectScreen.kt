@@ -9,18 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
-import com.serwylo.beatgame.audio.customMp3
-import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.Levels
+import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
-import com.serwylo.beatgame.levels.loadHighScore
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeStage
-import java.io.File
 
-class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
+class LevelSelectScreen(private val game: BeatFeetGame, private val world: World): ScreenAdapter() {
 
     private val stage = makeStage()
 
@@ -75,7 +71,7 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
         container.addActor(table)
 
-        Levels.all.forEachIndexed { i, level ->
+        world.getLevels().forEachIndexed { i, level ->
 
             if (i % levelsPerRow == 0) {
                 table.row()
@@ -200,15 +196,15 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
     }
 
     fun onLevelSelected(level: Level): Boolean {
-        if (level.getId() == "custom.mp3") {
-            val file = customMp3()
+        if (level === CustomLevel) {
+            val file = level.getMp3File()
             if (!file.exists()) {
                 game.explainCustomSongs()
             } else {
-                game.loadGame(file, "{Custom}")
+                game.loadGame(level)
             }
         } else {
-            game.loadGame(level.getMp3File(), level.getLabel(strings))
+            game.loadGame(level)
         }
 
         return true

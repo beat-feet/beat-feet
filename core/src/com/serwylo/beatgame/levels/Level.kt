@@ -11,14 +11,24 @@ interface Level {
     fun getMp3File(): FileHandle
     fun getLabel(strings: I18NBundle): String
     fun getUnlockRequirements(): UnlockRequirements
+    fun getWorld(): World
+}
+
+interface World {
+    fun getLabel(strings: I18NBundle): String
+    fun getLevels(): List<Level>
+}
+
+fun findLevelById(id: String): Level? {
+    return TheOriginalWorld.getLevels().find { it.getId() == id }
 }
 
 class BuiltInLevel(
+    private val world: World,
     private val mp3Name: String,
     private val labelId: String,
-    private val toUnlock: UnlockRequirements
+    private val toUnlock: UnlockRequirements,
 ): Level {
-
     override  fun getId(): String {
         return mp3Name
     }
@@ -35,133 +45,45 @@ class BuiltInLevel(
         return toUnlock
     }
 
+    override fun getWorld(): World {
+        return world
+    }
 }
 
-/* TODO: Dynamically fetch levels from the web.
-class RemoteLevel(): Level {
+object CustomLevel: Level {
+
+    private val mp3File = Gdx.files.external("BeatFeet${File.separator}custom.mp3")
+
+    override fun getId(): String {
+        return "custom.mp3"
+    }
+
     override fun getMp3File(): FileHandle {
+        return mp3File
     }
 
     override fun getLabel(strings: I18NBundle): String {
+        return strings["levels.custom"]
     }
 
     override fun getUnlockRequirements(): UnlockRequirements {
+        return Unlocked()
+    }
+
+    override fun getWorld(): World {
+        return TheOriginalWorld
     }
 
 }
-*/
 
-object Levels {
+object TheOriginalWorld: World {
 
-    val TheLaundryRoom = BuiltInLevel(
-            "the_haunted_mansion_the_laundry_room.mp3",
-            "levels.the-laundry-room",
-            Unlocked()
-    )
+    override fun getLabel(strings: I18NBundle): String {
+        return strings["worlds.the-original"]
+    }
 
-    val TheCourtyard = BuiltInLevel(
-            "the_haunted_mansion_the_courtyard.mp3",
-            "levels.the-courtyard",
-            Unlocked()
-    )
-
-    val Maintenance = BuiltInLevel(
-            "health_and_safety_maintenance.mp3",
-            "levels.maintenance",
-            TotalAchievements(5)
-    )
-
-    val ForcingTheGamecard = BuiltInLevel(
-            "health_and_safety_forcing_the_gamecard.mp3",
-            "levels.forcing-the-gamecard",
-            TotalAchievements(10)
-    )
-
-    val SharplyBentWire = BuiltInLevel(
-            "health_and_safety_sharply_bent_wire.mp3",
-            "levels.sharply-bent-wire",
-            TotalAchievements(15)
-    )
-
-    val EyeTwitching = BuiltInLevel(
-            "health_and_safety_eye_twitching.mp3",
-            "levels.eye-twitching",
-            TotalAchievements(20)
-    )
-
-    val LightFlashes = BuiltInLevel(
-            "health_and_safety_light_flashes.mp3",
-            "levels.light-flashes",
-            TotalAchievements(25)
-    )
-
-    val PlayInAWellLitRoom = BuiltInLevel(
-            "health_and_safety_play_in_a_well_lit_room.mp3",
-            "levels.play-in-a-well-lit-room",
-            TotalAchievements(30)
-    )
-
-    val ContactWithMoistureAndDirt = BuiltInLevel(
-            "health_and_safety_contact_with_moisture_and_dirt.mp3",
-            "levels.contact-with-moisture-and-dirt",
-            TotalAchievements(35)
-    )
-
-    val TheBallroom = BuiltInLevel(
-            "the_haunted_mansion_the_ballroom.mp3",
-            "levels.the-ballroom",
-            TotalAchievements(40)
-    )
-
-    val OldClock = BuiltInLevel(
-            "awakenings_old_clock.mp3",
-            "levels.old-clock",
-            TotalAchievements(45)
-    )
-
-    val RegulationsForEquipment = BuiltInLevel(
-            "health_and_safety_regulations_for_equipment_use.mp3",
-            "levels.regulations-for-equipment",
-            TotalAchievements(50)
-    )
-
-    val Convulsions = BuiltInLevel(
-            "health_and_safety_convulsions.mp3",
-            "levels.convulsions",
-            TotalAchievements(55)
-    )
-
-    val ContactWithDustAndLint = BuiltInLevel(
-            "health_and_safety_contact_with_dust_and_lint.mp3",
-            "levels.contact-with-dust-and-lint",
-            TotalAchievements(60)
-    )
-
-    val TheExerciseRoom = BuiltInLevel(
-            "the_haunted_mansion_the_exercise_room.mp3",
-            "levels.the-exercise-room",
-            TotalAchievements(65)
-    )
-
-    val Vivaldi = BuiltInLevel(
-            "vivaldi.mp3",
-            "levels.vivaldi",
-            TotalAchievements(75)
-    )
-
-    val ReorientTheReceivingAntenna = BuiltInLevel(
-            "health_and_safety_reorient_the_receiving_antenna.mp3",
-            "levels.reorient-the-receiving-antenna",
-            TotalAchievements(80)
-    )
-
-    val Custom  = BuiltInLevel(
-            "custom.mp3",
-            "levels.custom",
-            Unlocked()
-    )
-
-    val all = listOf(
+    override fun getLevels(): List<Level> {
+        return listOf(
             TheLaundryRoom,
             TheCourtyard,
             Maintenance,
@@ -179,15 +101,150 @@ object Levels {
             TheExerciseRoom,
             Vivaldi,
             ReorientTheReceivingAntenna,
-            Custom
-    )
-
-    fun byId(id: String): Level {
-        return all.find { it.getId() == id }
-                ?: error("Could not find level with ID: \"$id\"")
+            CustomLevel,
+        )
     }
 
+    val TheLaundryRoom = BuiltInLevel(
+        this,
+        "the_haunted_mansion_the_laundry_room.mp3",
+        "levels.the-laundry-room",
+        Unlocked()
+    )
+
+    val TheCourtyard = BuiltInLevel(
+        this,
+        "the_haunted_mansion_the_courtyard.mp3",
+        "levels.the-courtyard",
+        Unlocked()
+    )
+
+    val Maintenance = BuiltInLevel(
+        this,
+        "health_and_safety_maintenance.mp3",
+        "levels.maintenance",
+        TotalAchievements(5)
+    )
+
+    val ForcingTheGamecard = BuiltInLevel(
+        this,
+        "health_and_safety_forcing_the_gamecard.mp3",
+        "levels.forcing-the-gamecard",
+        TotalAchievements(10)
+    )
+
+    val SharplyBentWire = BuiltInLevel(
+        this,
+        "health_and_safety_sharply_bent_wire.mp3",
+        "levels.sharply-bent-wire",
+        TotalAchievements(15)
+    )
+
+    val EyeTwitching = BuiltInLevel(
+        this,
+        "health_and_safety_eye_twitching.mp3",
+        "levels.eye-twitching",
+        TotalAchievements(20)
+    )
+
+    val LightFlashes = BuiltInLevel(
+        this,
+        "health_and_safety_light_flashes.mp3",
+        "levels.light-flashes",
+        TotalAchievements(25)
+    )
+
+    val PlayInAWellLitRoom = BuiltInLevel(
+        this,
+        "health_and_safety_play_in_a_well_lit_room.mp3",
+        "levels.play-in-a-well-lit-room",
+        TotalAchievements(30)
+    )
+
+    val ContactWithMoistureAndDirt = BuiltInLevel(
+        this,
+        "health_and_safety_contact_with_moisture_and_dirt.mp3",
+        "levels.contact-with-moisture-and-dirt",
+        TotalAchievements(35)
+    )
+
+    val TheBallroom = BuiltInLevel(
+        this,
+        "the_haunted_mansion_the_ballroom.mp3",
+        "levels.the-ballroom",
+        TotalAchievements(40)
+    )
+
+    val OldClock = BuiltInLevel(
+        this,
+        "awakenings_old_clock.mp3",
+        "levels.old-clock",
+        TotalAchievements(45)
+    )
+
+    val RegulationsForEquipment = BuiltInLevel(
+        this,
+        "health_and_safety_regulations_for_equipment_use.mp3",
+        "levels.regulations-for-equipment",
+        TotalAchievements(50)
+    )
+
+    val Convulsions = BuiltInLevel(
+        this,
+        "health_and_safety_convulsions.mp3",
+        "levels.convulsions",
+        TotalAchievements(55)
+    )
+
+    val ContactWithDustAndLint = BuiltInLevel(
+        this,
+        "health_and_safety_contact_with_dust_and_lint.mp3",
+        "levels.contact-with-dust-and-lint",
+        TotalAchievements(60)
+    )
+
+    val TheExerciseRoom = BuiltInLevel(
+        this,
+        "the_haunted_mansion_the_exercise_room.mp3",
+        "levels.the-exercise-room",
+        TotalAchievements(65)
+    )
+
+    val Vivaldi = BuiltInLevel(
+        this,
+        "vivaldi.mp3",
+        "levels.vivaldi",
+        TotalAchievements(75)
+    )
+
+    val ReorientTheReceivingAntenna = BuiltInLevel(
+        this,
+        "health_and_safety_reorient_the_receiving_antenna.mp3",
+        "levels.reorient-the-receiving-antenna",
+        TotalAchievements(80)
+    )
+
 }
+
+/*class RemoteLevel(): Level {
+
+    override fun getId(): String {
+
+    }
+
+    override fun getMp3File(): FileHandle {
+
+    }
+
+    override fun getLabel(strings: I18NBundle): String {
+
+    }
+
+    override fun getUnlockRequirements(): UnlockRequirements {
+
+    }
+
+}*/
 
 abstract class UnlockRequirements {
     abstract fun isLocked(achievements: List<Achievement>): Boolean

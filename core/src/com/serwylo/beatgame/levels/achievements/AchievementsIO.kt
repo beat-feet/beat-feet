@@ -3,7 +3,7 @@ package com.serwylo.beatgame.levels.achievements
 import com.badlogic.gdx.Gdx
 import com.google.gson.Gson
 import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.Levels
+import com.serwylo.beatgame.levels.findLevelById
 
 fun saveAchievements(level: Level, achievements: List<AchievementType>) {
 
@@ -31,13 +31,13 @@ fun loadAchievementsForLevel(level: Level): List<AchievementType> {
 }
 
 fun loadAllAchievements(): List<Achievement> {
-    return loadPersistedAchievements().achievements.map { persisted ->
+    return loadPersistedAchievements().achievements.mapNotNull { persisted ->
         val level: Level? = try {
-            Levels.byId(persisted.levelId)
+            findLevelById(persisted.levelId)
         } catch(exception: Exception) {
             // For development purposes, sometimes we find ourselves installing newer versions
             // with different levels, then going back to old versions. It is helpful without having
-            // to fully uninstall to delete all achievements, so we jsut ignore it.
+            // to fully uninstall to delete all achievements, so we just ignore it.
             Gdx.app.error("AchievementsIO", "Error loading level ${persisted.levelId}, but will just exclude this achievement.", exception)
             null
         }
@@ -50,7 +50,7 @@ fun loadAllAchievements(): List<Achievement> {
                 level,
             )
         }
-    }.filterNotNull()
+    }
 }
 
 private fun loadPersistedAchievements(): PersistedAchievements {

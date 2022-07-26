@@ -13,23 +13,23 @@ import kotlin.math.ln
 
 private const val TAG = "WorldCache"
 
-fun loadWorldFromMp3(musicFile: FileHandle): LevelData {
+fun loadLevelDataFromMp3(musicFile: FileHandle): LevelData {
 
-    val precompiled = loadPrecompiled(musicFile)
+    val precompiled = loadPrecompiledLevelData(musicFile)
     if (precompiled != null) {
         Gdx.app.debug(TAG, "Loaded precompiled world")
         return precompiled
     }
 
-    val fromCache = loadFromCache(musicFile)
+    val fromCache = loadLevelDataFromCache(musicFile)
     if (fromCache != null) {
         Gdx.app.debug(TAG, "Loaded world from cache")
         return fromCache
     }
 
     Gdx.app.debug(TAG, "No cached version of world, processing MP3 from disk and caching...")
-    val fromDisk = loadFromDisk(musicFile)
-    cacheWorld(musicFile, fromDisk)
+    val fromDisk = loadLevelDataFromDisk(musicFile)
+    cacheLevelData(musicFile, fromDisk)
     return fromDisk
 
 }
@@ -38,7 +38,7 @@ fun customMp3(): FileHandle {
     return Gdx.files.external("BeatFeet${File.separator}custom.mp3")
 }
 
-fun loadFromDisk(musicFile: FileHandle): LevelData {
+fun loadLevelDataFromDisk(musicFile: FileHandle): LevelData {
 
     Gdx.app.debug(TAG, "Generating world from ${musicFile.path()}...")
 
@@ -72,11 +72,11 @@ fun loadFromDisk(musicFile: FileHandle): LevelData {
     val duration = spectogram.mp3Data.pcmSamples.size / spectogram.mp3Data.sampleRate
 
     Gdx.app.debug(TAG, "Finished generating world")
-    return LevelData(musicFile, duration, heightMap, features[0], features[1], features[2])
+    return LevelData(duration, heightMap, features[0], features[1], features[2])
 
 }
 
-private fun loadFromCache(musicFile: FileHandle): LevelData? {
+private fun loadLevelDataFromCache(musicFile: FileHandle): LevelData? {
 
     val file = getCacheFile(musicFile).file()
     if (!file.exists()) {
@@ -95,7 +95,7 @@ private fun loadFromCache(musicFile: FileHandle): LevelData? {
             return null
         }
 
-        return LevelData(musicFile, data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
+        return LevelData(data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
@@ -107,7 +107,7 @@ private fun loadFromCache(musicFile: FileHandle): LevelData? {
 
 }
 
-private fun loadPrecompiled(musicFile: FileHandle): LevelData? {
+private fun loadPrecompiledLevelData(musicFile: FileHandle): LevelData? {
 
     val file = getPrecompiledFile(musicFile)
     if (file == null || !file.exists()) {
@@ -125,7 +125,7 @@ private fun loadPrecompiled(musicFile: FileHandle): LevelData? {
             error("Precompiled world data is version ${data.version}, whereas we only know how to handle version ${CachedWorldData.currentVersion} with certainty. Perhaps we need to compile again using :song-extract:processSongs?")
         }
 
-        return LevelData(musicFile, data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
+        return LevelData(data.duration, arrayOf(), data.featuresLow, data.featuresMid, data.featuresHigh)
 
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
@@ -135,17 +135,17 @@ private fun loadPrecompiled(musicFile: FileHandle): LevelData? {
 
 }
 
-private fun cacheWorld(musicFile: FileHandle, levelData: LevelData) {
+private fun cacheLevelData(musicFile: FileHandle, levelData: LevelData) {
 
     val file = getCacheFile(musicFile)
 
     Gdx.app.debug(TAG, "Caching world for ${musicFile.path()} to ${file.file().absolutePath}")
 
-    saveWorldToDisk(file, levelData)
+    saveLevelDataToDisk(file, levelData)
 
 }
 
-fun saveWorldToDisk(file: FileHandle, levelData: LevelData) {
+fun saveLevelDataToDisk(file: FileHandle, levelData: LevelData) {
 
     val json = Gson().toJson(CachedWorldData(levelData.duration, levelData.featuresLow, levelData.featuresMid, levelData.featuresHigh))
     file.writeString(json, false)

@@ -30,14 +30,15 @@ import kotlin.math.sin
 
 class PlatformGameScreen(
     private val game: BeatFeetGame,
-    private val levelData: LevelData
+    private val level: Level,
+    private val levelData: LevelData,
 ) : ScreenAdapter() {
 
     private val camera = makeCamera(20, 10, calcDensityScaleFactor())
     private lateinit var hud: HUD
     private val obstacles = mutableListOf<Obstacle>()
 
-    private val music = Gdx.audio.newMusic(levelData.musicFile)
+    private val music = Gdx.audio.newMusic(level.getMp3File())
 
     /**
      * Used at the end of the game to show feedback about the level and also a few options for
@@ -128,7 +129,7 @@ class PlatformGameScreen(
                         State.WARMING_UP -> pause()
 
                         // Game hasn't even started, player hasn't interacted with the game at all, so just go back to the level select screen.
-                        State.PENDING -> leaveGame { game.showLevelSelectMenu() }
+                        State.PENDING -> leaveGame { game.showLevelSelectMenu(level.getWorld()) }
 
                         // Do nothing, we already have a "Play Again" screen showing here.
                         State.WINNING -> { }
@@ -439,8 +440,8 @@ class PlatformGameScreen(
         val pauseGameInfo = PauseGameActor(
             game,
             { resume() },
-            { leaveGame { game.startGame(levelData) } },
-            { leaveGame { game.showLevelSelectMenu() } },
+            { leaveGame { game.startGame(level, levelData) } },
+            { leaveGame { game.showLevelSelectMenu(level.getWorld()) } },
             { leaveGame { game.showMenu() } }
         )
 
@@ -495,10 +496,10 @@ class PlatformGameScreen(
     private fun endGame() {
         music.volume = 0.4f
 
-        val existingAchievements = loadAchievementsForLevel(levelData.level())
+        val existingAchievements = loadAchievementsForLevel(level)
         val newAchievements: List<AchievementType>
-        val existingHighScore: HighScore = loadHighScore(levelData.level())
-        val newHighScore: HighScore = saveHighScore(levelData.level(), score)
+        val existingHighScore: HighScore = loadHighScore(level)
+        val newHighScore: HighScore = saveHighScore(level, score)
 
         saveHasPerformedDoubleJump(player.hasPerformedDoubleJump())
 
@@ -506,7 +507,7 @@ class PlatformGameScreen(
             it.isAchieved(score, newHighScore) && existingAchievements.all { existing -> existing.id != it.id }
         }
 
-        saveAchievements(levelData.level(), newAchievements)
+        saveAchievements(level, newAchievements)
 
         val leaveGame = { subsequentAction: () -> Unit -> {
             music.stop()
@@ -518,8 +519,8 @@ class PlatformGameScreen(
             existingHighScore,
             score,
             newAchievements,
-            leaveGame { game.startGame(levelData) },
-            leaveGame { game.showLevelSelectMenu() },
+            leaveGame { game.startGame(level, levelData) },
+            leaveGame { game.showLevelSelectMenu(level.getWorld()) },
             leaveGame { game.showMenu() }
         )
 
