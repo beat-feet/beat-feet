@@ -3,6 +3,7 @@ package com.serwylo.beatgame.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -11,13 +12,16 @@ import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.audio.loadLevelDataFromMp3
-import com.serwylo.beatgame.levels.CustomLevel
-import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.loadHighScore
+import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeStage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.xml.bind.JAXBElement
 
 class LoadingScreen(
     private val game: BeatFeetGame,
@@ -25,6 +29,7 @@ class LoadingScreen(
 ): ScreenAdapter() {
 
     private val stage = makeStage()
+    private val loadingLabel: Label
 
     init {
         val sprites = game.assets.getSprites()
@@ -60,9 +65,9 @@ class LoadingScreen(
             }
         )
 
-        container.addActor(
-            Label(strings["loading-screen.loading"], styles.label.medium)
-        )
+        loadingLabel = Label(strings["loading-screen.loading"], styles.label.medium).also { label ->
+            container.addActor(label)
+        }
 
         if (level === CustomLevel) {
             container.addActor(
@@ -98,11 +103,42 @@ class LoadingScreen(
         startLoading()
     }
 
+    private suspend fun <T>performSlowOperation(label: String, block: suspend () -> T): T = withContext(Dispatchers.IO) {
+        loadingLabel.addAction(
+            sequence(
+                delay(1f),
+                fadeOut(0.3f),
+                Actions.run { loadingLabel.setText(label) },
+                fadeIn(0.3f),
+            )
+        )
+
+        val result = block()
+
+        loadingLabel.clearActions()
+
+        result
+    }
+
     private fun startLoading() {
-        Thread {
+        GlobalScope.launch {
 
             val startTime = System.currentTimeMillis()
-            val levelData = loadLevelDataFromMp3(level.getMp3File())
+
+            if (level is RemoteLevel) {
+                performSlowOperation("Downloading soundtrack...") {
+                    level.ensureMp3Downloaded()
+                }
+
+                performSlowOperation("Downloading level...") {
+                    level.ensureLevelDataDownloaded()
+                }
+            }
+
+            val levelData = performSlowOperation("Generating buildings...") {
+                loadLevelDataFromMp3(level.getMp3File())
+            }
+
             val loadTime = System.currentTimeMillis() - startTime
 
             // Stay around for just a little longer with custom songs, because we show the file path
@@ -111,11 +147,11 @@ class LoadingScreen(
             // disappears too quickly, the user will never be able to find the path again.
             val minTime = if (level === CustomLevel) MIN_LOAD_TIME * 2 else MIN_LOAD_TIME
             if (loadTime < minTime) {
-                Thread.sleep(minTime - loadTime)
+                kotlinx.coroutines.delay(minTime - loadTime)
             }
             game.startGame(level, levelData)
 
-        }.start()
+        }
     }
 
     override fun render(delta: Float) {

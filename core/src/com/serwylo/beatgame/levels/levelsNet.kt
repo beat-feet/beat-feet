@@ -11,6 +11,7 @@ import io.ktor.client.statement.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -40,19 +41,17 @@ suspend fun loadAllWorlds(): List<World> {
 private suspend fun fetchWorldsList(): WorldsDTO {
     val url = "http://localhost:8888/worlds.json"
     Gdx.app.log(TAG, "Fetching list of worlds from $url")
-    val string = fetchCachedString(url, Gdx.files.local(".cache/worlds/worlds.json"))
-    val worlds = gson.fromJson(string, WorldsDTO::class.java)
-    return worlds
+    val string = downloadAndCacheString(url, Gdx.files.local(".cache/worlds/worlds.json"))
+    return gson.fromJson(string, WorldsDTO::class.java)
 }
 
 private suspend fun fetchWorld(summary: WorldsDTO.WorldSummaryDTO): WorldDTO {
     Gdx.app.log(TAG, "Fetching list of levels for world \"${summary.id}\" at ${summary.url}")
-    val string = fetchCachedString(summary.url, Gdx.files.local(".cache/worlds/${summary.id}/world.json"))
-    val world = gson.fromJson(string, WorldDTO::class.java)
-    return world
+    val string = downloadAndCacheString(summary.url, Gdx.files.local(".cache/worlds/${summary.id}/world.json"))
+    return gson.fromJson(string, WorldDTO::class.java)
 }
 
-private suspend fun fetchCachedString(url: String, cachedFile: FileHandle): String = withContext(Dispatchers.IO) {
+private suspend fun downloadAndCacheString(url: String, cachedFile: FileHandle): String = withContext(Dispatchers.IO) {
     if (cachedFile.exists()) {
         Gdx.app.log(TAG, "Reading cached string from $url (from cache file ${cachedFile.file().absolutePath})")
         return@withContext cachedFile.readString()
@@ -67,7 +66,7 @@ private suspend fun fetchCachedString(url: String, cachedFile: FileHandle): Stri
     return@withContext string
 }
 
-private suspend fun fetchCachedFile(url: String, cachedFile: FileHandle): FileHandle = withContext(Dispatchers.IO) {
+suspend fun downloadAndCacheFile(url: String, cachedFile: FileHandle): FileHandle = withContext(Dispatchers.IO) {
     if (cachedFile.exists()) {
         Gdx.app.debug(TAG, "Reading cached data file from $url (from cache file ${cachedFile.file().absolutePath})")
         return@withContext cachedFile
@@ -80,6 +79,14 @@ private suspend fun fetchCachedFile(url: String, cachedFile: FileHandle): FileHa
     response.content.copyAndClose(cachedFile.file().writeChannel(Dispatchers.IO))
 
     return@withContext cachedFile
+}
+
+fun getCachedLevelDataFile(level: RemoteLevel): FileHandle {
+    return Gdx.files.local(".cache/worlds/${level.getWorld().getId()}/${level.getId()}.json")
+}
+
+fun getCachedMp3File(level: RemoteLevel): FileHandle {
+    return Gdx.files.local(".cache/worlds/${level.getWorld().getId()}/${level.getId()}.mp3")
 }
 
 private suspend fun fetchLevelMp3(url: String, output: File) {

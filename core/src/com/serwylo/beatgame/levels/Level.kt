@@ -92,10 +92,10 @@ class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.Lev
     override fun getLabel(strings: I18NBundle) = data.label
     override fun getUnlockRequirements() = Unlocked()
     override fun getWorld() = world
+    override fun getMp3File() = getCachedMp3File(this)
 
-    override fun getMp3File(): FileHandle {
-        TODO("Not yet implemented")
-    }
+    suspend fun ensureMp3Downloaded() = downloadAndCacheFile(data.mp3Url, getCachedMp3File(this))
+    suspend fun ensureLevelDataDownloaded() = downloadAndCacheFile(data.dataUrl, getCachedLevelDataFile(this))
 
 }
 

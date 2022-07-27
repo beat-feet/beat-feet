@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
@@ -12,8 +13,10 @@ import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.ui.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld: World): ScreenAdapter() {
 
@@ -34,8 +37,8 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
 
     init {
 
-        val container = VerticalGroup().apply {
-            space(UI_SPACE)
+        val container = Table().apply {
+            pad(UI_SPACE)
             padTop(UI_SPACE * 2)
         }
 
@@ -47,14 +50,20 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
 
         stage.addActor(scrollPane)
 
-        container.addActor(
+        container.add(
             makeHeading(strings["level-select.title"], sprites.logo, styles, strings) {
                 game.showMenu()
             }
-        )
+        ).top()
+        container.row()
 
-        container.addActor(header)
-        container.addActor(body)
+        container.add(header)
+        container.row()
+
+        container.add(body).expand().fillX().top()
+        container.row()
+
+        body.fill()
 
         setupStage(initialWorld)
 
@@ -70,6 +79,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
             onNext = { onNextWorld(world) },
         )
 
+        Gdx.app.log("LevelSelectScreen", "Viewing level list")
         body.actor = Table().also { table ->
             table.pad(UI_SPACE)
 
@@ -98,7 +108,6 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
 
             }
         }
-
     }
 
     private var cachedWorlds: List<World>? = null
@@ -115,7 +124,9 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
         }
 
         GlobalScope.launch {
-            val worlds = allWorlds()
+            val worlds = performSlowOperation {
+                allWorlds()
+            }
             if (currentWorld == null) {
                 setupStage(worlds.last())
             } else {
@@ -129,7 +140,10 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
 
     private fun onNextWorld(currentWorld: World) {
         GlobalScope.launch {
-            val worlds = allWorlds()
+            val worlds = performSlowOperation {
+                allWorlds()
+            }
+
             val currentIndex = worlds.indexOfFirst { it.getId() == currentWorld.getId() }
             if (currentIndex < worlds.size - 1) {
                 setupStage(worlds[currentIndex + 1])
@@ -139,10 +153,69 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
         }
     }
 
+    private fun createLoadingMessage(): Actor {
+        return Label("Loading new worlds", styles.label.medium)
+    }
+
+    private suspend fun <T>performSlowOperation(block: suspend () -> T): T = withContext(Dispatchers.IO) {
+        header.actor.addAction(
+            Actions.sequence(
+                Actions.delay(0.5f),
+                Actions.fadeOut(0.2f),
+            )
+        )
+
+        body.actor.addAction(
+            Actions.sequence(
+                Actions.delay(0.5f),
+                Actions.fadeOut(0.2f),
+                Actions.run {
+                    body.actor = createLoadingMessage()
+                    body.actor.addAction(Actions.fadeIn(0.2f))
+                },
+            )
+        )
+
+        val result = block()
+
+        header.actor.clearActions()
+        body.actor.clearActions()
+
+        header.actor.color.a = 1f
+        body.actor.color.a = 1f
+
+        result
+    }
+
     private fun showComingSoon() {
         header.actor = makeWorldSelector(strings, styles, null, onPrevious = {
             onPreviousWorld(null)
         })
+
+        body.actor = Table().apply {
+            pad(UI_SPACE)
+            padTop(UI_SPACE * 4)
+            add(
+                Label("Have any recommendations for great, freely licensed music? Suggest it on GitHub.", styles.label.medium).also { label ->
+                    label.wrap = true
+                    label.setAlignment(Align.center)
+                }
+            ).pad(UI_SPACE).expandX().fill(0.5f, 0f)
+            row().pad(UI_SPACE)
+
+            add(
+                Label("When we find the time to add more songs, we'll make sure to check out the list of suggestions.", styles.label.small).also { label ->
+                    label.wrap = true
+                    label.setAlignment(Align.center)
+                }
+            ).pad(UI_SPACE).expandX().fill(0.4f, 0f)
+            row().pad(UI_SPACE)
+
+            add(makeButton("Suggest a song", styles) {
+                Gdx.net.openURI("https://github.com/beat-feet/beat-feet/issues/new?title=Song%20suggestion:%20&labels=song+suggestion&body=(PLEASE%20NOTE:%20This%20game%20is%20open%20source,%20and%20all%20songs%20included%20in%20it%20must%20be%20freely%20licensed,%20for%20example,%20CC-BY)")
+            }).pad(UI_SPACE)
+        }
+
     }
 
     override fun show() {
