@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
+import com.serwylo.beatgame.levels.TheOriginalWorld
+import com.serwylo.beatgame.levels.World
 
 fun makeStage() =
     Stage(ExtendViewport(UI_WIDTH, UI_HEIGHT))
@@ -67,6 +69,30 @@ fun makeHeading(title: String, icon: TextureRegion, styles: Assets.Styles, strin
         }
     }
 }
+
+fun makeWorldSelector(
+    strings: I18NBundle,
+    styles: Assets.Styles,
+    currentWorld: World?,
+    onPrevious: (() -> Unit)? = null,
+    onNext: (() -> Unit)? = null,
+) =
+    Table().apply {
+        add(
+            if (onPrevious == null) null else makeButton("<", styles, onPrevious)
+        ).width(UI_SPACE * 8).spaceRight(UI_SPACE * 2)
+
+        add(
+            VerticalGroup().also { col ->
+                col.addActor(Label(currentWorld?.getLabel(strings) ?: "Coming soon...", styles.label.medium))
+            }
+        ).minWidth(UI_SPACE * 20)
+
+        add(
+            if (onNext == null) null else makeButton(">", styles, onNext)
+        ).width(UI_SPACE * 8).spaceLeft(UI_SPACE * 2)
+    }
+
 
 val UI_WIDTH = 1024f / calcDensityScaleFactor()
 val UI_HEIGHT = 768f / calcDensityScaleFactor()

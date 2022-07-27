@@ -15,6 +15,7 @@ interface Level {
 }
 
 interface World {
+    fun getId(): String
     fun getLabel(strings: I18NBundle): String
     fun getLevels(): List<Level>
 }
@@ -76,7 +77,33 @@ object CustomLevel: Level {
 
 }
 
+class RemoteWorld(private val summary: WorldsDTO.WorldSummaryDTO, private val data: WorldDTO): World {
+
+    private val levels = data.getLevels().map { RemoteLevel(this, it) }
+
+    override fun getId() = summary.url
+    override fun getLabel(strings: I18NBundle) = summary.name
+    override fun getLevels() = levels
+}
+
+class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.LevelDTO): Level {
+
+    override fun getId() = data.id
+    override fun getLabel(strings: I18NBundle) = data.label
+    override fun getUnlockRequirements() = Unlocked()
+    override fun getWorld() = world
+
+    override fun getMp3File(): FileHandle {
+        TODO("Not yet implemented")
+    }
+
+}
+
 object TheOriginalWorld: World {
+
+    override fun getId(): String {
+        return "built-in:the-original-world"
+    }
 
     override fun getLabel(strings: I18NBundle): String {
         return strings["worlds.the-original"]
