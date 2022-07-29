@@ -13,10 +13,7 @@ import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.ui.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld: World): ScreenAdapter() {
 
@@ -34,6 +31,9 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
 
     private val header = Container<Actor>()
     private val body = Container<Actor>()
+
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.IO + job)
 
     init {
 
@@ -123,7 +123,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
             return
         }
 
-        GlobalScope.launch {
+        scope.launch {
             val worlds = performSlowOperation {
                 allWorlds()
             }
@@ -139,7 +139,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
     }
 
     private fun onNextWorld(currentWorld: World) {
-        GlobalScope.launch {
+        scope.launch {
             val worlds = performSlowOperation {
                 allWorlds()
             }
@@ -154,7 +154,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
     }
 
     private fun createLoadingMessage(): Actor {
-        return Label("Loading new worlds", styles.label.medium)
+        return Label(strings["loading-screen.loading"], styles.label.medium)
     }
 
     private suspend fun <T>performSlowOperation(block: suspend () -> T): T = withContext(Dispatchers.IO) {
@@ -196,7 +196,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
             pad(UI_SPACE)
             padTop(UI_SPACE * 4)
             add(
-                Label("Have any recommendations for great, freely licensed music? Suggest it on GitHub.", styles.label.medium).also { label ->
+                Label(strings["level-select.more-coming-soon.ask-for-recommendations"], styles.label.medium).also { label ->
                     label.wrap = true
                     label.setAlignment(Align.center)
                 }
@@ -204,14 +204,14 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
             row().pad(UI_SPACE)
 
             add(
-                Label("When we find the time to add more songs, we'll make sure to check out the list of suggestions.", styles.label.small).also { label ->
+                Label(strings["level-select.more-coming-soon.when-we-find-time"], styles.label.small).also { label ->
                     label.wrap = true
                     label.setAlignment(Align.center)
                 }
             ).pad(UI_SPACE).expandX().fill(0.4f, 0f)
             row().pad(UI_SPACE)
 
-            add(makeButton("Suggest a song", styles) {
+            add(makeButton(strings["level-select.more-coming-soon.suggest-a-song"], styles) {
                 Gdx.net.openURI("https://github.com/beat-feet/beat-feet/issues/new?title=Song%20suggestion:%20&labels=song+suggestion&body=(PLEASE%20NOTE:%20This%20game%20is%20open%20source,%20and%20all%20songs%20included%20in%20it%20must%20be%20freely%20licensed,%20for%20example,%20CC-BY)")
             }).pad(UI_SPACE)
         }
@@ -258,6 +258,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
 
     override fun dispose() {
         stage.dispose()
+        scope.cancel()
     }
 
     private fun makeButton(level: Level): WidgetGroup {

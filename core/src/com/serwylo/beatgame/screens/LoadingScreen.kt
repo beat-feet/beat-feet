@@ -17,10 +17,7 @@ import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeIcon
 import com.serwylo.beatgame.ui.makeStage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.xml.bind.JAXBElement
 
 class LoadingScreen(
@@ -30,6 +27,9 @@ class LoadingScreen(
 
     private val stage = makeStage()
     private val loadingLabel: Label
+
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.IO + job)
 
     init {
         val sprites = game.assets.getSprites()
@@ -121,21 +121,22 @@ class LoadingScreen(
     }
 
     private fun startLoading() {
-        GlobalScope.launch {
+        val strings = game.assets.getStrings()
+        scope.launch {
 
             val startTime = System.currentTimeMillis()
 
             if (level is RemoteLevel) {
-                performSlowOperation("Downloading soundtrack...") {
+                performSlowOperation(strings["loading-screen.downloading-song"]) {
                     level.ensureMp3Downloaded()
                 }
 
-                performSlowOperation("Downloading level...") {
+                performSlowOperation(strings["loading-screen.downloading-level"]) {
                     level.ensureLevelDataDownloaded()
                 }
             }
 
-            val levelData = performSlowOperation("Generating buildings...") {
+            val levelData = performSlowOperation(strings["loading-screen.generating-buildings"]) {
                 loadLevelDataFromMp3(level.getMp3File())
             }
 
@@ -165,6 +166,11 @@ class LoadingScreen(
         stage.draw()
 
         Gdx.gl.glDisable(GL20.GL_BLEND)
+    }
+
+    override fun dispose() {
+        scope.cancel()
+        stage.dispose()
     }
 
     companion object {

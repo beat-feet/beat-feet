@@ -84,7 +84,7 @@ fun makeWorldSelector(
 
         add(
             VerticalGroup().also { col ->
-                col.addActor(Label(currentWorld?.getLabel(strings) ?: "Coming soon...", styles.label.medium))
+                col.addActor(Label(currentWorld?.getLabel(strings) ?: strings["level-select.more-coming-soon.title"], styles.label.medium))
             }
         ).minWidth(UI_SPACE * 20)
 
