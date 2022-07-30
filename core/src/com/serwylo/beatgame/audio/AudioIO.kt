@@ -15,12 +15,6 @@ private const val TAG = "WorldCache"
 
 fun loadLevelDataFromMp3(musicFile: FileHandle): LevelData {
 
-    val precompiled = loadPrecompiledLevelData(musicFile)
-    if (precompiled != null) {
-        Gdx.app.debug(TAG, "Loaded precompiled world")
-        return precompiled
-    }
-
     val fromCache = loadLevelDataFromCache(musicFile)
     if (fromCache != null) {
         Gdx.app.debug(TAG, "Loaded world from cache")
@@ -107,18 +101,11 @@ private fun loadLevelDataFromCache(musicFile: FileHandle): LevelData? {
 
 }
 
-private fun loadPrecompiledLevelData(musicFile: FileHandle): LevelData? {
-
-    val file = getPrecompiledFile(musicFile)
-    if (file == null || !file.exists()) {
-        // Could be the case for custom songs, or for when we are experimenting adding new songs.
-        Gdx.app.debug(TAG, "Precompiled file for world ${musicFile.path()} doesn't exist")
-        return null
-    }
+fun loadCachedLevelData(levelDataFile: FileHandle): LevelData {
 
     try {
 
-        val json = file.readString()
+        val json = levelDataFile.readString()
         val data = Gson().fromJson(json, CachedWorldData::class.java)
 
         if (data.version != CachedWorldData.currentVersion) {
@@ -130,7 +117,7 @@ private fun loadPrecompiledLevelData(musicFile: FileHandle): LevelData? {
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
         // the data structure if required without having to worry about if this will work or not.
-        throw RuntimeException("Error while reading precompiled world data for ${musicFile.path()}.", e)
+        throw RuntimeException("Error while reading precompiled world data for ${levelDataFile.path()}.", e)
     }
 
 }
@@ -168,22 +155,6 @@ private fun getCacheFile(musicFile: FileHandle): FileHandle {
     }
 
     return Gdx.files.local("${CACHE_DIR}${File.separator}$name.json")
-
-}
-
-private fun getPrecompiledFile(musicFile: FileHandle): FileHandle? {
-
-    val name = musicFile.nameWithoutExtension()
-    if (name == "custom") {
-        return null
-    }
-
-    val dataFile = Gdx.files.internal("songs${File.separator}data${File.separator}${name}.json")
-    if (dataFile.exists()) {
-        return dataFile
-    }
-
-    return null
 
 }
 

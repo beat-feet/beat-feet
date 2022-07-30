@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.customMp3
+import com.serwylo.beatgame.audio.features.LevelData
+import com.serwylo.beatgame.audio.loadCachedLevelData
 import com.serwylo.beatgame.audio.loadLevelDataFromMp3
 import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.ui.UI_SPACE
@@ -65,29 +67,13 @@ class LoadingScreen(
             }
         )
 
-        loadingLabel = Label(strings["loading-screen.loading"], styles.label.medium).also { label ->
+        container.addActor(
+            Label(strings["loading-screen.loading"], styles.label.medium)
+        )
+
+        loadingLabel = Label("", styles.label.small).also { label ->
             container.addActor(label)
-        }
-
-        if (level === CustomLevel) {
-            container.addActor(
-                Label(customMp3().file().absolutePath, styles.label.small)
-            )
-
-            // All other loading is quite quick, because it is just processing pre-generated JSON data.
-            // Loading a custom level however will be slow the *first* time it runs. Every time afterwards
-            // it will be as fast as others because it will use the cached JSON data however.
-            // After 5 seconds, fade in a polite warning message asking patience.
-            val slowWarning = Label(strings["loading-screen.custom-song-warning"], styles.label.small)
-            container.addActor(slowWarning)
-
-            slowWarning.addAction(
-                sequence(
-                    alpha(0f),
-                    delay(5f),
-                    fadeIn(2f)
-                )
-            )
+            label.setAlignment(Align.center)
         }
 
         stage.addActor(container)
@@ -103,41 +89,35 @@ class LoadingScreen(
         startLoading()
     }
 
-    private suspend fun <T>performSlowOperation(label: String, block: suspend () -> T): T = withContext(Dispatchers.IO) {
-        loadingLabel.addAction(
-            sequence(
-                delay(1f),
-                fadeOut(0.3f),
-                Actions.run { loadingLabel.setText(label) },
-                fadeIn(0.3f),
-            )
-        )
-
-        val result = block()
-
-        loadingLabel.clearActions()
-
-        result
-    }
-
     private fun startLoading() {
         val strings = game.assets.getStrings()
         scope.launch {
 
             val startTime = System.currentTimeMillis()
 
-            if (level is RemoteLevel) {
-                performSlowOperation(strings["loading-screen.downloading-song"]) {
+            val levelData: LevelData = when (level) {
+
+                is RemoteLevel -> {
+                    loadingLabel.setText(strings["loading-screen.downloading-song"])
                     level.ensureMp3Downloaded()
-                }
 
-                performSlowOperation(strings["loading-screen.downloading-level"]) {
+                    loadingLabel.setText(strings["loading-screen.downloading-level"])
                     level.ensureLevelDataDownloaded()
-                }
-            }
 
-            val levelData = performSlowOperation(strings["loading-screen.generating-buildings"]) {
-                loadLevelDataFromMp3(level.getMp3File())
+                    loadCachedLevelData(level.getLevelDataFile())
+                }
+
+                is CustomLevel -> {
+                    val file = level.getLevelDataFile()
+                    if (!file.exists()) {
+                        loadingLabel.setText(strings.format("loading-screen.analysing-mp3", level.getMp3File().file().absolutePath) + "\n" + strings["loading-screen.custom-song-warning"])
+                        loadLevelDataFromMp3(level.getMp3File())
+                    } else {
+                        loadCachedLevelData(file)
+                    }
+                }
+
+                is BuiltInLevel -> loadCachedLevelData(level.getLevelDataFile())
             }
 
             val loadTime = System.currentTimeMillis() - startTime
@@ -148,7 +128,7 @@ class LoadingScreen(
             // disappears too quickly, the user will never be able to find the path again.
             val minTime = if (level === CustomLevel) MIN_LOAD_TIME * 2 else MIN_LOAD_TIME
             if (loadTime < minTime) {
-                kotlinx.coroutines.delay(minTime - loadTime)
+                delay(minTime - loadTime)
             }
             game.startGame(level, levelData)
 

@@ -15,9 +15,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 
-// http://localhost:8888/worlds.json
-
 private const val TAG = "levelsNet"
+
+private const val WORLDS_JSON_URL = "https://beat-feet.github.io/beat-feet-levels/worlds.json"
 
 private val ID_REGEX = Regex("[\\w.-]+")
 
@@ -39,9 +39,8 @@ suspend fun loadAllWorlds(): List<World> {
 }
 
 private suspend fun fetchWorldsList(): WorldsDTO {
-    val url = "http://localhost:8888/worlds.json"
-    Gdx.app.log(TAG, "Fetching list of worlds from $url")
-    val string = downloadAndCacheString(url, Gdx.files.local(".cache/worlds/worlds.json"))
+    Gdx.app.log(TAG, "Fetching list of worlds from $WORLDS_JSON_URL")
+    val string = downloadAndCacheString(WORLDS_JSON_URL, Gdx.files.local(".cache/worlds/worlds.json"))
     return gson.fromJson(string, WorldsDTO::class.java)
 }
 

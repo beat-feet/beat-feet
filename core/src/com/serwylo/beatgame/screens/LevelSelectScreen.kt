@@ -153,10 +153,6 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
         }
     }
 
-    private fun createLoadingMessage(): Actor {
-        return Label(strings["loading-screen.loading"], styles.label.medium)
-    }
-
     private suspend fun <T>performSlowOperation(block: suspend () -> T): T = withContext(Dispatchers.IO) {
         header.actor.addAction(
             Actions.sequence(
@@ -170,8 +166,11 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
                 Actions.delay(0.5f),
                 Actions.fadeOut(0.2f),
                 Actions.run {
-                    body.actor = createLoadingMessage()
-                    body.actor.addAction(Actions.fadeIn(0.2f))
+                    body.pad(UI_SPACE * 4)
+                    body.actor = Label(strings["loading-screen.loading"], styles.label.medium).also { label ->
+                        label.setAlignment(Align.center)
+                        label.addAction(Actions.fadeIn(0.2f))
+                    }
                 },
             )
         )
@@ -180,6 +179,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
 
         header.actor.clearActions()
         body.actor.clearActions()
+        body.pad(0f)
 
         header.actor.color.a = 1f
         body.actor.color.a = 1f
@@ -200,7 +200,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
                     label.wrap = true
                     label.setAlignment(Align.center)
                 }
-            ).pad(UI_SPACE).expandX().fill(0.5f, 0f)
+            ).pad(UI_SPACE).expandX().fill(0.75f, 0f)
             row().pad(UI_SPACE)
 
             add(
@@ -208,7 +208,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
                     label.wrap = true
                     label.setAlignment(Align.center)
                 }
-            ).pad(UI_SPACE).expandX().fill(0.4f, 0f)
+            ).pad(UI_SPACE).expandX().fill(0.6f, 0f)
             row().pad(UI_SPACE)
 
             add(makeButton(strings["level-select.more-coming-soon.suggest-a-song"], styles) {

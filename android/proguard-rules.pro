@@ -21,6 +21,8 @@
 
 -verbose
 
+-dontobfuscate
+
 -dontwarn android.support.**
 -dontwarn com.badlogic.gdx.backends.android.AndroidFragmentApplication
 -dontwarn com.badlogic.gdx.utils.GdxBuild
@@ -29,6 +31,11 @@
 -dontwarn com.badlogic.gdx.graphics.g2d.freetype.FreetypeBuild
 
 -keep class com.badlogic.gdx.controllers.android.AndroidControllers
+
+# Dynamicall load many of these classes from a skin.json file.
+-keep class com.badlogic.gdx.scenes.scene2d.** {
+  *;
+}
 
 -keepclassmembers class com.badlogic.gdx.backends.android.AndroidInput* {
    <init>(com.badlogic.gdx.Application, android.content.Context, java.lang.Object, com.badlogic.gdx.backends.android.AndroidApplicationConfiguration);

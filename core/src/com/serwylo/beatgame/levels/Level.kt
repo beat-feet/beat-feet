@@ -6,9 +6,10 @@ import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.levels.achievements.Achievement
 import java.io.File
 
-interface Level {
+sealed interface Level {
     fun getId(): String
     fun getMp3File(): FileHandle
+    fun getLevelDataFile(): FileHandle
     fun getLabel(strings: I18NBundle): String
     fun getUnlockRequirements(): UnlockRequirements
     fun getWorld(): World
@@ -38,6 +39,11 @@ class BuiltInLevel(
         return Gdx.files.internal("songs${File.separator}mp3${File.separator}${mp3Name}")
     }
 
+    override fun getLevelDataFile(): FileHandle {
+        val name = File(mp3Name).nameWithoutExtension
+        return Gdx.files.internal("songs${File.separator}data${File.separator}${name}.json")
+    }
+
     override fun getLabel(strings: I18NBundle): String {
         return strings[labelId]
     }
@@ -53,35 +59,23 @@ class BuiltInLevel(
 
 object CustomLevel: Level {
 
-    private val mp3File = Gdx.files.external("BeatFeet${File.separator}custom.mp3")
-
-    override fun getId(): String {
-        return "custom.mp3"
+    override fun getId() = "custom.mp3"
+    override fun getMp3File(): FileHandle = Gdx.files.external("BeatFeet${File.separator}custom.mp3")
+    override fun getLevelDataFile(): FileHandle {
+        val name = "custom-${getMp3File().lastModified()}"
+        return Gdx.files.local(".cache${File.separator}world${File.separator}$name.json")
     }
-
-    override fun getMp3File(): FileHandle {
-        return mp3File
-    }
-
-    override fun getLabel(strings: I18NBundle): String {
-        return strings["levels.custom"]
-    }
-
-    override fun getUnlockRequirements(): UnlockRequirements {
-        return Unlocked()
-    }
-
-    override fun getWorld(): World {
-        return TheOriginalWorld
-    }
+    override fun getLabel(strings: I18NBundle): String = strings["levels.custom"]
+    override fun getUnlockRequirements() = Unlocked()
+    override fun getWorld() = TheOriginalWorld
 
 }
 
-class RemoteWorld(private val summary: WorldsDTO.WorldSummaryDTO, private val data: WorldDTO): World {
+class RemoteWorld(private val summary: WorldsDTO.WorldSummaryDTO, data: WorldDTO): World {
 
     private val levels = data.getLevels().map { RemoteLevel(this, it) }
 
-    override fun getId() = summary.url
+    override fun getId() = summary.id
     override fun getLabel(strings: I18NBundle) = summary.name
     override fun getLevels() = levels
 }
@@ -93,9 +87,10 @@ class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.Lev
     override fun getUnlockRequirements() = Unlocked()
     override fun getWorld() = world
     override fun getMp3File() = getCachedMp3File(this)
+    override fun getLevelDataFile() = getCachedLevelDataFile(this)
 
     suspend fun ensureMp3Downloaded() = downloadAndCacheFile(data.mp3Url, getCachedMp3File(this))
-    suspend fun ensureLevelDataDownloaded() = downloadAndCacheFile(data.dataUrl, getCachedLevelDataFile(this))
+    suspend fun ensureLevelDataDownloaded() = downloadAndCacheFile(data.dataUrl, getLevelDataFile())
 
 }
 
