@@ -148,7 +148,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
             if (currentIndex < worlds.size - 1) {
                 setupStage(worlds[currentIndex + 1])
             } else {
-                showComingSoon()
+                showComingSoon(worlds)
             }
         }
     }
@@ -187,7 +187,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
         result
     }
 
-    private fun showComingSoon() {
+    private fun showComingSoon(knownWorlds: List<World>) {
         header.actor = makeWorldSelector(strings, styles, null, onPrevious = {
             onPreviousWorld(null)
         })
@@ -200,7 +200,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
                     label.wrap = true
                     label.setAlignment(Align.center)
                 }
-            ).pad(UI_SPACE).expandX().fill(0.75f, 0f)
+            ).pad(UI_SPACE).expandX().fill(0.75f, 0f).colspan(2)
             row().pad(UI_SPACE)
 
             add(
@@ -208,14 +208,41 @@ class LevelSelectScreen(private val game: BeatFeetGame, private val initialWorld
                     label.wrap = true
                     label.setAlignment(Align.center)
                 }
-            ).pad(UI_SPACE).expandX().fill(0.6f, 0f)
+            ).pad(UI_SPACE).expandX().fill(0.6f, 0f).colspan(2)
             row().pad(UI_SPACE)
 
-            add(makeButton(strings["level-select.more-coming-soon.suggest-a-song"], styles) {
-                Gdx.net.openURI("https://github.com/beat-feet/beat-feet/issues/new?title=Song%20suggestion:%20&labels=song+suggestion&body=(PLEASE%20NOTE:%20This%20game%20is%20open%20source,%20and%20all%20songs%20included%20in%20it%20must%20be%20freely%20licensed,%20for%20example,%20CC-BY)")
-            }).pad(UI_SPACE)
+            add(
+                makeButton(strings["level-select.more-coming-soon.suggest-a-song"], styles) {
+                    Gdx.net.openURI("https://github.com/beat-feet/beat-feet/issues/new?title=Song%20suggestion:%20&labels=song+suggestion&body=(PLEASE%20NOTE:%20This%20game%20is%20open%20source,%20and%20all%20songs%20included%20in%20it%20must%20be%20freely%20licensed,%20for%20example,%20CC-BY)")
+                }
+            ).pad(UI_SPACE).right()
+
+            add(
+                makeButton("Check for new levels", styles) {
+                    refreshLevels(knownWorlds)
+                }
+            ).pad(UI_SPACE).left()
         }
 
+    }
+
+    private fun refreshLevels(knownWorlds: List<World>) {
+        scope.launch {
+            val newWorlds = performSlowOperation {
+                loadAllWorlds(forceUncached = true).also { newlyLoaded ->
+                    cachedWorlds = newlyLoaded
+                }
+            }
+
+            val oldLevelCount = knownWorlds.sumOf { it.getLevels().size }
+            val newLevelCount = newWorlds.sumOf { it.getLevels().size }
+
+            when {
+                newWorlds.size > knownWorlds.size -> setupStage(newWorlds[knownWorlds.size])
+                oldLevelCount != newLevelCount -> setupStage(newWorlds.last())
+                else -> showComingSoon(newWorlds)
+            }
+        }
     }
 
     override fun show() {

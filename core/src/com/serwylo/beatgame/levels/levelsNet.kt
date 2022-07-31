@@ -29,29 +29,29 @@ private val httpClient = HttpClient(CIO) {
 
 private val gson = Gson()
 
-suspend fun loadAllWorlds(): List<World> {
-    val remoteWorlds = fetchWorldsList().getWorlds().map { worldSummaryDto ->
-        val worldDto = fetchWorld(worldSummaryDto)
+suspend fun loadAllWorlds(forceUncached: Boolean = false): List<World> {
+    val remoteWorlds = fetchWorldsList(forceUncached).getWorlds().map { worldSummaryDto ->
+        val worldDto = fetchWorld(worldSummaryDto, forceUncached)
         RemoteWorld(worldSummaryDto, worldDto)
     }
 
     return listOf(TheOriginalWorld) + remoteWorlds
 }
 
-private suspend fun fetchWorldsList(): WorldsDTO {
+private suspend fun fetchWorldsList(forceUncached: Boolean = false): WorldsDTO {
     Gdx.app.log(TAG, "Fetching list of worlds from $WORLDS_JSON_URL")
-    val string = downloadAndCacheString(WORLDS_JSON_URL, Gdx.files.local(".cache/worlds/worlds.json"))
+    val string = downloadAndCacheString(WORLDS_JSON_URL, Gdx.files.local(".cache/worlds/worlds.json"), forceUncached)
     return gson.fromJson(string, WorldsDTO::class.java)
 }
 
-private suspend fun fetchWorld(summary: WorldsDTO.WorldSummaryDTO): WorldDTO {
+private suspend fun fetchWorld(summary: WorldsDTO.WorldSummaryDTO, forceUncached: Boolean = false): WorldDTO {
     Gdx.app.log(TAG, "Fetching list of levels for world \"${summary.id}\" at ${summary.url}")
-    val string = downloadAndCacheString(summary.url, Gdx.files.local(".cache/worlds/${summary.id}/world.json"))
+    val string = downloadAndCacheString(summary.url, Gdx.files.local(".cache/worlds/${summary.id}/world.json"), forceUncached)
     return gson.fromJson(string, WorldDTO::class.java)
 }
 
-private suspend fun downloadAndCacheString(url: String, cachedFile: FileHandle): String = withContext(Dispatchers.IO) {
-    if (cachedFile.exists()) {
+private suspend fun downloadAndCacheString(url: String, cachedFile: FileHandle, forceUncached: Boolean = false): String = withContext(Dispatchers.IO) {
+    if (cachedFile.exists() && !forceUncached) {
         Gdx.app.log(TAG, "Reading cached string from $url (from cache file ${cachedFile.file().absolutePath})")
         return@withContext cachedFile.readString()
     }
