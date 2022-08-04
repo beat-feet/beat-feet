@@ -11,7 +11,6 @@ import io.ktor.client.statement.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -97,7 +96,7 @@ private suspend fun fetchLevelData(url: String, output: File) {
 }
 
 data class WorldDTO(
-    private val levels: List<LevelDTO>
+    private val levels: List<LevelDTO>,
 ) {
 
     fun getLevels() = levels.filter { world ->
@@ -114,7 +113,20 @@ data class WorldDTO(
         val label: String,
         val mp3Url: String,
         val dataUrl: String,
-    )
+        val unlockRequirements: LevelUnlockRequirementsDTO,
+    ) {
+
+        /**
+         * Although this is the same structure as [WorldUnlockRequirementsDTO], there was a quirk
+         * with [Gson.fromJson] on Android whereby this property would deserialize to null.
+         * Duplicating the class in each heirarchy seems to have resolved it.
+         */
+        data class LevelUnlockRequirementsDTO(
+            val type: String,
+            val numRequired: Int? = null,
+        )
+
+    }
 }
 
 data class WorldsDTO(
@@ -134,5 +146,16 @@ data class WorldsDTO(
         val id: String,
         val name: String,
         val url: String,
-    )
+        val unlockRequirements: WorldUnlockRequirementsDTO,
+    ) {
+
+        /**
+         * See [WorldDTO.LevelDTO.LevelUnlockRequirementsDTO].
+         */
+        data class WorldUnlockRequirementsDTO(
+            val type: String,
+            val numRequired: Int? = null,
+        )
+
+    }
 }

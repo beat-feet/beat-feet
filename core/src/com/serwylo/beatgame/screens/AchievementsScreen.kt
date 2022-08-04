@@ -104,7 +104,7 @@ class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
         val achievementsTable = Table()
 
         allAchievements.forEachIndexed { i, achievement ->
-            val isAchieved = achievements.any { it.level == level && it.type.id == achievement.id }
+            val isAchieved = achievements.any { it.levelId == level.getId() && it.type.id == achievement.id }
             val label = Label(strings["achievement.${achievement.id}"], styles.label.small)
             label.color = if (isAchieved) Color.WHITE else Color.GRAY
 

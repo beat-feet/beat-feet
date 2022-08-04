@@ -21,10 +21,6 @@ interface World {
     fun getLevels(): List<Level>
 }
 
-fun findLevelById(id: String): Level? {
-    return TheOriginalWorld.getLevels().find { it.getId() == id }
-}
-
 class BuiltInLevel(
     private val world: World,
     private val mp3Name: String,
@@ -71,7 +67,7 @@ object CustomLevel: Level {
 
 }
 
-class RemoteWorld(private val summary: WorldsDTO.WorldSummaryDTO, data: WorldDTO): World {
+class RemoteWorld(val summary: WorldsDTO.WorldSummaryDTO, data: WorldDTO): World {
 
     private val levels = data.getLevels().map { RemoteLevel(this, it) }
 
@@ -84,13 +80,22 @@ class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.Lev
 
     override fun getId() = data.id
     override fun getLabel(strings: I18NBundle) = data.label
-    override fun getUnlockRequirements() = Unlocked()
     override fun getWorld() = world
     override fun getMp3File() = getCachedMp3File(this)
     override fun getLevelDataFile() = getCachedLevelDataFile(this)
 
     suspend fun ensureMp3Downloaded() = downloadAndCacheFile(data.mp3Url, getCachedMp3File(this))
     suspend fun ensureLevelDataDownloaded() = downloadAndCacheFile(data.dataUrl, getLevelDataFile())
+
+    override fun getUnlockRequirements(): UnlockRequirements {
+        val isWorldUnlocked = data.unlockRequirements.type == "unlocked"
+        val isLevelUnlocked = world.summary.unlockRequirements.type == "unlocked"
+
+        val requiredForWorld = if (isWorldUnlocked) 0 else world.summary.unlockRequirements.numRequired ?: 0
+        val requiredForLevel = if (isLevelUnlocked) 0 else data.unlockRequirements.numRequired ?: 0
+
+        return TotalAchievements(requiredForWorld + requiredForLevel)
+    }
 
 }
 
