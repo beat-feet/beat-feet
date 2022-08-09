@@ -98,19 +98,24 @@ class LoadingScreen(
             val levelData: LevelData = when (level) {
 
                 is RemoteLevel -> {
-                    loadingLabel.setText(strings["loading-screen.downloading-song"])
-                    level.ensureMp3Downloaded()
+                    if (!level.getMp3File().exists()) {
+                        loadingLabel.setText(strings["loading-screen.downloading-song"])
+                        level.ensureMp3Downloaded()
+                    }
 
-                    loadingLabel.setText(strings["loading-screen.downloading-level"])
-                    level.ensureLevelDataDownloaded()
+                    val levelDataFile = level.getLevelDataFile()
+                    if (!levelDataFile.exists()) {
+                        loadingLabel.setText(strings["loading-screen.downloading-level"])
+                        level.ensureLevelDataDownloaded()
+                    }
 
-                    loadCachedLevelData(level.getLevelDataFile())
+                    loadCachedLevelData(levelDataFile)
                 }
 
                 is CustomLevel -> {
                     val file = level.getLevelDataFile()
                     if (!file.exists()) {
-                        loadingLabel.setText(strings.format("loading-screen.analysing-mp3", level.getMp3File().file().absolutePath) + "\n" + strings["loading-screen.custom-song-warning"])
+                        loadingLabel.setText(strings["loading-screen.analysing-mp3"] + "\n" + level.getMp3File().file().absolutePath + "\n" + strings["loading-screen.custom-song-warning"])
                         loadLevelDataFromMp3(level.getMp3File())
                     } else {
                         loadCachedLevelData(file)
