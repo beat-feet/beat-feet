@@ -37,6 +37,12 @@
   *;
 }
 
+-keep class com.serwylo.beatgame.** {
+  *;
+}
+
+-keepattributes *Annotation*
+
 -keepclassmembers class com.badlogic.gdx.backends.android.AndroidInput* {
    <init>(com.badlogic.gdx.Application, android.content.Context, java.lang.Object, com.badlogic.gdx.backends.android.AndroidApplicationConfiguration);
 }
