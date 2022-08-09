@@ -4,6 +4,8 @@ import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -13,38 +15,29 @@ import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.levels.TheOriginalWorld
 import com.serwylo.beatgame.levels.Level
+import com.serwylo.beatgame.levels.World
 import com.serwylo.beatgame.levels.achievements.Achievement
 import com.serwylo.beatgame.levels.achievements.allAchievements
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
+import com.serwylo.beatgame.levels.loadAllWorlds
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeStage
+import com.serwylo.beatgame.ui.makeWorldSelector
+import kotlinx.coroutines.*
 
-class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
+class AchievementsScreen(private val game: BeatFeetGame): WorldSelectorScreen(
+    game,
+    "achievements.title",
+    game.assets.getSprites().star,
+    TheOriginalWorld,
+) {
 
-    private val stage = makeStage()
-    private val world = TheOriginalWorld
+    override fun makeBody(world: World) = Table().also { table ->
 
-    init {
-        setupStage()
-    }
-
-    private fun setupStage() {
         val achievements = loadAllAchievements()
 
-        val styles = game.assets.getStyles()
-        val sprites = game.assets.getSprites()
-        val strings = game.assets.getStrings()
-
-        val table = Table()
-        table.padBottom(UI_SPACE * 2)
-        table.row().align(Align.center).pad(UI_SPACE * 2)
-
-        val headingGroup = makeHeading(strings["achievements.title"], sprites.star, styles, strings) {
-            game.showMenu()
-        }
-
-        table.add(headingGroup).colspan(2)
+        table.pad(UI_SPACE)
 
         world.getLevels().forEach { level ->
 
@@ -80,23 +73,7 @@ class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
             table.add(achievementsWidget).apply {
                 align(Align.left or Align.top)
             }
-
         }
-
-        stage.addActor(
-            ScrollPane(table).apply {
-                setFillParent(true)
-                setScrollingDisabled(true, false)
-                setupOverscroll(UI_SPACE, 30f, 200f)
-            }
-        )
-
-    }
-
-    override fun resize(width: Int, height: Int) {
-        stage.viewport.update(width, height, true)
-        stage.clear()
-        setupStage()
     }
 
     private fun makeAchievementsTable(styles: Assets.Styles, strings: I18NBundle, achievements: List<Achievement>, level: Level): Actor {
@@ -116,40 +93,6 @@ class AchievementsScreen(private val game: BeatFeetGame): ScreenAdapter() {
         }
 
         return achievementsTable
-
-    }
-
-    override fun show() {
-        super.show()
-
-        Gdx.input.setCatchKey(Input.Keys.BACK, true)
-        Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
-
-            override fun keyDown(keycode: Int): Boolean {
-                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
-                    game.showMenu()
-                    return true
-                }
-
-                return false
-            }
-
-        })
-
-    }
-
-    override fun hide() {
-        Gdx.input.inputProcessor = null
-        Gdx.input.setCatchKey(Input.Keys.BACK, false)
-    }
-
-    override fun render(delta: Float) {
-
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-        stage.act(delta)
-        stage.draw()
 
     }
 

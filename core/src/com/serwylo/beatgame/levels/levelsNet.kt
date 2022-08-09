@@ -3,6 +3,8 @@ package com.serwylo.beatgame.levels
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Since
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
@@ -17,6 +19,8 @@ import java.io.File
 private const val TAG = "levelsNet"
 
 private const val WORLDS_JSON_URL = "https://beat-feet.github.io/beat-feet-levels/worlds.json"
+
+private const val JSON_VERSION = 1
 
 private val ID_REGEX = Regex("[\\w.-]+")
 
@@ -96,6 +100,8 @@ private suspend fun fetchLevelData(url: String, output: File) {
 }
 
 data class WorldDTO(
+    @SerializedName("levels")
+    @Since(1.0)
     private val levels: List<LevelDTO>,
 ) {
 
@@ -109,28 +115,48 @@ data class WorldDTO(
     }
 
     data class LevelDTO(
+
+        @SerializedName("id")
+        @Since(1.0)
         val id: String,
+
+        @SerializedName("label")
+        @Since(1.0)
         val label: String,
+
+        @SerializedName("mp3Url")
+        @Since(1.0)
         val mp3Url: String,
+
+        @SerializedName("dataUrl")
+        @Since(1.0)
         val dataUrl: String,
-        val unlockRequirements: LevelUnlockRequirementsDTO,
-    ) {
 
-        /**
-         * Although this is the same structure as [WorldUnlockRequirementsDTO], there was a quirk
-         * with [Gson.fromJson] on Android whereby this property would deserialize to null.
-         * Duplicating the class in each heirarchy seems to have resolved it.
-         */
-        data class LevelUnlockRequirementsDTO(
-            val type: String,
-            val numRequired: Int? = null,
-        )
+        @SerializedName("unlockRequirements")
+        @Since(1.0)
+        val unlockRequirements: UnlockRequirementsDTO,
 
-    }
+    )
 }
 
+data class UnlockRequirementsDTO(
+
+    @SerializedName("type")
+    @Since(1.0)
+    val type: String,
+
+    @SerializedName("numRequired")
+    @Since(1.0)
+    val numRequired: Int? = null
+
+)
+
 data class WorldsDTO(
+
+    @SerializedName("worlds")
+    @Since(1.0)
     private val worlds: List<WorldSummaryDTO>
+
 ) {
 
     fun getWorlds() = worlds.filter { world ->
@@ -143,19 +169,21 @@ data class WorldsDTO(
     }
 
     data class WorldSummaryDTO(
+
+        @SerializedName("id")
+        @Since(1.0)
         val id: String,
+
+        @SerializedName("name")
+        @Since(1.0)
         val name: String,
+
+        @SerializedName("url")
+        @Since(1.0)
         val url: String,
-        val unlockRequirements: WorldUnlockRequirementsDTO,
-    ) {
 
-        /**
-         * See [WorldDTO.LevelDTO.LevelUnlockRequirementsDTO].
-         */
-        data class WorldUnlockRequirementsDTO(
-            val type: String,
-            val numRequired: Int? = null,
-        )
-
-    }
+        @SerializedName("unlockRequirements")
+        @Since(1.0)
+        val unlockRequirements: UnlockRequirementsDTO,
+    )
 }

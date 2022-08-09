@@ -88,8 +88,8 @@ class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.Lev
     suspend fun ensureLevelDataDownloaded() = downloadAndCacheFile(data.dataUrl, getLevelDataFile())
 
     override fun getUnlockRequirements(): UnlockRequirements {
-        val isWorldUnlocked = data.unlockRequirements.type == "unlocked"
-        val isLevelUnlocked = world.summary.unlockRequirements.type == "unlocked"
+        val isWorldUnlocked = world.summary.unlockRequirements.type == "unlocked"
+        val isLevelUnlocked = data.unlockRequirements.type == "unlocked"
 
         val requiredForWorld = if (isWorldUnlocked) 0 else world.summary.unlockRequirements.numRequired ?: 0
         val requiredForLevel = if (isLevelUnlocked) 0 else data.unlockRequirements.numRequired ?: 0
