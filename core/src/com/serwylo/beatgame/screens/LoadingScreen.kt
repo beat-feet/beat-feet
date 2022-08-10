@@ -5,9 +5,7 @@ import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.customMp3
@@ -15,10 +13,7 @@ import com.serwylo.beatgame.audio.features.LevelData
 import com.serwylo.beatgame.audio.loadCachedLevelData
 import com.serwylo.beatgame.audio.loadLevelDataFromMp3
 import com.serwylo.beatgame.levels.*
-import com.serwylo.beatgame.ui.UI_SPACE
-import com.serwylo.beatgame.ui.makeHeading
-import com.serwylo.beatgame.ui.makeIcon
-import com.serwylo.beatgame.ui.makeStage
+import com.serwylo.beatgame.ui.*
 import kotlinx.coroutines.*
 import javax.xml.bind.JAXBElement
 
@@ -30,13 +25,14 @@ class LoadingScreen(
     private val stage = makeStage()
     private val loadingLabel: Label
 
+    private val sprites = game.assets.getSprites()
+    private val styles = game.assets.getStyles()
+    private val strings = game.assets.getStrings()
+
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
     init {
-        val sprites = game.assets.getSprites()
-        val styles = game.assets.getStyles()
-        val strings = game.assets.getStrings()
 
         val container = VerticalGroup()
         container.setFillParent(true)
@@ -89,6 +85,37 @@ class LoadingScreen(
         startLoading()
     }
 
+    private fun showError(exception: Exception) {
+        Gdx.input.inputProcessor = stage
+        stage.clear()
+        stage.addActor(
+            ScrollPane(
+                Table().apply {
+                    add(
+                        makeHeading(level.getLabel(strings), sprites.logo, styles, strings) {
+                            game.showLevelSelectMenu(level.getWorld())
+                        }
+                    )
+                    row()
+                    add(
+                        makeErrorReport(
+                            game.assets.getStrings(),
+                            game.assets.getStyles(),
+                            exception,
+                            game.assets.getStrings()["error.message.downloading-level-data"]
+                        ) {
+                            game.loadGame(level)
+                        }
+                    )
+                }
+            ).apply {
+                setFillParent(true)
+                setScrollingDisabled(true, false)
+                setupOverscroll(width / 4, 30f, 200f)
+            }
+        )
+    }
+
     private fun startLoading() {
         val strings = game.assets.getStrings()
         scope.launch {
@@ -98,15 +125,24 @@ class LoadingScreen(
             val levelData: LevelData = when (level) {
 
                 is RemoteLevel -> {
-                    if (!level.getMp3File().exists()) {
-                        loadingLabel.setText(strings["loading-screen.downloading-song"])
-                        level.ensureMp3Downloaded()
-                    }
+                    val levelDataFile = try {
 
-                    val levelDataFile = level.getLevelDataFile()
-                    if (!levelDataFile.exists()) {
-                        loadingLabel.setText(strings["loading-screen.downloading-level"])
-                        level.ensureLevelDataDownloaded()
+                        if (!level.getMp3File().exists()) {
+                            loadingLabel.setText(strings["loading-screen.downloading-song"])
+                            level.ensureMp3Downloaded()
+                        }
+
+                        val levelDataFile = level.getLevelDataFile()
+                        if (!levelDataFile.exists()) {
+                            loadingLabel.setText(strings["loading-screen.downloading-level"])
+                            level.ensureLevelDataDownloaded()
+                        }
+
+                        levelDataFile
+
+                    } catch (exception: Exception) {
+                        showError(exception)
+                        return@launch
                     }
 
                     loadCachedLevelData(levelDataFile)

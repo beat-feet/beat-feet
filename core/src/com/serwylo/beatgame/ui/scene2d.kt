@@ -1,17 +1,20 @@
 package com.serwylo.beatgame.ui
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
 import com.serwylo.beatgame.levels.TheOriginalWorld
 import com.serwylo.beatgame.levels.World
+import java.net.URLEncoder
 
 fun makeStage() =
     Stage(ExtendViewport(UI_WIDTH, UI_HEIGHT))
@@ -91,6 +94,75 @@ fun makeWorldSelector(
         add(
             if (onNext == null) null else makeButton(">", styles, onNext)
         ).width(UI_SPACE * 8).spaceLeft(UI_SPACE * 2)
+    }
+
+fun makeErrorReport(
+    strings: I18NBundle,
+    styles: Assets.Styles,
+    error: Throwable,
+    readableMessage: String,
+    tryAgain: (() -> Unit)? = null
+) =
+    VerticalGroup().also { group ->
+        group.space(UI_SPACE)
+        group.addActor(Label(strings["error.title"], styles.label.large))
+        group.addActor(
+            Label(readableMessage, styles.label.medium).apply {
+                setAlignment(Align.center)
+            }
+        )
+
+        if (tryAgain != null) {
+            group.addActor(
+                makeLargeButton(strings["error.try-again"], styles) {
+                    tryAgain()
+                }
+            )
+        }
+
+        val errorMessageEncoded = URLEncoder.encode(error.toString(), "utf-8")
+        val errorReportBody = URLEncoder.encode(
+            // Intentionally don't internationalise this because it is designed to be sent to the authors to help diagnose issues.
+"""
+The following error occurred during the game:
+
+```
+${error.stackTraceToString()}
+```
+""".trim(),
+            "utf-8",
+        )
+
+        group.addActor(
+            HorizontalGroup().also { buttons ->
+                buttons.pad(UI_SPACE)
+
+                buttons.addActor(
+                    makeButton(strings["error.show-details"], styles) {
+                        buttons.clearChildren()
+
+                        group.addActor(
+                            Label(
+                                error.stackTraceToString().replace("\t", "    "),
+                                styles.label.small,
+                            )
+                        )
+
+                        buttons.addActor(
+                            makeButton(strings["error.report.via-github"], styles) {
+                                Gdx.net.openURI("https://github.com/beat-feet/beat-feet/issues/new?title=Error%20report:%20$errorMessageEncoded&labels=bug&body=$errorReportBody")
+                            }
+                        )
+
+                        buttons.addActor(
+                            makeButton(strings["error.report.via-email"], styles) {
+                                Gdx.net.openURI("mailto:peter.serwylo+beat-feet-errors@gmail.com?subject=[Beat%20Feet%20Error%20Report]:%20$errorMessageEncoded&body=$errorReportBody")
+                            }
+                        )
+                    }
+                )
+            }
+        )
     }
 
 

@@ -15,6 +15,8 @@ import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.ui.*
 import kotlinx.coroutines.*
+import java.lang.Exception
+import java.net.URLEncoder
 
 abstract class WorldSelectorScreen(
     private val game: BeatFeetGame,
@@ -102,15 +104,21 @@ abstract class WorldSelectorScreen(
         }
 
         scope.launch {
-            val worlds = performSlowOperation {
-                allWorlds()
-            }
-            if (currentWorld == null) {
-                setupStage(worlds.last())
-            } else {
-                val currentIndex = worlds.indexOfFirst { it.getId() == currentWorld.getId() }
-                if (currentIndex > 0) {
-                    setupStage(worlds[currentIndex - 1])
+            try {
+                val worlds = performSlowOperation {
+                    allWorlds()
+                }
+                if (currentWorld == null) {
+                    setupStage(worlds.last())
+                } else {
+                    val currentIndex = worlds.indexOfFirst { it.getId() == currentWorld.getId() }
+                    if (currentIndex > 0) {
+                        setupStage(worlds[currentIndex - 1])
+                    }
+                }
+            } catch (exception: Exception) {
+                showError(exception) {
+                    onPreviousWorld(currentWorld)
                 }
             }
         }
@@ -118,15 +126,21 @@ abstract class WorldSelectorScreen(
 
     private fun onNextWorld(currentWorld: World) {
         scope.launch {
-            val worlds = performSlowOperation {
-                allWorlds()
-            }
+            try {
+                val worlds = performSlowOperation {
+                    allWorlds()
+                }
 
-            val currentIndex = worlds.indexOfFirst { it.getId() == currentWorld.getId() }
-            if (currentIndex < worlds.size - 1) {
-                setupStage(worlds[currentIndex + 1])
-            } else {
-                showComingSoon(worlds)
+                val currentIndex = worlds.indexOfFirst { it.getId() == currentWorld.getId() }
+                if (currentIndex < worlds.size - 1) {
+                    setupStage(worlds[currentIndex + 1])
+                } else {
+                    showComingSoon(worlds)
+                }
+            } catch (exception: Exception) {
+                showError(exception) {
+                    onNextWorld(currentWorld)
+                }
             }
         }
     }
@@ -163,6 +177,17 @@ abstract class WorldSelectorScreen(
         body.actor.color.a = 1f
 
         result
+    }
+
+    private fun showError(error: Throwable, tryAgain: () -> Unit) {
+        header.clear()
+        body.actor = makeErrorReport(
+            strings,
+            styles,
+            error,
+            strings["error.message.downloading-list-of-levels"],
+            tryAgain
+        )
     }
 
     private fun showComingSoon(knownWorlds: List<World>) {
@@ -206,19 +231,25 @@ abstract class WorldSelectorScreen(
 
     private fun refreshLevels(knownWorlds: List<World>) {
         scope.launch {
-            val newWorlds = performSlowOperation {
-                loadAllWorlds(forceUncached = true).also { newlyLoaded ->
-                    cachedWorlds = newlyLoaded
+            try {
+                val newWorlds = performSlowOperation {
+                    loadAllWorlds(forceUncached = true).also { newlyLoaded ->
+                        cachedWorlds = newlyLoaded
+                    }
                 }
-            }
 
-            val oldLevelCount = knownWorlds.sumOf { it.getLevels().size }
-            val newLevelCount = newWorlds.sumOf { it.getLevels().size }
+                val oldLevelCount = knownWorlds.sumOf { it.getLevels().size }
+                val newLevelCount = newWorlds.sumOf { it.getLevels().size }
 
-            when {
-                newWorlds.size > knownWorlds.size -> setupStage(newWorlds[knownWorlds.size])
-                oldLevelCount != newLevelCount -> setupStage(newWorlds.last())
-                else -> showComingSoon(newWorlds)
+                when {
+                    newWorlds.size > knownWorlds.size -> setupStage(newWorlds[knownWorlds.size])
+                    oldLevelCount != newLevelCount -> setupStage(newWorlds.last())
+                    else -> showComingSoon(newWorlds)
+                }
+            } catch (exception: Exception) {
+                showError(exception) {
+                    refreshLevels(knownWorlds)
+                }
             }
         }
     }
