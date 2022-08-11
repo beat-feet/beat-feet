@@ -14,6 +14,7 @@ import io.ktor.util.cio.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import ktx.async.newSingleThreadAsyncContext
 import java.io.File
 
 private const val TAG = "levelsNet"
@@ -53,10 +54,10 @@ private suspend fun fetchWorld(summary: WorldsDTO.WorldSummaryDTO, forceUncached
     return gson.fromJson(string, WorldDTO::class.java)
 }
 
-private suspend fun downloadAndCacheString(url: String, cachedFile: FileHandle, forceUncached: Boolean = false): String = withContext(Dispatchers.IO) {
+private suspend fun downloadAndCacheString(url: String, cachedFile: FileHandle, forceUncached: Boolean = false): String {
     if (cachedFile.exists() && !forceUncached) {
         Gdx.app.log(TAG, "Reading cached string from $url (from cache file ${cachedFile.file().absolutePath})")
-        return@withContext cachedFile.readString()
+        return cachedFile.readString()
     }
 
     cachedFile.parent().mkdirs()
@@ -65,22 +66,22 @@ private suspend fun downloadAndCacheString(url: String, cachedFile: FileHandle, 
     val string: String = httpClient.get(url)
     cachedFile.writeString(string, false)
 
-    return@withContext string
+    return string
 }
 
-suspend fun downloadAndCacheFile(url: String, cachedFile: FileHandle): FileHandle = withContext(Dispatchers.IO) {
+suspend fun downloadAndCacheFile(url: String, cachedFile: FileHandle): FileHandle {
     if (cachedFile.exists()) {
         Gdx.app.debug(TAG, "Reading cached data file from $url (from cache file ${cachedFile.file().absolutePath})")
-        return@withContext cachedFile
+        return cachedFile
     }
 
     cachedFile.parent().mkdirs()
 
     Gdx.app.log(TAG, "Downloading data file from $url (and caching to ${cachedFile.file().absolutePath})")
     val response: HttpResponse = httpClient.request(url)
-    response.content.copyAndClose(cachedFile.file().writeChannel(Dispatchers.IO))
+    response.content.copyAndClose(cachedFile.file().writeChannel(newSingleThreadAsyncContext("downloadAndCacheFile")))
 
-    return@withContext cachedFile
+    return cachedFile
 }
 
 fun getCachedLevelDataFile(level: RemoteLevel): FileHandle {

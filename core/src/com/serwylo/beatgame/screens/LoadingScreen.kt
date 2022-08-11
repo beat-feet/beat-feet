@@ -15,6 +15,8 @@ import com.serwylo.beatgame.audio.loadLevelDataFromMp3
 import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.ui.*
 import kotlinx.coroutines.*
+import ktx.async.newSingleThreadAsyncContext
+import ktx.async.onRenderingThread
 import javax.xml.bind.JAXBElement
 
 class LoadingScreen(
@@ -30,9 +32,11 @@ class LoadingScreen(
     private val strings = game.assets.getStrings()
 
     private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.IO + job)
+    private val scope = CoroutineScope(newSingleThreadAsyncContext("LoadingScreen") + job)
 
     init {
+
+
 
         val container = VerticalGroup()
         container.setFillParent(true)
@@ -128,20 +132,29 @@ class LoadingScreen(
                     val levelDataFile = try {
 
                         if (!level.getMp3File().exists()) {
-                            loadingLabel.setText(strings["loading-screen.downloading-song"])
+                            onRenderingThread {
+                                loadingLabel.setText(strings["loading-screen.downloading-song"])
+                            }
+
                             level.ensureMp3Downloaded()
                         }
 
                         val levelDataFile = level.getLevelDataFile()
                         if (!levelDataFile.exists()) {
-                            loadingLabel.setText(strings["loading-screen.downloading-level"])
+                            onRenderingThread {
+                                loadingLabel.setText(strings["loading-screen.downloading-level"])
+                            }
+
                             level.ensureLevelDataDownloaded()
                         }
 
                         levelDataFile
 
                     } catch (exception: Exception) {
-                        showError(exception)
+                        onRenderingThread {
+                            showError(exception)
+                        }
+
                         return@launch
                     }
 
@@ -151,7 +164,10 @@ class LoadingScreen(
                 is CustomLevel -> {
                     val file = level.getLevelDataFile()
                     if (!file.exists()) {
-                        loadingLabel.setText(strings["loading-screen.analysing-mp3"] + "\n" + level.getMp3File().file().absolutePath + "\n" + strings["loading-screen.custom-song-warning"])
+                        onRenderingThread {
+                            loadingLabel.setText(strings["loading-screen.analysing-mp3"] + "\n" + level.getMp3File().file().absolutePath + "\n" + strings["loading-screen.custom-song-warning"])
+                        }
+
                         loadLevelDataFromMp3(level.getMp3File())
                     } else {
                         loadCachedLevelData(file)

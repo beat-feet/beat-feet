@@ -10,6 +10,7 @@ import com.serwylo.beatgame.audio.features.LevelData
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.World
 import com.serwylo.beatgame.screens.*
+import ktx.async.KtxAsync
 
 open class BeatFeetGame(val platformListener: PlatformListener, private val verbose: Boolean) : Game() {
 
@@ -23,6 +24,8 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         if (verbose) {
             Gdx.app.logLevel = Application.LOG_DEBUG
         }
+
+        KtxAsync.initiate()
 
         assets = Assets(Assets.getLocale())
 

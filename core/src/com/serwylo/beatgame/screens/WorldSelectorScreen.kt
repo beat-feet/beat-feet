@@ -15,6 +15,9 @@ import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
 import com.serwylo.beatgame.ui.*
 import kotlinx.coroutines.*
+import ktx.async.KTX
+import ktx.async.newSingleThreadAsyncContext
+import ktx.async.onRenderingThread
 import java.lang.Exception
 import java.net.URLEncoder
 
@@ -36,7 +39,7 @@ abstract class WorldSelectorScreen(
     private val body = Container<Actor>()
 
     private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.IO + job)
+    private val scope = CoroutineScope(newSingleThreadAsyncContext("WorldSelectorScreen") + job)
 
     private var currentWorld: World = initialWorld
 
@@ -131,21 +134,25 @@ abstract class WorldSelectorScreen(
                     allWorlds()
                 }
 
-                val currentIndex = worlds.indexOfFirst { it.getId() == currentWorld.getId() }
-                if (currentIndex < worlds.size - 1) {
-                    setupStage(worlds[currentIndex + 1])
-                } else {
-                    showComingSoon(worlds)
+                onRenderingThread {
+                    val currentIndex = worlds.indexOfFirst { it.getId() == currentWorld.getId() }
+                    if (currentIndex < worlds.size - 1) {
+                        setupStage(worlds[currentIndex + 1])
+                    } else {
+                        showComingSoon(worlds)
+                    }
                 }
             } catch (exception: Exception) {
-                showError(exception) {
-                    onNextWorld(currentWorld)
+                onRenderingThread {
+                    showError(exception) {
+                        onNextWorld(currentWorld)
+                    }
                 }
             }
         }
     }
 
-    private suspend fun <T>performSlowOperation(block: suspend () -> T): T = withContext(Dispatchers.IO) {
+    private suspend fun <T>performSlowOperation(block: suspend () -> T): T = withContext(Dispatchers.KTX) {
         header.actor.addAction(
             Actions.sequence(
                 Actions.delay(0.5f),
@@ -167,7 +174,9 @@ abstract class WorldSelectorScreen(
             )
         )
 
-        val result = block()
+        val result = withContext(scope.coroutineContext) {
+            block()
+        }
 
         header.actor.clearActions()
         body.actor.clearActions()
@@ -241,14 +250,18 @@ abstract class WorldSelectorScreen(
                 val oldLevelCount = knownWorlds.sumOf { it.getLevels().size }
                 val newLevelCount = newWorlds.sumOf { it.getLevels().size }
 
-                when {
-                    newWorlds.size > knownWorlds.size -> setupStage(newWorlds[knownWorlds.size])
-                    oldLevelCount != newLevelCount -> setupStage(newWorlds.last())
-                    else -> showComingSoon(newWorlds)
+                onRenderingThread {
+                    when {
+                        newWorlds.size > knownWorlds.size -> setupStage(newWorlds[knownWorlds.size])
+                        oldLevelCount != newLevelCount -> setupStage(newWorlds.last())
+                        else -> showComingSoon(newWorlds)
+                    }
                 }
             } catch (exception: Exception) {
-                showError(exception) {
-                    refreshLevels(knownWorlds)
+                onRenderingThread {
+                    showError(exception) {
+                        refreshLevels(knownWorlds)
+                    }
                 }
             }
         }
