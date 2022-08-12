@@ -13,44 +13,43 @@ sealed interface Level {
     fun getLabel(strings: I18NBundle): String
     fun getUnlockRequirements(): UnlockRequirements
     fun getWorld(): World
+    fun getAttribution(): Attribution?
 }
 
 interface World {
     fun getId(): String
     fun getLabel(strings: I18NBundle): String
     fun getLevels(): List<Level>
+    fun getAttribution(): List<Attribution>
 }
+
+data class Attribution(
+    val name: String,
+    val license: String,
+    val sourceUrl: String,
+    val author: String?,
+)
 
 class BuiltInLevel(
     private val world: World,
     private val mp3Name: String,
     private val labelId: String,
     private val toUnlock: UnlockRequirements,
+    private val attribution: Attribution? = null,
 ): Level {
-    override  fun getId(): String {
-        return mp3Name
-    }
 
-    override fun getMp3File(): FileHandle {
-        return Gdx.files.internal("songs${File.separator}mp3${File.separator}${mp3Name}")
-    }
+    override  fun getId() = mp3Name
+    override fun getMp3File() = Gdx.files.internal("songs${File.separator}mp3${File.separator}${mp3Name}")
 
     override fun getLevelDataFile(): FileHandle {
         val name = File(mp3Name).nameWithoutExtension
         return Gdx.files.internal("songs${File.separator}data${File.separator}${name}.json")
     }
 
-    override fun getLabel(strings: I18NBundle): String {
-        return strings[labelId]
-    }
-
-    override fun getUnlockRequirements(): UnlockRequirements {
-        return toUnlock
-    }
-
-    override fun getWorld(): World {
-        return world
-    }
+    override fun getLabel(strings: I18NBundle) = strings[labelId]
+    override fun getUnlockRequirements() = toUnlock
+    override fun getWorld() = world
+    override fun getAttribution() = attribution
 }
 
 object CustomLevel: Level {
@@ -64,16 +63,30 @@ object CustomLevel: Level {
     override fun getLabel(strings: I18NBundle): String = strings["levels.custom"]
     override fun getUnlockRequirements() = Unlocked()
     override fun getWorld() = TheOriginalWorld
+    override fun getAttribution() = null
 
 }
 
-class RemoteWorld(val summary: WorldsDTO.WorldSummaryDTO, data: WorldDTO): World {
+class RemoteWorld(val summary: WorldsDTO.WorldSummaryDTO, private val data: WorldDTO): World {
 
     private val levels = data.getLevels().map { RemoteLevel(this, it) }
 
     override fun getId() = summary.id
     override fun getLabel(strings: I18NBundle) = summary.name
     override fun getLevels() = levels
+
+    override fun getAttribution(): List<Attribution> {
+        val myAttribution = data.attribution?.let { dto ->
+            Attribution(
+                name = summary.name,
+                license = dto.licenseName,
+                author = dto.author,
+                sourceUrl = dto.sourceUrl,
+            )
+        }
+
+        return (levels.map { it.getAttribution() } + myAttribution).filterNotNull().distinct()
+    }
 }
 
 class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.LevelDTO): Level {
@@ -97,17 +110,47 @@ class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.Lev
         return TotalAchievements(requiredForWorld + requiredForLevel)
     }
 
+    override fun getAttribution() = data.attribution?.let { dto ->
+        Attribution(
+            name = data.label,
+            license = dto.licenseName,
+            author = dto.author,
+            sourceUrl = dto.sourceUrl,
+        )
+    }
+
 }
 
 object TheOriginalWorld: World {
 
-    override fun getId(): String {
-        return "built-in:the-original-world"
-    }
-
-    override fun getLabel(strings: I18NBundle): String {
-        return strings["worlds.the-original"]
-    }
+    override fun getId() = "built-in:the-original-world"
+    override fun getLabel(strings: I18NBundle) = strings["worlds.the-original"]
+    override fun getAttribution() = listOf(
+        Attribution(
+            "The Haunted House",
+            "CC-BY-SA 3.0",
+            "https://ds10forum.bandcamp.com/album/ds10forum-com-the-haunted-mansion",
+            "DS10Forum.com",
+        ),
+        Attribution(
+            "Health and Safety",
+            "CC-BY-SA 3.0",
+            "https://ds10forum.bandcamp.com/album/health-and-safety",
+            "DS10Forum.com",
+        ),
+        Attribution(
+            "Awakenings",
+            "CC-BY-SA 3.0",
+            "https://ds10forum.bandcamp.com/album/awakenings",
+            "DS10Forum.com",
+        ),
+        Attribution(
+            "Vivaldi",
+            "CC-BY-SA 3.0",
+            "https://archive.org/details/The_Four_Seasons_Vivaldi-10361",
+            "John Harrison w/ Wichita State University Chamber",
+        ),
+    )
 
     override fun getLevels(): List<Level> {
         return listOf(

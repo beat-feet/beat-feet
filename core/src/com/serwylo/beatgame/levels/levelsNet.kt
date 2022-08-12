@@ -101,9 +101,15 @@ private suspend fun fetchLevelData(url: String, output: File) {
 }
 
 data class WorldDTO(
+
     @SerializedName("levels")
     @Since(1.0)
     private val levels: List<LevelDTO>,
+
+    @SerializedName("attribution")
+    @Since(1.0)
+    val attribution: AttributionDTO?,
+
 ) {
 
     fun getLevels() = levels.filter { world ->
@@ -137,6 +143,10 @@ data class WorldDTO(
         @Since(1.0)
         val unlockRequirements: UnlockRequirementsDTO,
 
+        @SerializedName("attribution")
+        @Since(1.0)
+        val attribution: AttributionDTO?,
+
     )
 }
 
@@ -149,6 +159,22 @@ data class UnlockRequirementsDTO(
     @SerializedName("numRequired")
     @Since(1.0)
     val numRequired: Int? = null
+
+)
+
+data class AttributionDTO(
+
+    @SerializedName("license")
+    @Since(1.0)
+    val licenseName: String,
+
+    @SerializedName("sourceUrl")
+    @Since(1.0)
+    val sourceUrl: String,
+
+    @SerializedName("author")
+    @Since(1.0)
+    val author: String?,
 
 )
 
@@ -186,5 +212,6 @@ data class WorldsDTO(
         @SerializedName("unlockRequirements")
         @Since(1.0)
         val unlockRequirements: UnlockRequirementsDTO,
+
     )
 }
