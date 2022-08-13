@@ -1,0 +1,7 @@
+🎶 New levels! 🎶 
+
+* 14 new levels from the awesome SpaceJacked sound track.
+* Get 50 achievements from the first original world to start unlocking these levels.
+* Code changes to make it easier to add new levels.
+
+Have any recommendations for more great, freely licensed music? Suggest it on GitHub.
