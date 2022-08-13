@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.customMp3
+import com.serwylo.beatgame.levels.TheOriginalWorld
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeButton
 import com.serwylo.beatgame.ui.makeHeading
@@ -27,7 +28,7 @@ class ExplainCustomSongsScreen(private val game: BeatFeetGame): ScreenAdapter() 
             pad(UI_SPACE * 2)
 
             val title = makeHeading(strings["custom-songs.title"], sprites.logo, styles, strings) {
-                game.showLevelSelectMenu()
+                game.showLevelSelectMenu(TheOriginalWorld)
             }
 
             row()

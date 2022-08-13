@@ -1,6 +1,6 @@
 apply plugin: "kotlin"
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 project.ext.mainClassName = "com.serwylo.beatgame.bin.SongExtractLauncherKt"

@@ -3,7 +3,6 @@ package com.serwylo.beatgame.levels.achievements
 import com.badlogic.gdx.Gdx
 import com.google.gson.Gson
 import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.Levels
 
 fun saveAchievements(level: Level, achievements: List<AchievementType>) {
 
@@ -32,25 +31,11 @@ fun loadAchievementsForLevel(level: Level): List<AchievementType> {
 
 fun loadAllAchievements(): List<Achievement> {
     return loadPersistedAchievements().achievements.map { persisted ->
-        val level: Level? = try {
-            Levels.bySong(persisted.levelId)
-        } catch(exception: Exception) {
-            // For development purposes, sometimes we find ourselves installing newer versions
-            // with different levels, then going back to old versions. It is helpful without having
-            // to fully uninstall to delete all achievements, so we jsut ignore it.
-            Gdx.app.error("AchievementsIO", "Error loading level ${persisted.levelId}, but will just exclude this achievement.", exception)
-            null
-        }
-
-        if (level == null) {
-            null
-        } else {
-            Achievement(
-                allAchievements.find { it.id == persisted.achievementId }!!,
-                level,
-            )
-        }
-    }.filterNotNull()
+        Achievement(
+            allAchievements.find { it.id == persisted.achievementId }!!,
+            persisted.levelId,
+        )
+    }
 }
 
 private fun loadPersistedAchievements(): PersistedAchievements {
@@ -81,13 +66,13 @@ private data class PersistedAchievements(
 
         val toAdd = newAchievements
                 .filterNot { newAchievement -> existing.any { existingAchievement -> existingAchievement.achievementId == newAchievement.id } }
-                .map { PersistedAchievement(it.id, level.mp3Name) }
+                .map { PersistedAchievement(it.id, level.getId()) }
 
         return PersistedAchievements(achievements.plus(toAdd))
     }
 
     fun forLevel(level: Level): List<PersistedAchievement> {
-        return achievements.filter { it.levelId == level.mp3Name }
+        return achievements.filter { it.levelId == level.getId() }
     }
 
     val version = currentVersion

@@ -3,8 +3,8 @@ package com.serwylo.beatgame.desktop
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
-import com.serwylo.beatgame.audio.loadFromDisk
-import com.serwylo.beatgame.audio.saveWorldToDisk
+import com.serwylo.beatgame.audio.loadLevelDataFromDisk
+import com.serwylo.beatgame.audio.saveLevelDataToDisk
 import java.io.File
 
 class SongExtract(private var arg: Array<String>): ApplicationAdapter() {
@@ -51,8 +51,8 @@ class SongExtract(private var arg: Array<String>): ApplicationAdapter() {
 
         Gdx.app.log(TAG, "Processing ${mp3File.name}, writing to ${outPath}.")
 
-        val world = loadFromDisk(Gdx.files.absolute(mp3File.path))
-        saveWorldToDisk(outFile, world)
+        val world = loadLevelDataFromDisk(Gdx.files.absolute(mp3File.path))
+        saveLevelDataToDisk(outFile, world)
 
     }
 

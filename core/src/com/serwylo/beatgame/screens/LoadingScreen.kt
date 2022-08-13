@@ -2,37 +2,41 @@ package com.serwylo.beatgame.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
-import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.audio.customMp3
-import com.serwylo.beatgame.audio.loadWorldFromMp3
-import com.serwylo.beatgame.levels.Levels
-import com.serwylo.beatgame.levels.loadHighScore
-import com.serwylo.beatgame.ui.UI_SPACE
-import com.serwylo.beatgame.ui.makeHeading
-import com.serwylo.beatgame.ui.makeIcon
-import com.serwylo.beatgame.ui.makeStage
+import com.serwylo.beatgame.audio.features.LevelData
+import com.serwylo.beatgame.audio.loadCachedLevelData
+import com.serwylo.beatgame.audio.loadLevelDataFromMp3
+import com.serwylo.beatgame.levels.*
+import com.serwylo.beatgame.ui.*
+import kotlinx.coroutines.*
+import ktx.async.newSingleThreadAsyncContext
+import ktx.async.onRenderingThread
+import javax.xml.bind.JAXBElement
 
 class LoadingScreen(
     private val game: BeatFeetGame,
-    private val musicFile: FileHandle,
-    songName: String
-    ): ScreenAdapter() {
+    private val level: Level,
+): ScreenAdapter() {
 
     private val stage = makeStage()
+    private val loadingLabel: Label
 
-    private val level = Levels.bySong(musicFile.name())
+    private val sprites = game.assets.getSprites()
+    private val styles = game.assets.getStyles()
+    private val strings = game.assets.getStrings()
+
+    private val job = Job()
+    private val scope = CoroutineScope(newSingleThreadAsyncContext("LoadingScreen") + job)
 
     init {
-        val sprites = game.assets.getSprites()
-        val styles = game.assets.getStyles()
-        val strings = game.assets.getStrings()
+
+
 
         val container = VerticalGroup()
         container.setFillParent(true)
@@ -40,7 +44,7 @@ class LoadingScreen(
         container.space(UI_SPACE)
 
         container.addActor(
-            makeHeading(songName, sprites.logo, styles, strings)
+            makeHeading(level.getLabel(strings), sprites.logo, styles, strings)
         )
 
         val topScore = loadHighScore(level)
@@ -67,27 +71,9 @@ class LoadingScreen(
             Label(strings["loading-screen.loading"], styles.label.medium)
         )
 
-        if (level === Levels.Custom) {
-            container.addActor(
-                Label(customMp3().file().absolutePath, styles.label.small)
-            )
-        }
-
-        // All other loading is quite quick, because it is just processing pre-generated JSON data.
-        // Loading a custom level however will be slow the *first* time it runs. Every time afterwards
-        // it will be as fast as others because it will use the cached JSON data however.
-        // After 5 seconds, fade in a polite warning message asking patience.
-        if (songName == "{Custom}") {
-            val slowWarning = Label(strings["loading-screen.custom-song-warning"], styles.label.small)
-            container.addActor(slowWarning)
-
-            slowWarning.addAction(
-                sequence(
-                    alpha(0f),
-                    delay(5f),
-                    fadeIn(2f)
-                )
-            )
+        loadingLabel = Label("", styles.label.small).also { label ->
+            container.addActor(label)
+            label.setAlignment(Align.center)
         }
 
         stage.addActor(container)
@@ -103,24 +89,107 @@ class LoadingScreen(
         startLoading()
     }
 
+    private fun showError(exception: Exception) {
+        Gdx.input.inputProcessor = stage
+        stage.clear()
+        stage.addActor(
+            ScrollPane(
+                Table().apply {
+                    add(
+                        makeHeading(level.getLabel(strings), sprites.logo, styles, strings) {
+                            game.showLevelSelectMenu(level.getWorld())
+                        }
+                    )
+                    row()
+                    add(
+                        makeErrorReport(
+                            game.assets.getStrings(),
+                            game.assets.getStyles(),
+                            exception,
+                            game.assets.getStrings()["error.message.downloading-level-data"]
+                        ) {
+                            game.loadGame(level)
+                        }
+                    )
+                }
+            ).apply {
+                setFillParent(true)
+                setScrollingDisabled(true, false)
+                setupOverscroll(width / 4, 30f, 200f)
+            }
+        )
+    }
+
     private fun startLoading() {
-        Thread {
+        val strings = game.assets.getStrings()
+        scope.launch {
 
             val startTime = System.currentTimeMillis()
-            val world = loadWorldFromMp3(musicFile)
+
+            val levelData: LevelData = when (level) {
+
+                is RemoteLevel -> {
+                    val levelDataFile = try {
+
+                        if (!level.getMp3File().exists()) {
+                            onRenderingThread {
+                                loadingLabel.setText(strings["loading-screen.downloading-song"])
+                            }
+
+                            level.ensureMp3Downloaded()
+                        }
+
+                        val levelDataFile = level.getLevelDataFile()
+                        if (!levelDataFile.exists()) {
+                            onRenderingThread {
+                                loadingLabel.setText(strings["loading-screen.downloading-level"])
+                            }
+
+                            level.ensureLevelDataDownloaded()
+                        }
+
+                        levelDataFile
+
+                    } catch (exception: Exception) {
+                        onRenderingThread {
+                            showError(exception)
+                        }
+
+                        return@launch
+                    }
+
+                    loadCachedLevelData(levelDataFile)
+                }
+
+                is CustomLevel -> {
+                    val file = level.getLevelDataFile()
+                    if (!file.exists()) {
+                        onRenderingThread {
+                            loadingLabel.setText(strings["loading-screen.analysing-mp3"] + "\n" + level.getMp3File().file().absolutePath + "\n" + strings["loading-screen.custom-song-warning"])
+                        }
+
+                        loadLevelDataFromMp3(level.getMp3File())
+                    } else {
+                        loadCachedLevelData(file)
+                    }
+                }
+
+                is BuiltInLevel -> loadCachedLevelData(level.getLevelDataFile())
+            }
+
             val loadTime = System.currentTimeMillis() - startTime
 
             // Stay around for just a little longer with custom songs, because we show the file path
             // that you need to change in order to change the song. Once you've used custom songs
             // the first time, this is the only place where you can see this information, so if it
             // disappears too quickly, the user will never be able to find the path again.
-            val minTime = if (level === Levels.Custom) MIN_LOAD_TIME * 2 else MIN_LOAD_TIME
+            val minTime = if (level === CustomLevel) MIN_LOAD_TIME * 2 else MIN_LOAD_TIME
             if (loadTime < minTime) {
-                Thread.sleep(minTime - loadTime)
+                delay(minTime - loadTime)
             }
-            game.startGame(world)
+            game.startGame(level, levelData)
 
-        }.start()
+        }
     }
 
     override fun render(delta: Float) {
@@ -134,6 +203,11 @@ class LoadingScreen(
         stage.draw()
 
         Gdx.gl.glDisable(GL20.GL_BLEND)
+    }
+
+    override fun dispose() {
+        scope.cancel()
+        stage.dispose()
     }
 
     companion object {

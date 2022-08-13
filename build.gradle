@@ -26,6 +26,9 @@ allprojects {
         box2DLightsVersion = '1.5'
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.2'
+        ktorVersion = '1.6.0'
+        coroutinesVersion = '1.6.4'
+        ktxVersion = '1.10.0-rc1'
     }
 
     repositories {
@@ -111,9 +114,20 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+
+        api "io.github.libktx:ktx-actors:$ktxVersion"
+        api "io.github.libktx:ktx-async:$ktxVersion"
+
         implementation 'com.gmail.blueboxware:libgdxpluginannotations:1.16'
         implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.0'
         implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.0'
+        implementation 'com.google.code.gson:gson:2.8.6'
+
+        implementation "io.ktor:ktor-client-core:$ktorVersion"
+        implementation "io.ktor:ktor-client-cio:$ktorVersion"
+        implementation "io.ktor:ktor-client-gson:$ktorVersion"
+        implementation "io.ktor:ktor-gson:$ktorVersion"
 
         testImplementation 'junit:junit:4.13.2'
         testImplementation "org.mockito:mockito-all:1.9.0"

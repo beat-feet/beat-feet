@@ -3,12 +3,14 @@ package com.serwylo.beatgame
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.serwylo.beatgame.audio.features.World
+import com.google.gson.Gson
+import com.serwylo.beatgame.audio.features.LevelData
+import com.serwylo.beatgame.levels.Level
+import com.serwylo.beatgame.levels.World
 import com.serwylo.beatgame.screens.*
-import java.util.*
+import ktx.async.KtxAsync
 
 open class BeatFeetGame(val platformListener: PlatformListener, private val verbose: Boolean) : Game() {
 
@@ -23,6 +25,8 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
             Gdx.app.logLevel = Application.LOG_DEBUG
         }
 
+        KtxAsync.initiate()
+
         assets = Assets(Assets.getLocale())
 
         Globals.shapeRenderer = ShapeRenderer()
@@ -32,15 +36,15 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         setScreen(MainMenuScreen(this))
     }
 
-    fun loadGame(musicFile: FileHandle, songName: String) {
+    fun loadGame(level: Level) {
         Gdx.app.postRunnable {
-            setScreen(LoadingScreen(this, musicFile, songName))
+            setScreen(LoadingScreen(this, level))
         }
     }
 
-    fun startGame(world: World) {
+    fun startGame(level: Level, levelData: LevelData) {
         Gdx.app.postRunnable {
-            setScreen(PlatformGameScreen(this, world))
+            setScreen(PlatformGameScreen(this, level, levelData))
         }
     }
 
@@ -50,9 +54,9 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         }
     }
 
-    fun showLevelSelectMenu() {
+    fun showLevelSelectMenu(world: World) {
         Gdx.app.postRunnable {
-            setScreen(LevelSelectScreen(this))
+            setScreen(LevelSelectScreen(this, world))
         }
     }
 

@@ -7,18 +7,13 @@ import com.badlogic.gdx.graphics.PixmapIO
 import com.badlogic.gdx.utils.BufferUtils
 import com.badlogic.gdx.utils.ScreenUtils
 import com.serwylo.beatgame.BeatFeetGame
-import com.serwylo.beatgame.audio.loadWorldFromMp3
-import com.serwylo.beatgame.levels.Levels
-import com.serwylo.beatgame.levels.Score
+import com.serwylo.beatgame.audio.loadLevelDataFromMp3
+import com.serwylo.beatgame.levels.*
 import com.serwylo.beatgame.levels.achievements.*
-import com.serwylo.beatgame.levels.clearAllHighScores
-import com.serwylo.beatgame.levels.saveHighScore
 import com.serwylo.beatgame.screens.*
-import java.io.File
-import java.util.*
 
 
-class BeatFeetGameForScreenshots(private val verbose: Boolean) : BeatFeetGame(DesktopPlatformListener(), verbose) {
+class BeatFeetGameForScreenshots(verbose: Boolean) : BeatFeetGame(DesktopPlatformListener(), verbose) {
 
     private val input = MockInput()
 
@@ -31,11 +26,10 @@ class BeatFeetGameForScreenshots(private val verbose: Boolean) : BeatFeetGame(De
         setScreen(MainMenuScreen(this))
         screenshot("01_main_menu.png")
 
-        val level = Levels.Maintenance
-        val file = Gdx.files.internal("songs${File.separator}mp3${File.separator}${level.mp3Name}")
-        val world = loadWorldFromMp3(file)
+        val level = TheOriginalWorld.Maintenance
+        val levelData = loadLevelDataFromMp3(level.getMp3File())
 
-        val courtyardGame = PlatformGameScreen(this, world)
+        val courtyardGame = PlatformGameScreen(this, level, levelData)
         setScreen(courtyardGame)
 
         // Start the game by initiating a jump, then wait 16 seconds to the cool part of The Courtyard
@@ -60,23 +54,23 @@ class BeatFeetGameForScreenshots(private val verbose: Boolean) : BeatFeetGame(De
         timeStep(20f)
         screenshot("03_death.png")
 
-        setScreen(PlatformGameScreen(this, world))
+        setScreen(PlatformGameScreen(this, level, levelData))
         screenshot("04_in_game_2.png")
 
         clearAllHighScores()
         clearAllAchievements()
 
-        saveAchievements(Levels.TheLaundryRoom, listOf(DistanceX10(), DistanceX25(), DistanceX50(), DistanceX75(), ComboX5(), ComboX10(), ComboX25()))
-        saveAchievements(Levels.TheCourtyard, listOf(DistanceX10(), ComboX5()))
-        saveAchievements(Levels.Maintenance, listOf(DistanceX10(), DistanceX25(), DistanceX50(), ComboX5()))
-        saveAchievements(Levels.ForcingTheGamecard, listOf(DistanceX10(), DistanceX25(), ComboX5(), ComboX10()))
+        saveAchievements(TheOriginalWorld.TheLaundryRoom, listOf(DistanceX10(), DistanceX25(), DistanceX50(), DistanceX75(), ComboX5(), ComboX10(), ComboX25()))
+        saveAchievements(TheOriginalWorld.TheCourtyard, listOf(DistanceX10(), ComboX5()))
+        saveAchievements(TheOriginalWorld.Maintenance, listOf(DistanceX10(), DistanceX25(), DistanceX50(), ComboX5()))
+        saveAchievements(TheOriginalWorld.ForcingTheGamecard, listOf(DistanceX10(), DistanceX25(), ComboX5(), ComboX10()))
 
-        saveHighScore(Levels.TheLaundryRoom, Score(169986f, 0.95f))
-        saveHighScore(Levels.TheCourtyard, Score(7847f, 0.23f))
-        saveHighScore(Levels.Maintenance, Score(19634f, 0.66f))
-        saveHighScore(Levels.ForcingTheGamecard, Score(16948f, 0.25f))
+        saveHighScore(TheOriginalWorld.TheLaundryRoom, Score(169986f, 0.95f))
+        saveHighScore(TheOriginalWorld.TheCourtyard, Score(7847f, 0.23f))
+        saveHighScore(TheOriginalWorld.Maintenance, Score(19634f, 0.66f))
+        saveHighScore(TheOriginalWorld.ForcingTheGamecard, Score(16948f, 0.25f))
 
-        setScreen(LevelSelectScreen(this))
+        setScreen(LevelSelectScreen(this, TheOriginalWorld))
         screenshot("05_level_select.png")
 
         setScreen(AchievementsScreen(this))

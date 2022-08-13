@@ -2,141 +2,60 @@ package com.serwylo.beatgame.screens
 
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
-import com.serwylo.beatgame.audio.customMp3
-import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.Levels
+import com.serwylo.beatgame.levels.*
+import com.serwylo.beatgame.levels.achievements.Achievement
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
-import com.serwylo.beatgame.levels.loadHighScore
-import com.serwylo.beatgame.ui.UI_SPACE
-import com.serwylo.beatgame.ui.makeHeading
-import com.serwylo.beatgame.ui.makeIcon
-import com.serwylo.beatgame.ui.makeStage
-import java.io.File
+import com.serwylo.beatgame.ui.*
 
-class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
+class LevelSelectScreen(private val game: BeatFeetGame, initialWorld: World): WorldSelectorScreen(
+    game,
+    "level-select.title",
+    game.assets.getSprites().logo,
+    initialWorld,
+) {
 
-    private val stage = makeStage()
+    override fun makeBody(world: World) =
+        Table().also { table ->
 
-    private val sprites = game.assets.getSprites()
-    private val styles = game.assets.getStyles()
-    private val skin = game.assets.getSkin()
-    private val strings = game.assets.getStrings()
+            val achievements = loadAllAchievements()
 
-    private val distanceTexture = sprites.right_sign
-    private val scoreTexture = sprites.score
+            table.pad(UI_SPACE)
 
-    private val achievements = loadAllAchievements()
+            // Later on, do some proper responsive sizing. However my first attempts struggled with
+            // density independent pixel calculations (even though the math is simple, it didn't
+            // seem to set proper breakpoints, perhaps because of the arbitrary math in calcDensityScaleFactor()
+            // from before it occurred we could use DIPs).
+            val levelsPerRow = if (Gdx.app.type == Application.ApplicationType.Desktop) 5 else 4
+            val width = (stage.width - UI_SPACE * 2) / levelsPerRow
+            val height = width * 3 / 4
 
-    init {
-        setupStage()
-    }
+            var x = 0
+            var y = 0
 
-    private fun setupStage() {
-        // Later on, do some proper responsive sizing. However my first attempts struggled with
-        // density independent pixel calculations (even though the math is simple, it didn't
-        // seem to set proper breakpoints, perhaps because of the arbitrary math in calcDensityScaleFactor()
-        // from before it occurred we could use DIPs).
-        val levelsPerRow = if (Gdx.app.type == Application.ApplicationType.Desktop) 5 else 4
-        val width = (stage.width - UI_SPACE * 2) / levelsPerRow
-        val height = width * 3 / 4
+            world.getLevels().forEachIndexed { i, level ->
 
-        var x = 0
-        var y = 0
-
-        val container = VerticalGroup().apply {
-            space(UI_SPACE)
-            padTop(UI_SPACE * 2)
-        }
-
-        val scrollPane = ScrollPane(container, skin).apply {
-            setFillParent(true)
-            setScrollingDisabled(true, false)
-            setupOverscroll(width / 4, 30f, 200f)
-        }
-
-        stage.addActor(scrollPane)
-
-        container.addActor(
-            makeHeading(strings["level-select.title"], sprites.logo, styles, strings) {
-                game.showMenu()
-            }
-        )
-
-        val table = Table().apply {
-            pad(UI_SPACE)
-        }
-
-        container.addActor(table)
-
-        Levels.all.forEachIndexed { i, level ->
-
-            if (i % levelsPerRow == 0) {
-                table.row()
-                y ++
-                x = 0
-            }
-
-            table.add(makeButton(level)).width(width).height(height)
-
-            x ++
-
-        }
-
-    }
-
-    override fun show() {
-
-        Gdx.input.setCatchKey(Input.Keys.BACK, true)
-        Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
-
-            override fun keyDown(keycode: Int): Boolean {
-                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
-                    game.showMenu()
-                    return true
+                if (i % levelsPerRow == 0) {
+                    table.row()
+                    y ++
+                    x = 0
                 }
 
-                return false
+                table.add(makeButton(level, achievements)).width(width).height(height)
+
+                x ++
+
             }
+        }
 
-        })
+    private fun makeButton(level: Level, allAchievements: List<Achievement>): WidgetGroup {
 
-    }
-
-    override fun hide() {
-        Gdx.input.inputProcessor = null
-        Gdx.input.setCatchKey(Input.Keys.BACK, false)
-    }
-
-    override fun resize(width: Int, height: Int) {
-        stage.viewport.update(width, height, true)
-        stage.clear()
-        setupStage()
-    }
-
-    override fun render(delta: Float) {
-
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-        stage.act(delta)
-        stage.draw()
-
-    }
-
-    override fun dispose() {
-        stage.dispose()
-    }
-
-    private fun makeButton(level: Level): WidgetGroup {
-
-        val isLocked = level.unlockRequirements.isLocked(achievements)
+        val isLocked = level.getUnlockRequirements().isLocked(allAchievements)
         val buttonStyle = if (isLocked) "locked" else "default"
         val textColor = if (isLocked) Color.GRAY else Color.WHITE
 
@@ -150,7 +69,7 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
             })
         }
 
-        val labelString = if (isLocked && !level.unlockRequirements.isAlmostUnlocked(achievements)) "???" else strings[level.labelId]
+        val labelString = if (isLocked && !level.getUnlockRequirements().isAlmostUnlocked(allAchievements)) "???" else level.getLabel(strings)
 
         val levelLabel = Label(labelString, styles.label.medium).apply {
             wrap = true
@@ -170,7 +89,7 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
 
         if (isLocked) {
 
-            val unlockDescription = Label(level.unlockRequirements.describeOutstandingRequirements(strings, achievements), styles.label.small)
+            val unlockDescription = Label(level.getUnlockRequirements().describeOutstandingRequirements(strings, allAchievements), styles.label.small)
             unlockDescription.color = textColor
 
             table.row()
@@ -181,8 +100,8 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
             val distanceLabel = Label(highScore.distancePercentString(), styles.label.small)
             val scoreLabel = Label(highScore.points.toString(), styles.label.small)
 
-            val distanceIcon = makeIcon(distanceTexture)
-            val scoreIcon = makeIcon(scoreTexture)
+            val distanceIcon = makeIcon(sprites.right_sign)
+            val scoreIcon = makeIcon(sprites.score)
 
             val iconSize = Value.percentWidth(0.75f)
             val iconSpace = Value.percentWidth(0.2f)
@@ -200,15 +119,15 @@ class LevelSelectScreen(private val game: BeatFeetGame): ScreenAdapter() {
     }
 
     fun onLevelSelected(level: Level): Boolean {
-        if (level.mp3Name == "custom.mp3") {
-            val file = customMp3()
+        if (level === CustomLevel) {
+            val file = level.getMp3File()
             if (!file.exists()) {
                 game.explainCustomSongs()
             } else {
-                game.loadGame(file, "{Custom}")
+                game.loadGame(level)
             }
         } else {
-            game.loadGame(Gdx.files.internal("songs${File.separator}mp3${File.separator}${level.mp3Name}"), strings[level.labelId])
+            game.loadGame(level)
         }
 
         return true
