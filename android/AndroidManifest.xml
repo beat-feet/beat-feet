@@ -12,11 +12,11 @@
         android:icon="@mipmap/ic_launcher"
         android:isGame="true"
         android:appCategory="game"
-        android:label="@string/app_name"
+        android:label="Beat Feet"
         android:theme="@style/GdxTheme" >
         <activity
             android:name="com.serwylo.beatgame.AndroidLauncher"
-            android:label="@string/app_name" 
+            android:label="Beat Feet"
             android:screenOrientation="landscape"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout">
             <intent-filter>
