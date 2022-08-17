@@ -1,0 +1,9 @@
+0.14.0 - 🎶 Nové úrovně 🎶 
+
+* 14 nových úrovní z úžasného soundtracku SpaceJacked.
+* Získej 50 úspěchů z prvního originálního světa, abys mohl/a začít odemykat tyto úrovně.
+* Změny kódu, aby bylo jednodušší přidávat nové úrovně.
+
+Máš nějaké návrhy na další dobrou volně licencovanou hudbu? Navrhni ji na GitHubu.
+
+0.14.1 - Aktualizovány překlady
