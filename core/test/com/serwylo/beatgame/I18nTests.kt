@@ -1,5 +1,8 @@
 package com.serwylo.beatgame
 
+
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.utils.I18NBundle
 import de.tomgrill.gdxtesting.GdxTestRunner
 import org.junit.Assert.*
 import org.junit.Test
@@ -9,31 +12,27 @@ import java.util.*
 @RunWith(GdxTestRunner::class)
 class I18nTests {
 
-    private fun locales() = listOf(
-        Locale.ENGLISH,
-        Locale("bn"),
-        Locale("de"),
-        Locale("es"),
-        Locale("fa"),
-        Locale("fr"),
-        Locale("it"),
-        Locale("mk"),
-        Locale("nb", "NO"),
-        Locale("pl")
-    )
-
     @Test
     fun testStringFormats() {
-        locales().forEach { locale ->
-            val assets = Assets(locale)
-            assets.initSync()
+        Assets.supportedLocales.keys.forEach { locale ->
+            val strings = I18NBundle.createBundle(Gdx.files.internal("i18n/messages"), Locale(locale))
 
-            val strings = assets.getStrings()
+            val props = Properties().apply {
+                load(Gdx.files.internal("i18n/messages.properties").read())
+            }
 
-            val string = strings.format("achievements.num-left", 1)
+            val regex = Regex(".*\\{\\d+,choice,.*")
+            val toCheck = props.entries.filter {
+                it.value.toString().matches(regex)
+            }.map { it.key.toString() }
 
-            assertNotNull(string)
-            assertNotEquals("", string)
+            toCheck.forEach {
+                Gdx.app.log("I18nTests", "Locale: \"$locale\", String: \"$it\"")
+                val string = strings.format(it, 1)
+
+                assertNotNull(string)
+                assertNotEquals("", string)
+            }
         }
 
     }
