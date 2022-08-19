@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.graphics.calcDensityScaleFactor
-import com.serwylo.beatgame.levels.TheOriginalWorld
 import com.serwylo.beatgame.levels.World
 import java.net.URLEncoder
 

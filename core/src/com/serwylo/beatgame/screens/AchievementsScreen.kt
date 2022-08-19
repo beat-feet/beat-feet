@@ -1,30 +1,20 @@
 package com.serwylo.beatgame.screens
 
-import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.Assets
 import com.serwylo.beatgame.BeatFeetGame
-import com.serwylo.beatgame.levels.TheOriginalWorld
 import com.serwylo.beatgame.levels.Level
+import com.serwylo.beatgame.levels.TheOriginalWorld
 import com.serwylo.beatgame.levels.World
 import com.serwylo.beatgame.levels.achievements.Achievement
 import com.serwylo.beatgame.levels.achievements.allAchievements
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
-import com.serwylo.beatgame.levels.loadAllWorlds
 import com.serwylo.beatgame.ui.UI_SPACE
-import com.serwylo.beatgame.ui.makeHeading
-import com.serwylo.beatgame.ui.makeStage
-import com.serwylo.beatgame.ui.makeWorldSelector
-import kotlinx.coroutines.*
 
 class AchievementsScreen(private val game: BeatFeetGame): WorldSelectorScreen(
     game,

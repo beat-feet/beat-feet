@@ -3,7 +3,6 @@ package com.serwylo.beatgame.desktop
 import com.serwylo.beatgame.PlatformListener
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
-import java.lang.IllegalStateException
 
 class DesktopPlatformListener: PlatformListener {
 
