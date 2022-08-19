@@ -5,7 +5,6 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.google.gson.Gson
 import com.serwylo.beatgame.audio.features.LevelData
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.World

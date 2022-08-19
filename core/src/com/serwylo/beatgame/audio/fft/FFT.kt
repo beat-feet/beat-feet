@@ -3,12 +3,10 @@ package com.serwylo.beatgame.audio.fft
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.serwylo.beatgame.audio.Mp3Data
-import com.serwylo.beatgame.audio.playground.seriesFromFFTWindows
 import javazoom.jl.decoder.Bitstream
 import javazoom.jl.decoder.Header
 import javazoom.jl.decoder.MP3Decoder
 import javazoom.jl.decoder.OutputBuffer
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math3.transform.DftNormalization
 import org.apache.commons.math3.transform.FastFourierTransformer
 import org.apache.commons.math3.transform.TransformType

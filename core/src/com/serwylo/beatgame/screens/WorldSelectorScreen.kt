@@ -1,25 +1,24 @@
 package com.serwylo.beatgame.screens
 
 import com.badlogic.gdx.*
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
-import com.serwylo.beatgame.levels.*
-import com.serwylo.beatgame.levels.achievements.loadAllAchievements
+import com.serwylo.beatgame.levels.TheOriginalWorld
+import com.serwylo.beatgame.levels.World
+import com.serwylo.beatgame.levels.loadAllWorlds
 import com.serwylo.beatgame.ui.*
 import kotlinx.coroutines.*
 import ktx.async.KTX
 import ktx.async.newSingleThreadAsyncContext
 import ktx.async.onRenderingThread
-import java.lang.Exception
-import java.net.URLEncoder
 
 abstract class WorldSelectorScreen(
     private val game: BeatFeetGame,

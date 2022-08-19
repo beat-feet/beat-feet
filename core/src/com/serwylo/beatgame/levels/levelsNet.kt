@@ -12,8 +12,6 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import ktx.async.newSingleThreadAsyncContext
 import java.io.File
 

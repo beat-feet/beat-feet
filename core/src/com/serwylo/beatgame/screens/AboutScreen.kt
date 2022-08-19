@@ -6,14 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.levels.World
 import com.serwylo.beatgame.levels.loadAllWorlds
 import com.serwylo.beatgame.ui.UI_SPACE
-import com.serwylo.beatgame.ui.makeErrorReport
 import com.serwylo.beatgame.ui.makeHeading
 import com.serwylo.beatgame.ui.makeStage
 import kotlinx.coroutines.CoroutineScope
