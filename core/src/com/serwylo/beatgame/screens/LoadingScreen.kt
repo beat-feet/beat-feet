@@ -3,12 +3,9 @@ package com.serwylo.beatgame.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.actions.Actions.*
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
-import com.serwylo.beatgame.audio.customMp3
 import com.serwylo.beatgame.audio.features.LevelData
 import com.serwylo.beatgame.audio.loadCachedLevelData
 import com.serwylo.beatgame.audio.loadLevelDataFromMp3
@@ -17,7 +14,6 @@ import com.serwylo.beatgame.ui.*
 import kotlinx.coroutines.*
 import ktx.async.newSingleThreadAsyncContext
 import ktx.async.onRenderingThread
-import javax.xml.bind.JAXBElement
 
 class LoadingScreen(
     private val game: BeatFeetGame,
