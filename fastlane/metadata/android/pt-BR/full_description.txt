@@ -1,0 +1,13 @@
+Salte pelas cidades, cada uma delas gerada automaticamente a partir da batida da música.
+
+Acerte muitos edifícios e você morrerá. Salte com sucesso de telhado em telhado e veja sua pontuação subir!
+
+Jogue por vários mundos, ou use sua própria música em arquivo MP3 para gerar mundos personalizados.
+
+Sem anúncios. Sem compras em jogo. Apenas diversão e boa música.
+
+Cada fase consiste em obstáculos que correspondem à música de fundo. Toda vez que você for jogar a mesma fase o tamanho dos obstáculos será o mesmo. Mas o mundo terá um estilo diferente.
+
+Qualquer comentário é bem vindo no <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
+
+Ajude para o desenvolvimento futuro do jogo em <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
