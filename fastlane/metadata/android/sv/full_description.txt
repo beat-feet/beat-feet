@@ -1,0 +1,13 @@
+Hoppa runt genom städer som genereras automatiskt av musikens takt.
+
+Om du träffar för många byggnader dör du. Lyckas du hoppa från tak till tak, får du se din poäng stiga i höjden!
+
+Spela igenom dussintals nivåer eller använd dina egna MP3-filer för att skapa egna världar.
+
+Inga annonser. Inga köp i spelet. Bara bra musik och roliga stunder.
+
+Varje nivå består av hinder som motsvarar den musik som spelas i bakgrunden. Varje gång du spelar samma nivå kommer hindren att vara lika stora, men världen kommer att ha en annan stil. Inga två sessioner kommer att se likadana ut.
+
+All feedback är mycket välkommen på <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
+
+Stöd gärna den fortsatta utvecklingen på <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a> eller <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
