@@ -1,1 +1,1 @@
-Salta sobre ciudades, cada una generada con el ritmo de la música.
+Salta por las ciudades generadas al ritmo de la música.

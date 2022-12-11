@@ -1,13 +1,13 @@
-Salta sobre ciudades, cada una generada con el ritmo de la música.
+Ábrete camino a través de las ciudades, cada una generada automáticamente a partir del ritmo de la música.
 
-Golpea muchos edificios, y morirás. Salta con gracia entre los tejados, y mira tu puntaje dispararse!
+Golpea demasiados edificios y morirás. ¡Salta con éxito de techo en techo y observa cómo se dispara tu puntuación!
 
-Juego por docenas de niveles, o usa tus propios archivos MP3 para generar mundos personalizados.
+Juega en docenas de niveles o usa tus propios archivos MP3 para generar mundos personalizados.
 
-Sin ads. Sin compras en el juego. Solo gran música y tiempos divertidos.
+Sin anuncios. Sin compras en el juego. Simplemente buena música y momentos divertidos.
 
-Cada nivel consiste de obstáculos que corresponden a la música de fondo. Cada vez que juegas el mismo nivel, el tamaño de los obstáculos será el mismo, pero el mundo tendrá un estilo diferente. No habrán dos juegos iguales.
+Cada nivel consta de obstáculos que corresponden a la música que suena de fondo. Cada vez que juegues al mismo nivel, el tamaño de los obstáculos será el mismo, pero el mundo tendrá un estilo diferente. No hay dos sesiones que se vean iguales.
 
-Todas las retroalimentaciones son bienvenidas en <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
+Cualquier comentario es bienvenido en <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
 
-Por favor apoya el desarrollo en <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a> or <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
+Apoye un mayor desarrollo en <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a> o <a href="https://liberapay.com/BeatFeet/">Liberapay</a >.
