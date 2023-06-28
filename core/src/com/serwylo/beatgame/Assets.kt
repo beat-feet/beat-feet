@@ -391,6 +391,8 @@ class Assets(private val locale: Locale) {
             "pt" to Font.KENNEY,
             // "pt_BR", // Need to figure out how to get libgdx to load this translation.
             "ru" to Font.NOTO_MONO,
+            "sv" to Font.KENNEY,
+            "uk" to Font.NOTO_MONO,
             "vi" to Font.NOTO_MONO,
             "zh" to Font.NOTO_ZH, // Should also investigate what to call it so libgdx knows the difference between simplified and traditional Chinese.
         )
