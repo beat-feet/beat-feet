@@ -10,8 +10,9 @@ import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.World
 import com.serwylo.beatgame.screens.*
 import ktx.async.KtxAsync
+import java.util.Locale
 
-open class BeatFeetGame(val platformListener: PlatformListener, private val verbose: Boolean) : Game() {
+open class BeatFeetGame(val platformListener: PlatformListener, private val verbose: Boolean, private val locale: Locale? = null) : Game() {
 
     // Initialize this in the create() method so that we can access Gdx logging. Helps to diagnose
     // issues with asset loading if we can log meaningful messages.
@@ -26,7 +27,7 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
 
         KtxAsync.initiate()
 
-        assets = Assets(Assets.getLocale())
+        assets = Assets(Assets.getLocale(locale))
 
         Globals.shapeRenderer = ShapeRenderer()
         Globals.spriteBatch = SpriteBatch()

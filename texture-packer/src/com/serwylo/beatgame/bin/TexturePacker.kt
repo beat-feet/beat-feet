@@ -80,7 +80,7 @@ private fun requiredCharacters(font: Assets.Font): String {
         .map { Properties().apply {
             load(InputStreamReader(Files.newInputStream(it), Charset.forName("UTF-8")))
         }}
-        .fold("0123456789xX", { allChars, properties ->
+        .fold("0123456789xX<>", { allChars, properties ->
             val values = properties.values
             val allValuesInOne = values.fold("", { allMessages, message ->
                 allMessages + message

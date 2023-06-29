@@ -391,6 +391,8 @@ class Assets(private val locale: Locale) {
             "pt" to Font.KENNEY,
             // "pt_BR", // Need to figure out how to get libgdx to load this translation.
             "ru" to Font.NOTO_MONO,
+            "sv" to Font.KENNEY,
+            "uk" to Font.NOTO_MONO,
             "vi" to Font.NOTO_MONO,
             "zh" to Font.NOTO_ZH, // Should also investigate what to call it so libgdx knows the difference between simplified and traditional Chinese.
         )
@@ -400,19 +402,19 @@ class Assets(private val locale: Locale) {
             return supportedLocales[country]
         }
 
-        fun getLocale(): Locale {
+        fun getLocale(localeFromCli: Locale?): Locale {
             // Even though Weblate is allowing this game to be translated into many different languages,
             // only some of them are supported by libgdx. Ensure that we don't pick up an unsupported locale
             // which *does* have translation files available, because it will render invalid glyphs and
             // make the game unusable.
-            val systemLocale = Locale.getDefault()
+            val preferredLocale = localeFromCli ?: Locale.getDefault()
 
-            val font = fontForLocale(systemLocale)
+            val font = fontForLocale(preferredLocale)
 
             return if (font != null) {
-                systemLocale
+                preferredLocale
             } else {
-                Gdx.app.error(TAG, "Unsupported locale: $systemLocale, falling back to English.")
+                Gdx.app.error(TAG, "Unsupported locale: $preferredLocale, falling back to English.")
                 Locale.ROOT
             }
         }
