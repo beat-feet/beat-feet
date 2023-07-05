@@ -1,0 +1,1 @@
+Fix crash when viewing list of worlds/about screen/achievements when not connected to the internet.
