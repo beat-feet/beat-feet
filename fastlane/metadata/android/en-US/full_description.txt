@@ -11,3 +11,5 @@ Each level consists of obstacles that correspond to the music playing in the bac
 Any feedback is very welcome at <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
 
 Please support further development at <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a> or <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
+
+Anti-Features: NonFreeNet - additional levels are downloaded from a Github repo
