@@ -32,12 +32,17 @@ private val httpClient = HttpClient(CIO) {
 private val gson = Gson()
 
 suspend fun loadAllWorlds(forceUncached: Boolean = false): List<World> {
-    val remoteWorlds = fetchWorldsList(forceUncached).getWorlds().map { worldSummaryDto ->
-        val worldDto = fetchWorld(worldSummaryDto, forceUncached)
-        RemoteWorld(worldSummaryDto, worldDto)
-    }
+    return try {
+        val remoteWorlds = fetchWorldsList(forceUncached).getWorlds().map { worldSummaryDto ->
+            val worldDto = fetchWorld(worldSummaryDto, forceUncached)
+            RemoteWorld(worldSummaryDto, worldDto)
+        }
 
-    return listOf(TheOriginalWorld) + remoteWorlds
+        listOf(TheOriginalWorld) + remoteWorlds
+    } catch (e: Exception) {
+        Gdx.app.error(TAG, "Loading remote worlds failed. Will just return the one built-in world.", e)
+        listOf(TheOriginalWorld)
+    }
 }
 
 private suspend fun fetchWorldsList(forceUncached: Boolean = false): WorldsDTO {
