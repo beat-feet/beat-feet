@@ -1,0 +1,1 @@
+Corrección del fallo al ver la lista de mundos/pantalla de logros cuando no se está conectado a Internet.
