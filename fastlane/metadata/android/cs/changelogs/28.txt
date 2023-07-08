@@ -1,0 +1,1 @@
+Oprava pádu při zobrazení seznamu světů/obsahu/úspěchů, když nejste připojeni k internetu.
