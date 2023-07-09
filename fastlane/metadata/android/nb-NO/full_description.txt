@@ -11,3 +11,5 @@ Hvert nivå består av hindre som samsvarer med musikken i bakgrunnen. Hver gang
 Tilbakemelding tas varmt imot på <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
 
 Støtt utviklingen på <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a> eller <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
+
+Anti-funksjoner: IkkeFrittNett — ytterligere nivåre lastes ned fra et GitHub-kodelager.
