@@ -12,4 +12,4 @@ Jakákoli zpětná vazba je vítána na <a href="https://github.com/beat-game/be
 
 Podpořte prosím další vývoj přes <a href="https://github.com/sponsors/pserwylo>GitHub Sponsors</a> nebo <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
 
-Anti-Funkce: NonFreeNet - dodatečné úrovně jsou stahovány z repozitáře na serveru GitHub
+Anti-Funkce: NonFreeNet — dodatečné úrovně jsou stahovány z repozitáře na serveru GitHub.
