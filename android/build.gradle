@@ -1,6 +1,6 @@
 android {
     buildToolsVersion "30.0.3"
-    compileSdkVersion 30
+    compileSdkVersion 33
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -19,9 +19,9 @@ android {
     defaultConfig {
         applicationId "com.serwylo.beatgame"
         minSdkVersion 14
-        targetSdkVersion 30
-        versionCode 28
-        versionName "0.14.6"
+        targetSdkVersion 33
+        versionCode 29
+        versionName "0.14.7"
     }
     buildTypes {
         release {

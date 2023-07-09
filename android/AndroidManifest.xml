@@ -18,6 +18,7 @@
             android:name="com.serwylo.beatgame.AndroidLauncher"
             android:label="Beat Feet"
             android:screenOrientation="landscape"
+            android:exported="true"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
