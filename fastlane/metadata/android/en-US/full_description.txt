@@ -12,4 +12,4 @@ Any feedback is very welcome at <a href="https://github.com/beat-game/beat-game/
 
 Please support further development at <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a> or <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
 
-Anti-Features: NonFreeNet - additional levels are downloaded from a Github repo
+Anti-Features: NonFreeNet — additional levels are downloaded from a GitHub repo.
