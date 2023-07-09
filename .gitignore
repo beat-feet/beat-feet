@@ -120,3 +120,6 @@ Thumbs.db
 ## Beat feet specific
 # Cached world files, used to avoid having to FFT songs each time we load a level.
 .cache
+
+# Stores a reference to custom worlds added by end users.
+custom-worlds.json

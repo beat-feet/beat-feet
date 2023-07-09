@@ -8,22 +8,24 @@ import com.serwylo.beatgame.audio.features.LevelData
 import com.serwylo.beatgame.audio.fft.FFTWindow
 import com.serwylo.beatgame.audio.fft.calculateMp3FFTWithValues
 import com.serwylo.beatgame.audio.playground.*
+import com.serwylo.beatgame.levels.Level
+import com.serwylo.beatgame.levels.sanitiseId
 import java.io.File
 import kotlin.math.ln
 
 private const val TAG = "WorldCache"
 
-fun loadLevelDataFromMp3(musicFile: FileHandle): LevelData {
+fun loadLevelDataFromMp3(level: Level): LevelData {
 
-    val fromCache = loadLevelDataFromCache(musicFile)
+    val fromCache = loadLevelDataFromCache(level)
     if (fromCache != null) {
         Gdx.app.debug(TAG, "Loaded world from cache")
         return fromCache
     }
 
     Gdx.app.debug(TAG, "No cached version of world, processing MP3 from disk and caching...")
-    val fromDisk = loadLevelDataFromDisk(musicFile)
-    cacheLevelData(musicFile, fromDisk)
+    val fromDisk = loadLevelDataFromDisk(level.getMp3File())
+    cacheLevelData(level, fromDisk)
     return fromDisk
 
 }
@@ -70,11 +72,11 @@ fun loadLevelDataFromDisk(musicFile: FileHandle): LevelData {
 
 }
 
-private fun loadLevelDataFromCache(musicFile: FileHandle): LevelData? {
+private fun loadLevelDataFromCache(level: Level): LevelData? {
 
-    val file = getCacheFile(musicFile).file()
+    val file = getCacheFile(level).file()
     if (!file.exists()) {
-        Gdx.app.debug(TAG, "Cache file for world ${musicFile.path()} at ${file.absolutePath} doesn't exist")
+        Gdx.app.debug(TAG, "Cache file for world ${level.getMp3File().path()} at ${file.absolutePath} doesn't exist")
         return null
     }
 
@@ -94,7 +96,7 @@ private fun loadLevelDataFromCache(musicFile: FileHandle): LevelData? {
     } catch (e: Exception) {
         // Be pretty liberal at throwing away cached files here. That gives us the freedom to change
         // the data structure if required without having to worry about if this will work or not.
-        Gdx.app.error(TAG, "Error occurred while reading cache file for world ${musicFile.path()} at ${file.absolutePath}. Will remove file so it can be cached anew.", e)
+        Gdx.app.error(TAG, "Error occurred while reading cache file for world ${level.getMp3File().path()} at ${file.absolutePath}. Will remove file so it can be cached anew.", e)
         file.delete()
         return null
     }
@@ -122,11 +124,11 @@ fun loadCachedLevelData(levelDataFile: FileHandle): LevelData {
 
 }
 
-private fun cacheLevelData(musicFile: FileHandle, levelData: LevelData) {
+private fun cacheLevelData(level: Level, levelData: LevelData) {
 
-    val file = getCacheFile(musicFile)
+    val file = getCacheFile(level)
 
-    Gdx.app.debug(TAG, "Caching world for ${musicFile.path()} to ${file.file().absolutePath}")
+    Gdx.app.debug(TAG, "Caching world for ${level.getMp3File().path()} to ${file.file().absolutePath}")
 
     saveLevelDataToDisk(file, levelData)
 
@@ -141,18 +143,14 @@ fun saveLevelDataToDisk(file: FileHandle, levelData: LevelData) {
 
 private val CACHE_DIR = ".cache${File.separator}world"
 
-private fun getCacheFile(musicFile: FileHandle): FileHandle {
+private fun getCacheFile(level: Level): FileHandle {
 
     val dir = Gdx.files.local(CACHE_DIR)
     if (!dir.exists()) {
         dir.mkdirs()
     }
 
-    val name = if (musicFile.nameWithoutExtension() == "custom") {
-        "custom-${musicFile.lastModified()}"
-    } else {
-        musicFile.nameWithoutExtension()
-    }
+    val name = sanitiseId(level.getId())
 
     return Gdx.files.local("${CACHE_DIR}${File.separator}$name.json")
 

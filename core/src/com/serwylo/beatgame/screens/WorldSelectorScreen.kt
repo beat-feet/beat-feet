@@ -1,6 +1,10 @@
 package com.serwylo.beatgame.screens
 
-import com.badlogic.gdx.*
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -11,11 +15,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
+import com.serwylo.beatgame.levels.CustomWorld
 import com.serwylo.beatgame.levels.TheOriginalWorld
 import com.serwylo.beatgame.levels.World
+import com.serwylo.beatgame.levels.createCustomWorld
 import com.serwylo.beatgame.levels.loadAllWorlds
-import com.serwylo.beatgame.ui.*
-import kotlinx.coroutines.*
+import com.serwylo.beatgame.ui.UI_SPACE
+import com.serwylo.beatgame.ui.makeButton
+import com.serwylo.beatgame.ui.makeErrorReport
+import com.serwylo.beatgame.ui.makeHeading
+import com.serwylo.beatgame.ui.makeStage
+import com.serwylo.beatgame.ui.makeWorldSelector
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ktx.async.KTX
 import ktx.async.newSingleThreadAsyncContext
 import ktx.async.onRenderingThread
@@ -84,7 +100,7 @@ abstract class WorldSelectorScreen(
 
     }
 
-    private fun setupStage(world: World) {
+    protected fun setupStage(world: World) {
         this.currentWorld = world
 
         header.actor = makeWorldSelector(
@@ -206,6 +222,45 @@ abstract class WorldSelectorScreen(
         body.actor = Table().apply {
             pad(UI_SPACE)
             padTop(UI_SPACE * 4)
+
+            add(
+                Label("Turn your own songs into worlds", styles.label.large).apply {
+                    setAlignment(Align.center)
+                }
+            ).pad(UI_SPACE).expandX().fill(0.75f, 0f).colspan(2)
+
+            row()
+
+            val existingCustomWorld = knownWorlds.find { it is CustomWorld }
+            add(
+                makeButton(if (existingCustomWorld != null) "Add to your own world" else "Add a new world", styles) {
+                    if (existingCustomWorld == null) {
+                        val newCustomWorld = createCustomWorld()
+
+                        // If we have previously loaded the worlds (why wouldn't we at this point?
+                        // I can't imagine a scenario where we wouldn't), make sure that we now also
+                        // have a reference to this new one.
+                        cachedWorlds?.also {
+                            cachedWorlds = it + newCustomWorld
+                        }
+
+                        setupStage(newCustomWorld)
+                    } else {
+                        setupStage(existingCustomWorld)
+                    }
+                }
+            ).pad(UI_SPACE).center().colspan(2).spaceBottom(UI_SPACE * 2)
+
+            row()
+
+            add(
+                Label("See what worlds the community is building", styles.label.large).apply {
+                    setAlignment(Align.center)
+                }
+            ).pad(UI_SPACE).expandX().fill(0.75f, 0f).colspan(2)
+
+            row()
+
             add(
                 Label(strings["level-select.more-coming-soon.ask-for-recommendations"], styles.label.medium).also { label ->
                     label.wrap = true
@@ -307,6 +362,10 @@ abstract class WorldSelectorScreen(
     override fun dispose() {
         stage.dispose()
         scope.cancel()
+    }
+
+    companion object {
+        private const val TAG = "WorldSelectorScreen"
     }
 
 }

@@ -73,7 +73,6 @@ project(":song-extract") {
 project(":desktop") {
     apply plugin: "kotlin"
 
-
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
@@ -82,6 +81,7 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        implementation "games.spooky.gdx:gdx-nativefilechooser-desktop:2.2.0"
     }
 }
 
@@ -99,6 +99,8 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+
+        implementation "games.spooky.gdx:gdx-nativefilechooser-android:2.2.0"
 
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
@@ -123,6 +125,9 @@ project(":core") {
         implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.0'
         implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.0'
         implementation 'com.google.code.gson:gson:2.8.6'
+        implementation "games.spooky.gdx:gdx-nativefilechooser:2.2.0"
+        implementation "com.mpatric:mp3agic:0.9.1"
+
 
         implementation "io.ktor:ktor-client-core:$ktorVersion"
         implementation "io.ktor:ktor-client-cio:$ktorVersion"

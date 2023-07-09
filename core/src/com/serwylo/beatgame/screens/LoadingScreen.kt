@@ -157,14 +157,14 @@ class LoadingScreen(
                     loadCachedLevelData(levelDataFile)
                 }
 
-                is CustomLevel -> {
+                is LegacyCustomLevel, is CustomLevel -> {
                     val file = level.getLevelDataFile()
                     if (!file.exists()) {
                         onRenderingThread {
                             loadingLabel.setText(strings["loading-screen.analysing-mp3"] + "\n" + level.getMp3File().file().absolutePath + "\n" + strings["loading-screen.custom-song-warning"])
                         }
 
-                        loadLevelDataFromMp3(level.getMp3File())
+                        loadLevelDataFromMp3(level)
                     } else {
                         loadCachedLevelData(file)
                     }
@@ -179,7 +179,7 @@ class LoadingScreen(
             // that you need to change in order to change the song. Once you've used custom songs
             // the first time, this is the only place where you can see this information, so if it
             // disappears too quickly, the user will never be able to find the path again.
-            val minTime = if (level === CustomLevel) MIN_LOAD_TIME * 2 else MIN_LOAD_TIME
+            val minTime = if (level === LegacyCustomLevel) MIN_LOAD_TIME * 2 else MIN_LOAD_TIME
             if (loadTime < minTime) {
                 delay(minTime - loadTime)
             }

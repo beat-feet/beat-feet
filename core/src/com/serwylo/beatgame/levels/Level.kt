@@ -52,7 +52,16 @@ class BuiltInLevel(
     override fun getAttribution() = attribution
 }
 
-object CustomLevel: Level {
+/**
+ * From the original implementation where only a single custom mp3 could be used, and it
+ * appeared in the original world as the last level. Furthermore, it looked in a hard-coded
+ * location which was tricky to get add files to.
+ *
+ * The new implementation ([CustomLevel]) allows multiple custom levels, helps people find
+ * song files on their device, and tries to do a better job of loading them in a sensible
+ * timeframe.
+ */
+object LegacyCustomLevel: Level {
 
     override fun getId() = "custom.mp3"
     override fun getMp3File(): FileHandle = Gdx.files.external("BeatFeet${File.separator}custom.mp3")
@@ -89,6 +98,13 @@ class RemoteWorld(val summary: WorldsDTO.WorldSummaryDTO, private val data: Worl
     }
 }
 
+/**
+ * The ID of levels is used to store assets associated with them, such as downloaded files (for
+ * levels loaded remotely) or generated files (for custom songs generated locally). As such,
+ * be conservative in what characters we accept for safety.
+ */
+fun sanitiseId(id: String) = ID_REGEX.findAll(id).toList().joinToString("") { it.value }
+
 class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.LevelDTO): Level {
 
     override fun getId() = data.id
@@ -118,6 +134,46 @@ class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.Lev
             sourceUrl = dto.sourceUrl,
         )
     }
+
+}
+
+
+class CustomWorld(levelsData: List<CustomWorldDTO.CustomLevelDTO>): World {
+
+    private val levels = levelsData.map {
+        CustomLevel(this, it.id, it.label, Gdx.files.absolute(it.mp3Path))
+    }
+
+    override fun getId() = "custom"
+
+    override fun getLabel(strings: I18NBundle) = "Your world"
+
+    override fun getLevels() = levels
+
+    override fun getAttribution() = emptyList<Attribution>()
+
+    companion object {
+
+    }
+}
+
+class CustomLevel(private val world: CustomWorld, private val id: String, private val label: String, private val mp3File: FileHandle): Level {
+    override fun getId() = id
+
+    override fun getMp3File(): FileHandle = mp3File
+
+    override fun getLevelDataFile(): FileHandle {
+        val name = "custom-${getMp3File().lastModified()}"
+        return Gdx.files.local(".cache${File.separator}world${File.separator}$name.json")
+    }
+
+    override fun getLabel(strings: I18NBundle) = label
+
+    override fun getUnlockRequirements() = Unlocked()
+
+    override fun getWorld() = world
+
+    override fun getAttribution() = null
 
 }
 
@@ -171,7 +227,7 @@ object TheOriginalWorld: World {
             TheExerciseRoom,
             Vivaldi,
             ReorientTheReceivingAntenna,
-            CustomLevel,
+            LegacyCustomLevel,
         )
     }
 

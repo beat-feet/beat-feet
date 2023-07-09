@@ -27,7 +27,7 @@ class BeatFeetGameForScreenshots(verbose: Boolean) : BeatFeetGame(DesktopPlatfor
         screenshot("01_main_menu.png")
 
         val level = TheOriginalWorld.Maintenance
-        val levelData = loadLevelDataFromMp3(level.getMp3File())
+        val levelData = loadLevelDataFromMp3(level)
 
         val courtyardGame = PlatformGameScreen(this, level, levelData)
         setScreen(courtyardGame)
