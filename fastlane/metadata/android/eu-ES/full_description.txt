@@ -1,0 +1,15 @@
+Zure moduka ibili hirietan jauzika, hiri bakoitza musikaren erritmotik automatikoki sortua delarik.
+
+Eraikin gehiegi joz gero, hil egingo zara. Egin jauzi teilatutik teilatura, eta ikusi zuren puntuazioa igotzen!
+
+Hamaika mailatan aritu, edo zure MP3 fitxategiak erabili mundu pertsonalizatuak sortzeko.
+
+Publizitaterik ez. Joko barruko erosketarik ez. Musika ona eta dibertsioa besterik ez.
+
+Maila bakoitza, atzeko musikarrekin bat datozen oztopoez osatua dago. Maila batean aritzen zaren bakoitzean, oztopoen neurria berdina izango da, baina munduak estilo desberdina izango du. Bi saiok ez dute itxura berdina izango.
+
+Edozein feedback ongi etorria izango da <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>en.
+
+Mesedez, garapena babestu ezazuP <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a>-en edo <a href="https://liberapay.com/BeatFeet/">Liberapay</a>n.
+
+Anti-Features: Sarearen erabilera — maila gehigarriak Github repositoriotik deskargatzen dira.
