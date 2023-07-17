@@ -21,7 +21,7 @@ private const val WORLDS_JSON_URL = "https://beat-feet.github.io/beat-feet-level
 
 private const val JSON_VERSION = 1.0
 
-val ID_REGEX = Regex("[\\w.-]+")
+val SAFE_FILENAME_REGEX = Regex("[\\w.\\- ]+")
 
 private val httpClient = HttpClient(CIO) {
     install(JsonFeature) {
@@ -118,10 +118,10 @@ data class WorldDTO(
 ) {
 
     fun getLevels() = levels.filter { level ->
-        if (level.id.matches(ID_REGEX)) {
+        if (level.id.matches(SAFE_FILENAME_REGEX)) {
             true
         } else {
-            Gdx.app.log(TAG, "Ignoring level with id: \"${level.id}\" because it does not match the regex: \"${ID_REGEX.pattern}\". This id is used to create files on disk, so we are conservative in what we accept here for security reasons.")
+            Gdx.app.log(TAG, "Ignoring level with id: \"${level.id}\" because it does not match the regex: \"${SAFE_FILENAME_REGEX.pattern}\". This id is used to create files on disk, so we are conservative in what we accept here for security reasons.")
             false
         }
     }
@@ -192,10 +192,10 @@ data class WorldsDTO(
 ) {
 
     fun getWorlds() = worlds.filter { world ->
-        if (world.id.matches(ID_REGEX)) {
+        if (world.id.matches(SAFE_FILENAME_REGEX)) {
             true
         } else {
-            Gdx.app.log(TAG, "Ignoring world with id: \"${world.id}\" because it does not match the regex: \"${ID_REGEX.pattern}\". This id is used to create files on disk, so we are conservative in what we accept here for security reasons.")
+            Gdx.app.log(TAG, "Ignoring world with id: \"${world.id}\" because it does not match the regex: \"${SAFE_FILENAME_REGEX.pattern}\". This id is used to create files on disk, so we are conservative in what we accept here for security reasons.")
             false
         }
     }

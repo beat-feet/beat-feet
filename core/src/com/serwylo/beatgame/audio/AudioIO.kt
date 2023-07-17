@@ -9,7 +9,7 @@ import com.serwylo.beatgame.audio.fft.FFTWindow
 import com.serwylo.beatgame.audio.fft.calculateMp3FFTWithValues
 import com.serwylo.beatgame.audio.playground.*
 import com.serwylo.beatgame.levels.Level
-import com.serwylo.beatgame.levels.sanitiseId
+import com.serwylo.beatgame.levels.sanitiseFilename
 import java.io.File
 import kotlin.math.ln
 
@@ -150,7 +150,7 @@ private fun getCacheFile(level: Level): FileHandle {
         dir.mkdirs()
     }
 
-    val name = sanitiseId(level.getId())
+    val name = sanitiseFilename(level.getId())
 
     return Gdx.files.local("${CACHE_DIR}${File.separator}$name.json")
 

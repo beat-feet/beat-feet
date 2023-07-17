@@ -2,7 +2,6 @@ package com.serwylo.beatgame.levels
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Since
@@ -73,12 +72,26 @@ fun readMp3Title(mp3File: FileHandle): String {
     }
 }
 
-fun addCustomLevel(songFile: FileHandle): CustomWorld {
-    val file = customWorldFile()
-    val existingDto = gson.fromJson(file.readString(), CustomWorldDTO::class.java)
-    val newLevelDto = CustomWorldDTO.CustomLevelDTO(songFile.path(), readMp3Title(songFile), songFile.path())
+fun customLevelMp3Folder() = Gdx.files.external("BeatFeet").child("songs")
+
+fun addCustomLevel(sourceMp3: FileHandle): CustomWorld {
+    val title = readMp3Title(sourceMp3)
+
+    Gdx.app.log(TAG, "Adding new custom level. Song title: \"$title\".")
+    val destMp3File = customLevelMp3Folder().child(sanitiseFilename(title) + ".mp3")
+
+    Gdx.app.log(TAG, "Copying ${sourceMp3.path()} to ${destMp3File.path()}")
+    sourceMp3.file().copyTo(destMp3File.file())
+
+    val jsonFile = customWorldFile()
+    val existingDto = gson.fromJson(jsonFile.readString(), CustomWorldDTO::class.java)
+    val newLevelDto = CustomWorldDTO.CustomLevelDTO(
+        destMp3File.nameWithoutExtension(),
+        title,
+        destMp3File.file().absolutePath
+    )
     val newDto = existingDto.copy(levels = existingDto.levels + newLevelDto)
-    file.writeString(gson.toJson(newDto), false)
+    jsonFile.writeString(gson.toJson(newDto), false)
 
     return newDto.toCustomWorld()
 }

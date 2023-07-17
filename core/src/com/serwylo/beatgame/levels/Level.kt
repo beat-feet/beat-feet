@@ -103,7 +103,7 @@ class RemoteWorld(val summary: WorldsDTO.WorldSummaryDTO, private val data: Worl
  * levels loaded remotely) or generated files (for custom songs generated locally). As such,
  * be conservative in what characters we accept for safety.
  */
-fun sanitiseId(id: String) = ID_REGEX.findAll(id).toList().joinToString("") { it.value }
+fun sanitiseFilename(id: String) = SAFE_FILENAME_REGEX.findAll(id).toList().joinToString("") { it.value }
 
 class RemoteLevel(private val world: RemoteWorld, private val data: WorldDTO.LevelDTO): Level {
 
