@@ -10,4 +10,6 @@ Setiap level terdiri dari rintangan yang sesuai dengan musik yang diputar di lat
 
 Umpan balik apa pun sangat diterima di <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
 
-Mohon dukung pengembangan lebih lanjut di <a href="https://github.com/sponsors/pserwylo>GitHub Sponsors</a> atau <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
+Mohon dukung pengembangan lebih lanjut di <a href="https://github.com/sponsors/pserwylo>sponsor GitHub</a> atau <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
+
+ Antifitur: NonFreeNet — level tambahan dapat diunduh dari repo GitHub.
