@@ -378,6 +378,7 @@ class Assets(private val locale: Locale) {
             "en" to Font.KENNEY,
             "eo" to Font.KENNEY,
             "es" to Font.KENNEY,
+            "eu" to Font.KENNEY,
             // "fa", // Glyphs and RTL currently not supported.
             "fr" to Font.KENNEY,
             "hu" to Font.NOTO_MONO, // The character ő and perhaps others are not supported with Kenney fonts.
