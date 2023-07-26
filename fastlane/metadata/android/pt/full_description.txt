@@ -11,3 +11,5 @@ Cada nível consiste em obstáculos que correspondem à música de fundo. Cada v
 Qualquer opinião é muito bem-vinda no <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
 
 Por favor, apoia o desenvolvimento em <a href="https://github.com/sponsors/pserwylo>Patrocinadores do GitHub</a> ou <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
+
+Características indesejáveis: NonFreeNet — os níveis adicionais são descarregados de um repositório no GitHub.
