@@ -34,7 +34,13 @@ Please report any issues or suggest features on the [issue tracker](https://gith
 
 ### Translating
 
-We use [Weblate](https://hosted.weblate.org/engage/beat-feet/) to manage translations. Please see [these instructions for using Weblate](https://hosted.weblate.org/engage/beat-feet/) to translate BabyDots.
+> **Note:** After translations are completed in Weblate, a manual change is still required in this code base in order to enable the translation.
+> This will typically be done on your behalf soon after the translation is added, but feel free to log an issue requesting it be done if there are any delays.
+> 
+> The technical reason for this delay is because not all glyphs of each font are rendered.
+> Doing so would result in an excessively large game (each font is rendered into PNGs of various font sizes, and fonts such as Google Noto have an impressively large number of glyphs).
+
+We use [Weblate](https://hosted.weblate.org/engage/beat-feet/) to manage translations. Please see [these instructions for using Weblate](https://hosted.weblate.org/engage/beat-feet/) to translate Beat feet.
 
 |Game strings|F-Droid metadata|
 |------------|----------------|
