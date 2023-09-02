@@ -43,7 +43,17 @@ fun createCustomWorld(): CustomWorld {
     Gdx.app.log(TAG, "Creating custom world for first time. Saving to ${customWorldFile.path()}.")
     val initialLevels: List<CustomWorldDTO.CustomLevelDTO> = if (LegacyCustomLevel.getMp3File().exists()) {
         Gdx.app.log(TAG, "Migrating legacy custom level ${LegacyCustomLevel.getMp3File().path()} to new custom world.")
-        listOf(CustomWorldDTO.CustomLevelDTO("custom.mp3", readMp3Title(LegacyCustomLevel.getMp3File()), LegacyCustomLevel.getMp3File().file().absolutePath))
+
+        // Hardcode the id to "custom.mp3" to ensure we retain any achievements from the previous
+        // attempts at this level.
+        val legacyCustomLevelDto = copyExternalMp3ToGameFolder(LegacyCustomLevel.getMp3File()).copy(id = "custom.mp3")
+
+        // We really should delete this now, but I just can't bring myself to right now, because
+        // it may cause people to lose a file they manually put here which they want back one day.
+        // Hence, the following line is commented out:
+        // LegacyCustomLevel.getMp3File().delete()
+
+        listOf(legacyCustomLevelDto)
     } else {
         emptyList()
     }
@@ -74,7 +84,7 @@ fun readMp3Title(mp3File: FileHandle): String {
 
 fun customLevelMp3Folder() = Gdx.files.external("BeatFeet").child("songs")
 
-fun addCustomLevel(sourceMp3: FileHandle): CustomWorld {
+fun copyExternalMp3ToGameFolder(sourceMp3: FileHandle): CustomWorldDTO.CustomLevelDTO {
     val title = readMp3Title(sourceMp3)
 
     Gdx.app.log(TAG, "Adding new custom level. Song title: \"$title\".")
@@ -83,13 +93,17 @@ fun addCustomLevel(sourceMp3: FileHandle): CustomWorld {
     Gdx.app.log(TAG, "Copying ${sourceMp3.path()} to ${destMp3File.path()}")
     sourceMp3.file().copyTo(destMp3File.file())
 
-    val jsonFile = customWorldFile()
-    val existingDto = gson.fromJson(jsonFile.readString(), CustomWorldDTO::class.java)
-    val newLevelDto = CustomWorldDTO.CustomLevelDTO(
+    return CustomWorldDTO.CustomLevelDTO(
         destMp3File.nameWithoutExtension(),
         title,
         destMp3File.file().absolutePath
     )
+}
+
+fun addCustomLevel(sourceMp3: FileHandle): CustomWorld {
+    val jsonFile = customWorldFile()
+    val existingDto = gson.fromJson(jsonFile.readString(), CustomWorldDTO::class.java)
+    val newLevelDto = copyExternalMp3ToGameFolder(sourceMp3)
     val newDto = existingDto.copy(levels = existingDto.levels + newLevelDto)
     jsonFile.writeString(gson.toJson(newDto), false)
 

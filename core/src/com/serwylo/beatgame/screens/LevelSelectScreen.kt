@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
 import com.serwylo.beatgame.levels.CustomWorld
-import com.serwylo.beatgame.levels.LegacyCustomLevel
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.World
 import com.serwylo.beatgame.levels.achievements.Achievement
@@ -174,16 +173,7 @@ class LevelSelectScreen(private val game: BeatFeetGame, initialWorld: World): Wo
     }
 
     fun onLevelSelected(level: Level): Boolean {
-        if (level === LegacyCustomLevel) {
-            val file = level.getMp3File()
-            if (!file.exists()) {
-                game.explainCustomSongs()
-            } else {
-                game.loadGame(level)
-            }
-        } else {
-            game.loadGame(level)
-        }
+        game.loadGame(level)
 
         return true
     }

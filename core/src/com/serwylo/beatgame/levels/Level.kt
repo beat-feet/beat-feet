@@ -152,9 +152,6 @@ class CustomWorld(levelsData: List<CustomWorldDTO.CustomLevelDTO>): World {
 
     override fun getAttribution() = emptyList<Attribution>()
 
-    companion object {
-
-    }
 }
 
 class CustomLevel(private val world: CustomWorld, private val id: String, private val label: String, private val mp3File: FileHandle): Level {
@@ -227,7 +224,6 @@ object TheOriginalWorld: World {
             TheExerciseRoom,
             Vivaldi,
             ReorientTheReceivingAntenna,
-            LegacyCustomLevel,
         )
     }
 
