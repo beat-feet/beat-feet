@@ -8,6 +8,7 @@ import com.serwylo.beatgame.audio.features.LevelData
 import com.serwylo.beatgame.audio.fft.FFTWindow
 import com.serwylo.beatgame.audio.fft.calculateMp3FFTWithValues
 import com.serwylo.beatgame.audio.playground.*
+import com.serwylo.beatgame.levels.CustomWorld
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.sanitiseFilename
 import java.io.File
@@ -74,7 +75,7 @@ fun loadLevelDataFromDisk(musicFile: FileHandle): LevelData {
 
 private fun loadLevelDataFromCache(level: Level): LevelData? {
 
-    val file = getCacheFile(level).file()
+    val file = getCustomLevelDataFile(level).file()
     if (!file.exists()) {
         Gdx.app.debug(TAG, "Cache file for world ${level.getMp3File().path()} at ${file.absolutePath} doesn't exist")
         return null
@@ -126,7 +127,7 @@ fun loadCachedLevelData(levelDataFile: FileHandle): LevelData {
 
 private fun cacheLevelData(level: Level, levelData: LevelData) {
 
-    val file = getCacheFile(level)
+    val file = getCustomLevelDataFile(level)
 
     Gdx.app.debug(TAG, "Caching world for ${level.getMp3File().path()} to ${file.file().absolutePath}")
 
@@ -141,18 +142,17 @@ fun saveLevelDataToDisk(file: FileHandle, levelData: LevelData) {
 
 }
 
-private val CACHE_DIR = ".cache${File.separator}world"
+fun getCustomLevelDataFile(level: Level): FileHandle {
 
-private fun getCacheFile(level: Level): FileHandle {
-
-    val dir = Gdx.files.local(CACHE_DIR)
+    val customWorldId = CustomWorld(emptyList()).getId()
+    val dir = Gdx.files.local(".cache${File.separator}world${File.separator}${customWorldId}")
     if (!dir.exists()) {
         dir.mkdirs()
     }
 
     val name = sanitiseFilename(level.getId())
 
-    return Gdx.files.local("${CACHE_DIR}${File.separator}$name.json")
+    return Gdx.files.local("${dir}${File.separator}$name.json")
 
 }
 

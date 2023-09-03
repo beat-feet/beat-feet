@@ -3,6 +3,7 @@ package com.serwylo.beatgame.levels
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.I18NBundle
+import com.serwylo.beatgame.audio.getCustomLevelDataFile
 import com.serwylo.beatgame.levels.achievements.Achievement
 import java.io.File
 
@@ -159,10 +160,7 @@ class CustomLevel(private val world: CustomWorld, private val id: String, privat
 
     override fun getMp3File(): FileHandle = mp3File
 
-    override fun getLevelDataFile(): FileHandle {
-        val name = "custom-${getMp3File().lastModified()}"
-        return Gdx.files.local(".cache${File.separator}world${File.separator}$name.json")
-    }
+    override fun getLevelDataFile() = getCustomLevelDataFile(this)
 
     override fun getLabel(strings: I18NBundle) = label
 
@@ -347,26 +345,6 @@ object TheOriginalWorld: World {
     )
 
 }
-
-/*class RemoteLevel(): Level {
-
-    override fun getId(): String {
-
-    }
-
-    override fun getMp3File(): FileHandle {
-
-    }
-
-    override fun getLabel(strings: I18NBundle): String {
-
-    }
-
-    override fun getUnlockRequirements(): UnlockRequirements {
-
-    }
-
-}*/
 
 abstract class UnlockRequirements {
     abstract fun isLocked(achievements: List<Achievement>): Boolean

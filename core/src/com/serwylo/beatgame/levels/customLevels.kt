@@ -48,6 +48,18 @@ fun createCustomWorld(): CustomWorld {
         // attempts at this level.
         val legacyCustomLevelDto = copyExternalMp3ToGameFolder(LegacyCustomLevel.getMp3File()).copy(id = "custom.mp3")
 
+        // Copy custom level data if it exists (it takes a while to generate, so don't
+        // penalise those with slow phones by making them generate again.
+        if (LegacyCustomLevel.getLevelDataFile().exists()) {
+            // Shouldn't matter that the world passed in here is a bit junkey, because we are only
+            // interested in the getLevelDataFile() function which we are (fairly) sure doesn't
+            // depend on this.
+            val customLevel = CustomLevel(CustomWorld(emptyList()), legacyCustomLevelDto.id, legacyCustomLevelDto.label, LegacyCustomLevel.getMp3File())
+
+            Gdx.app.log(TAG, "Migrating legacy custom level data from ${LegacyCustomLevel.getLevelDataFile().path()} to new custom world (${customLevel.getLevelDataFile()}).")
+            LegacyCustomLevel.getLevelDataFile().copyTo(customLevel.getLevelDataFile())
+        }
+
         // We really should delete this now, but I just can't bring myself to right now, because
         // it may cause people to lose a file they manually put here which they want back one day.
         // Hence, the following line is commented out:
@@ -55,6 +67,7 @@ fun createCustomWorld(): CustomWorld {
 
         listOf(legacyCustomLevelDto)
     } else {
+        Gdx.app.log(TAG, "No legacy custom level in existence, will not attempt to migrate it.")
         emptyList()
     }
 
