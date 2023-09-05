@@ -60,12 +60,6 @@ open class BeatFeetGame(val platformListener: PlatformListener, private val verb
         }
     }
 
-    fun explainCustomSongs() {
-        Gdx.app.postRunnable {
-            setScreen(ExplainCustomSongsScreen(this))
-        }
-    }
-
     fun showAboutScreen() {
         Gdx.app.postRunnable {
             setScreen(AboutScreen(this))

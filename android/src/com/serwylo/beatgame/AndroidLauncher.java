@@ -13,6 +13,6 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
-		initialize(new BeatFeetGame(new AndroidPlatformListener(this), true, Locale.getDefault()), config);
+		initialize(new BeatFeetGame(new AndroidPlatformListener(this, this), true, Locale.getDefault()), config);
 	}
 }

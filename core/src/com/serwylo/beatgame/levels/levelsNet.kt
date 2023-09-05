@@ -2,7 +2,7 @@ package com.serwylo.beatgame.levels
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Since
 import io.ktor.client.*
@@ -13,15 +13,15 @@ import io.ktor.client.statement.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
 import ktx.async.newSingleThreadAsyncContext
-import java.io.File
+
 
 private const val TAG = "levelsNet"
 
 private const val WORLDS_JSON_URL = "https://beat-feet.github.io/beat-feet-levels/worlds.json"
 
-private const val JSON_VERSION = 1
+private const val JSON_VERSION = 1.0
 
-private val ID_REGEX = Regex("[\\w.-]+")
+val SAFE_FILENAME_REGEX = Regex("[\\w.\\- ]+")
 
 private val httpClient = HttpClient(CIO) {
     install(JsonFeature) {
@@ -29,31 +29,41 @@ private val httpClient = HttpClient(CIO) {
     }
 }
 
-private val gson = Gson()
+private val gson = GsonBuilder().setPrettyPrinting().create()
 
 suspend fun loadAllWorlds(forceUncached: Boolean = false): List<World> {
-    return try {
+    val builtInWorlds = listOf(TheOriginalWorld)
+
+    // If someone clicks "Create my own world" for the first time, it takes them
+    // to an empty screen for convenience. If they neglect to take up the offer and they
+    // do not add any levels, then don't show them this empty screen forever more - just
+    // skip past it until they ask to work on their own world again.
+    val customWorlds = listOfNotNull(loadCustomWorld()).filter { it.getLevels().isNotEmpty() }
+
+    val remoteWorlds = try {
         val remoteWorlds = fetchWorldsList(forceUncached).getWorlds().map { worldSummaryDto ->
             val worldDto = fetchWorld(worldSummaryDto, forceUncached)
             RemoteWorld(worldSummaryDto, worldDto)
         }
 
-        listOf(TheOriginalWorld) + remoteWorlds
+        remoteWorlds
     } catch (e: Exception) {
         Gdx.app.error(TAG, "Loading remote worlds failed. Will just return the one built-in world.", e)
-        listOf(TheOriginalWorld)
+        emptyList()
     }
+
+    return builtInWorlds + remoteWorlds + customWorlds
 }
 
 private suspend fun fetchWorldsList(forceUncached: Boolean = false): WorldsDTO {
     Gdx.app.log(TAG, "Fetching list of worlds from $WORLDS_JSON_URL")
-    val string = downloadAndCacheString(WORLDS_JSON_URL, Gdx.files.local(".cache/worlds/worlds.json"), forceUncached)
+    val string = downloadAndCacheString(WORLDS_JSON_URL, Gdx.files.local(".cache").child("worlds").child("worlds.json"), forceUncached)
     return gson.fromJson(string, WorldsDTO::class.java)
 }
 
 private suspend fun fetchWorld(summary: WorldsDTO.WorldSummaryDTO, forceUncached: Boolean = false): WorldDTO {
     Gdx.app.log(TAG, "Fetching list of levels for world \"${summary.id}\" at ${summary.url}")
-    val string = downloadAndCacheString(summary.url, Gdx.files.local(".cache/worlds/${summary.id}/world.json"), forceUncached)
+    val string = downloadAndCacheString(summary.url, Gdx.files.local(".cache").child("worlds").child(summary.id).child("world.json"), forceUncached)
     return gson.fromJson(string, WorldDTO::class.java)
 }
 
@@ -88,19 +98,17 @@ suspend fun downloadAndCacheFile(url: String, cachedFile: FileHandle): FileHandl
 }
 
 fun getCachedLevelDataFile(level: RemoteLevel): FileHandle {
-    return Gdx.files.local(".cache/worlds/${level.getWorld().getId()}/${level.getId()}.json")
+    return Gdx.files.local(".cache")
+        .child("worlds")
+        .child(level.getWorld().getId())
+        .child("${level.getId()}.json")
 }
 
 fun getCachedMp3File(level: RemoteLevel): FileHandle {
-    return Gdx.files.local(".cache/worlds/${level.getWorld().getId()}/${level.getId()}.mp3")
-}
-
-private suspend fun fetchLevelMp3(url: String, output: File) {
-    Gdx.app.log(TAG, "Fetching level mp3 $url and saving to $output")
-}
-
-private suspend fun fetchLevelData(url: String, output: File) {
-    Gdx.app.log(TAG, "Fetching level data $url and saving to $output")
+    return Gdx.files.local(".cache")
+        .child("worlds")
+        .child(level.getWorld().getId())
+        .child("${level.getId()}.mp3")
 }
 
 data class WorldDTO(
@@ -115,11 +123,11 @@ data class WorldDTO(
 
 ) {
 
-    fun getLevels() = levels.filter { world ->
-        if (world.id.matches(ID_REGEX)) {
+    fun getLevels() = levels.filter { level ->
+        if (level.id.matches(SAFE_FILENAME_REGEX)) {
             true
         } else {
-            Gdx.app.log(TAG, "Ignoring level with id: \"${world.id}\" because it does not match the regex: \"${ID_REGEX.pattern}\". This id is used to create files on disk, so we are conservative in what we accept here for security reasons.")
+            Gdx.app.log(TAG, "Ignoring level with id: \"${level.id}\" because it does not match the regex: \"${SAFE_FILENAME_REGEX.pattern}\". This id is used to create files on disk, so we are conservative in what we accept here for security reasons.")
             false
         }
     }
@@ -190,10 +198,10 @@ data class WorldsDTO(
 ) {
 
     fun getWorlds() = worlds.filter { world ->
-        if (world.id.matches(ID_REGEX)) {
+        if (world.id.matches(SAFE_FILENAME_REGEX)) {
             true
         } else {
-            Gdx.app.log(TAG, "Ignoring world with id: \"${world.id}\" because it does not match the regex: \"${ID_REGEX.pattern}\". This id is used to create files on disk, so we are conservative in what we accept here for security reasons.")
+            Gdx.app.log(TAG, "Ignoring world with id: \"${world.id}\" because it does not match the regex: \"${SAFE_FILENAME_REGEX.pattern}\". This id is used to create files on disk, so we are conservative in what we accept here for security reasons.")
             false
         }
     }
