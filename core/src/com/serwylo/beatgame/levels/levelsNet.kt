@@ -57,13 +57,13 @@ suspend fun loadAllWorlds(forceUncached: Boolean = false): List<World> {
 
 private suspend fun fetchWorldsList(forceUncached: Boolean = false): WorldsDTO {
     Gdx.app.log(TAG, "Fetching list of worlds from $WORLDS_JSON_URL")
-    val string = downloadAndCacheString(WORLDS_JSON_URL, Gdx.files.local(".cache/worlds/worlds.json"), forceUncached)
+    val string = downloadAndCacheString(WORLDS_JSON_URL, Gdx.files.local(".cache").child("worlds").child("worlds.json"), forceUncached)
     return gson.fromJson(string, WorldsDTO::class.java)
 }
 
 private suspend fun fetchWorld(summary: WorldsDTO.WorldSummaryDTO, forceUncached: Boolean = false): WorldDTO {
     Gdx.app.log(TAG, "Fetching list of levels for world \"${summary.id}\" at ${summary.url}")
-    val string = downloadAndCacheString(summary.url, Gdx.files.local(".cache/worlds/${summary.id}/world.json"), forceUncached)
+    val string = downloadAndCacheString(summary.url, Gdx.files.local(".cache").child("worlds").child(summary.id).child("world.json"), forceUncached)
     return gson.fromJson(string, WorldDTO::class.java)
 }
 
@@ -98,11 +98,17 @@ suspend fun downloadAndCacheFile(url: String, cachedFile: FileHandle): FileHandl
 }
 
 fun getCachedLevelDataFile(level: RemoteLevel): FileHandle {
-    return Gdx.files.local(".cache/worlds/${level.getWorld().getId()}/${level.getId()}.json")
+    return Gdx.files.local(".cache")
+        .child("worlds")
+        .child(level.getWorld().getId())
+        .child("${level.getId()}.json")
 }
 
 fun getCachedMp3File(level: RemoteLevel): FileHandle {
-    return Gdx.files.local(".cache/worlds/${level.getWorld().getId()}/${level.getId()}.mp3")
+    return Gdx.files.local(".cache")
+        .child("worlds")
+        .child(level.getWorld().getId())
+        .child("${level.getId()}.mp3")
 }
 
 data class WorldDTO(

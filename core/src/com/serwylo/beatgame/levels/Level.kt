@@ -3,7 +3,6 @@ package com.serwylo.beatgame.levels
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.I18NBundle
-import com.serwylo.beatgame.audio.getCustomLevelDataFile
 import com.serwylo.beatgame.levels.achievements.Achievement
 import java.io.File
 
@@ -40,11 +39,11 @@ class BuiltInLevel(
 ): Level {
 
     override  fun getId() = mp3Name
-    override fun getMp3File() = Gdx.files.internal("songs${File.separator}mp3${File.separator}${mp3Name}")
+    override fun getMp3File() = Gdx.files.internal("songs").child("mp3").child(mp3Name)
 
     override fun getLevelDataFile(): FileHandle {
         val name = File(mp3Name).nameWithoutExtension
-        return Gdx.files.internal("songs${File.separator}data${File.separator}${name}.json")
+        return Gdx.files.internal("songs").child("data").child("${name}.json")
     }
 
     override fun getLabel(strings: I18NBundle) = strings[labelId]
@@ -68,7 +67,7 @@ object LegacyCustomLevel: Level {
     override fun getMp3File(): FileHandle = Gdx.files.external("BeatFeet${File.separator}custom.mp3")
     override fun getLevelDataFile(): FileHandle {
         val name = "custom-${getMp3File().lastModified()}"
-        return Gdx.files.local(".cache${File.separator}world${File.separator}$name.json")
+        return Gdx.files.local(".cache").child("world").child("$name.json")
     }
     override fun getLabel(strings: I18NBundle): String = strings["levels.custom"]
     override fun getUnlockRequirements() = Unlocked()
@@ -160,7 +159,7 @@ class CustomLevel(private val world: CustomWorld, private val id: String, privat
 
     override fun getMp3File(): FileHandle = mp3File
 
-    override fun getLevelDataFile() = getCustomLevelDataFile(this)
+    override fun getLevelDataFile() = customLevelDataFile(this)
 
     override fun getLabel(strings: I18NBundle) = label
 

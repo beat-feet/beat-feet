@@ -21,8 +21,6 @@ private const val CUSTOM_LEVELS_JSON_VERSION = 1.0
 
 private val gson = GsonBuilder().setPrettyPrinting().setVersion(CUSTOM_LEVELS_JSON_VERSION).create()
 
-fun customWorldFile(): FileHandle = Gdx.files.local("custom-worlds.json")
-
 fun loadCustomWorld(): World? {
     val file = customWorldFile()
     return if (!file.exists() && LegacyCustomLevel.getMp3File().exists()) {
@@ -95,19 +93,38 @@ fun readMp3Title(mp3File: FileHandle): String {
     }
 }
 
-fun customLevelMp3Folder() = Gdx.files.external("BeatFeet").child("songs")
+fun customWorldFile(): FileHandle = Gdx.files.local("custom-world").child("world.json")
+
+fun customLevelDataFile(level: CustomLevel): FileHandle {
+    return Gdx.files.local("custom-world")
+        .child("${level.getId()}.json")
+}
+
+fun customMp3File(level: CustomLevel): FileHandle {
+    return Gdx.files.local("custom-world")
+        .child("${level.getId()}.mp3")
+}
+
+fun customMp3File(levelId: String): FileHandle {
+    return Gdx.files.local("custom-world")
+        .child("${levelId}.mp3")
+}
+
+fun customLevelId(mp3Title: String) = sanitiseFilename(mp3Title)
 
 fun copyExternalMp3ToGameFolder(sourceMp3: FileHandle): CustomWorldDTO.CustomLevelDTO {
     val title = readMp3Title(sourceMp3)
 
     Gdx.app.log(TAG, "Adding new custom level. Song title: \"$title\".")
-    val destMp3File = customLevelMp3Folder().child(sanitiseFilename(title) + ".mp3")
+
+    val levelId = customLevelId(title)
+    val destMp3File = customMp3File(levelId)
 
     Gdx.app.log(TAG, "Copying ${sourceMp3.path()} to ${destMp3File.path()}")
     sourceMp3.file().copyTo(destMp3File.file())
 
     return CustomWorldDTO.CustomLevelDTO(
-        destMp3File.nameWithoutExtension(),
+        levelId,
         title,
         destMp3File.file().absolutePath
     )
@@ -115,12 +132,12 @@ fun copyExternalMp3ToGameFolder(sourceMp3: FileHandle): CustomWorldDTO.CustomLev
 
 fun addCustomLevel(sourceMp3: FileHandle): CustomWorld {
     val jsonFile = customWorldFile()
-    val existingDto = gson.fromJson(jsonFile.readString(), CustomWorldDTO::class.java)
+    val existingWorldDto = gson.fromJson(jsonFile.readString(), CustomWorldDTO::class.java)
     val newLevelDto = copyExternalMp3ToGameFolder(sourceMp3)
-    val newDto = existingDto.copy(levels = existingDto.levels + newLevelDto)
-    jsonFile.writeString(gson.toJson(newDto), false)
+    val newWorldDto = existingWorldDto.copy(levels = existingWorldDto.levels + newLevelDto)
+    jsonFile.writeString(gson.toJson(newWorldDto), false)
 
-    return newDto.toCustomWorld()
+    return newWorldDto.toCustomWorld()
 }
 
 data class CustomWorldDTO(

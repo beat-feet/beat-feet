@@ -15,10 +15,10 @@ class I18nTests {
     @Test
     fun testStringFormats() {
         Assets.supportedLocales.keys.forEach { locale ->
-            val strings = I18NBundle.createBundle(Gdx.files.internal("i18n/messages"), Locale(locale))
+            val strings = I18NBundle.createBundle(Gdx.files.internal("i18n").child("messages"), Locale(locale))
 
             val props = Properties().apply {
-                load(Gdx.files.internal("i18n/messages.properties").read())
+                load(Gdx.files.internal("i18n").child("messages.properties").read())
             }
 
             val regex = Regex(".*\\{\\d+,choice,.*")

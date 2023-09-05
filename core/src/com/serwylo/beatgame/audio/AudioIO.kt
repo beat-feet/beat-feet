@@ -31,10 +31,6 @@ fun loadLevelDataFromMp3(level: Level): LevelData {
 
 }
 
-fun customMp3(): FileHandle {
-    return Gdx.files.external("BeatFeet${File.separator}custom.mp3")
-}
-
 fun loadLevelDataFromDisk(musicFile: FileHandle): LevelData {
 
     Gdx.app.debug(TAG, "Generating world from ${musicFile.path()}...")
@@ -75,9 +71,10 @@ fun loadLevelDataFromDisk(musicFile: FileHandle): LevelData {
 
 private fun loadLevelDataFromCache(level: Level): LevelData? {
 
-    val file = getCustomLevelDataFile(level).file()
+
+    val file = level.getLevelDataFile().file()
     if (!file.exists()) {
-        Gdx.app.debug(TAG, "Cache file for world ${level.getMp3File().path()} at ${file.absolutePath} doesn't exist")
+        Gdx.app.debug(TAG, "Data file for world ${level.getMp3File().path()} at ${file.absolutePath} doesn't exist. Likely because it is a custom world which has not yet been generated.")
         return null
     }
 
@@ -127,7 +124,7 @@ fun loadCachedLevelData(levelDataFile: FileHandle): LevelData {
 
 private fun cacheLevelData(level: Level, levelData: LevelData) {
 
-    val file = getCustomLevelDataFile(level)
+    val file = level.getLevelDataFile()
 
     Gdx.app.debug(TAG, "Caching world for ${level.getMp3File().path()} to ${file.file().absolutePath}")
 
@@ -137,22 +134,9 @@ private fun cacheLevelData(level: Level, levelData: LevelData) {
 
 fun saveLevelDataToDisk(file: FileHandle, levelData: LevelData) {
 
+    file.parent().mkdirs()
     val json = Gson().toJson(CachedWorldData(levelData.duration, levelData.featuresLow, levelData.featuresMid, levelData.featuresHigh))
     file.writeString(json, false)
-
-}
-
-fun getCustomLevelDataFile(level: Level): FileHandle {
-
-    val customWorldId = CustomWorld(emptyList()).getId()
-    val dir = Gdx.files.local(".cache${File.separator}world${File.separator}${customWorldId}")
-    if (!dir.exists()) {
-        dir.mkdirs()
-    }
-
-    val name = sanitiseFilename(level.getId())
-
-    return Gdx.files.local("${dir}${File.separator}$name.json")
 
 }
 
