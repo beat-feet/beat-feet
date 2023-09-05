@@ -55,7 +55,7 @@ fun createCustomWorld(): CustomWorld {
             val customLevel = CustomLevel(CustomWorld(emptyList()), legacyCustomLevelDto.id, legacyCustomLevelDto.label, LegacyCustomLevel.getMp3File())
 
             Gdx.app.log(TAG, "Migrating legacy custom level data from ${LegacyCustomLevel.getLevelDataFile().path()} to new custom world (${customLevel.getLevelDataFile()}).")
-            LegacyCustomLevel.getLevelDataFile().copyTo(customLevel.getLevelDataFile())
+            LegacyCustomLevel.getLevelDataFile().moveTo(customLevel.getLevelDataFile())
         }
 
         // We really should delete this now, but I just can't bring myself to right now, because
@@ -89,7 +89,11 @@ fun readMp3Title(mp3File: FileHandle): String {
 
     return if (titleTag != null) titleTag else {
         Gdx.app.log(TAG, "No id3v1 or id3v2 title tags present, falling back to filename.")
-        mp3File.nameWithoutExtension()
+
+        // Trim leading '~' from filename because the way the file provider + native-file-chooser
+        // library (not sure which one) works is to copy the file into /data/user/0/com.serwylo.beatgame/cache/
+        // first, and prefix it with that character.
+        mp3File.nameWithoutExtension().trimStart('~')
     }
 }
 
