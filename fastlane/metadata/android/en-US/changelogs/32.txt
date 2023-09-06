@@ -1,0 +1,10 @@
+🎵 Major release: Unlimited custom MP3s! 🎵
+
+Add unlimited levels from your own MP3 collection. Earlier, only one worked, and it was hard to use.
+
+Known limitations:
+ * Can't delete custom levels
+ * Levels are slow to generate, fail on lower end devices
+ * UX is a clunky when adding a new world, UI is not yet internationalised
+
+This feature is still in beta. Any feedback or bug reports welcome.
