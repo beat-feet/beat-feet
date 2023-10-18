@@ -1,0 +1,7 @@
+Vylepšení: umožnění odstranění vlastních úrovní.
+
+Zbývající známá omezení vlastních úrovní:
+ * Úrovně se pomalu generují, mohou selhat na slabších zařízeních
+ * UX je neohrabané při přidávání nového světa, UI ještě není přeloženo
+
+Funkce vlastních světů je stále ve fázi beta. Jakákoli zpětná vazba či nahlášení chyb budou vítány.
