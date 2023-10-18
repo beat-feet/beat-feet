@@ -31,14 +31,22 @@ private val httpClient = HttpClient(CIO) {
 
 private val gson = GsonBuilder().setPrettyPrinting().create()
 
-suspend fun loadAllWorlds(forceUncached: Boolean = false): List<World> {
+suspend fun loadAllWorlds(forceUncached: Boolean = false, forceIncludeCustom: Boolean = false): List<World> {
     val builtInWorlds = listOf(TheOriginalWorld)
 
     // If someone clicks "Create my own world" for the first time, it takes them
     // to an empty screen for convenience. If they neglect to take up the offer and they
     // do not add any levels, then don't show them this empty screen forever more - just
     // skip past it until they ask to work on their own world again.
-    val customWorlds = listOfNotNull(loadCustomWorld()).filter { it.getLevels().isNotEmpty() }
+    //
+    // The exception is if they just deleted the last level in the custom world. When returning
+    // to the world selector screen, DO show them the custom world, even though it is empty.
+    // Otherwise it is just a bit jarring.
+    val customWorlds = if (forceIncludeCustom) {
+        listOf(loadCustomWorld())
+    } else {
+        listOfNotNull(loadCustomWorld()).filter { it.getLevels().isNotEmpty() }
+    }
 
     val remoteWorlds = try {
         val remoteWorlds = fetchWorldsList(forceUncached).getWorlds().map { worldSummaryDto ->

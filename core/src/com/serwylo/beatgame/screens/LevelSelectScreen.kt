@@ -2,8 +2,8 @@ package com.serwylo.beatgame.screens
 
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Button
@@ -14,18 +14,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.serwylo.beatgame.BeatFeetGame
+import com.serwylo.beatgame.levels.CustomLevel
 import com.serwylo.beatgame.levels.CustomWorld
 import com.serwylo.beatgame.levels.Level
 import com.serwylo.beatgame.levels.World
 import com.serwylo.beatgame.levels.achievements.Achievement
 import com.serwylo.beatgame.levels.achievements.loadAllAchievements
-import com.serwylo.beatgame.levels.addCustomLevel
 import com.serwylo.beatgame.levels.loadHighScore
+import com.serwylo.beatgame.levels.onAddNewLevel
 import com.serwylo.beatgame.ui.UI_SPACE
 import com.serwylo.beatgame.ui.makeIcon
-import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback
-import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration
-import java.io.FilenameFilter
 
 
 class LevelSelectScreen(private val game: BeatFeetGame, initialWorld: World): WorldSelectorScreen(
@@ -34,6 +32,22 @@ class LevelSelectScreen(private val game: BeatFeetGame, initialWorld: World): Wo
     game.assets.getSprites().logo,
     initialWorld,
 ) {
+
+    private lateinit var levelButtons: Map<Level, WidgetGroup>
+
+    override fun onLongPress(screenX: Float, screenY: Float): Boolean {
+        val level = levelButtons.entries.find { (_, button) ->
+            val local = button.screenToLocalCoordinates(Vector2(screenX, screenY))
+            button.hit(local.x, local.y, true) != null
+        }?.key
+
+        if (level is CustomLevel) {
+            game.screen = DeleteLevelScreen(game, level)
+            return true
+        }
+
+        return false
+    }
 
     override fun makeBody(world: World) =
         Table().also { table ->
@@ -53,6 +67,8 @@ class LevelSelectScreen(private val game: BeatFeetGame, initialWorld: World): Wo
             var x = 0
             var y = 0
 
+            val levelButtonsBuilder = mutableMapOf<Level, WidgetGroup>()
+
             world.getLevels().forEachIndexed { i, level ->
 
                 if (i % levelsPerRow == 0) {
@@ -61,11 +77,15 @@ class LevelSelectScreen(private val game: BeatFeetGame, initialWorld: World): Wo
                     x = 0
                 }
 
-                table.add(makeLevelButton(level, achievements)).width(width).height(height)
+                val levelButton = makeLevelButton(level, achievements)
+                levelButtonsBuilder[level] = levelButton
+                table.add(levelButton).width(width).height(height)
 
                 x ++
 
             }
+
+            levelButtons = levelButtonsBuilder
 
             if (world is CustomWorld) {
                 table.add(makeSquareButton(
@@ -73,29 +93,17 @@ class LevelSelectScreen(private val game: BeatFeetGame, initialWorld: World): Wo
                     { buttonTable ->
                         buttonTable.add(Label("+", styles.label.huge))
                     }, {
-                        val conf = NativeFileChooserConfiguration()
-                        conf.directory = Gdx.files.absolute(System.getProperty("user.home"));
-
-                        // Filter out all files which do not have the .ogg extension and are not of an audio MIME type - belt and braces
-                        conf.mimeFilter = "audio/*"
-                        conf.nameFilter = FilenameFilter { dir, name -> name.endsWith("mp3") }
-                        conf.title = "Choose MP3 file";
-
-
-                        game.platformListener.fileChooser().chooseFile(conf, object : NativeFileChooserCallback {
-                            override fun onFileChosen(file: FileHandle) {
-                                val world = addCustomLevel(file)
-                                setupStage(world)
-                            }
-
-                            override fun onCancellation() {
-                            }
-
-                            override fun onError(exception: Exception) {
-                            }
-                        })
+                        onAddNewLevel(game) { setupStage(it) }
                     }
                 )).width(width).height(height)
+
+                if (world.getLevels().isNotEmpty()) {
+                    table.row()
+                    table.add(Label("Long press on levels to delete.", styles.label.small))
+                        .center()
+                        .space(UI_SPACE)
+                        .colspan(levelsPerRow)
+                }
             }
         }
 

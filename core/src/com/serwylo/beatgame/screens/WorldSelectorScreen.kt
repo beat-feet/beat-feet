@@ -7,6 +7,8 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.input.GestureDetector
+import com.badlogic.gdx.input.GestureDetector.GestureAdapter
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Container
@@ -61,7 +63,7 @@ abstract class WorldSelectorScreen(
     private var cachedWorlds: List<World>? = null
 
     private suspend fun allWorlds(): List<World> {
-        return cachedWorlds ?: loadAllWorlds().also { newlyLoaded ->
+        return cachedWorlds ?: loadAllWorlds(forceIncludeCustom = initialWorld is CustomWorld).also { newlyLoaded ->
             cachedWorlds = newlyLoaded
         }
     }
@@ -321,21 +323,42 @@ abstract class WorldSelectorScreen(
         }
     }
 
+    /**
+     * A bit of a cludge, but scene2d doesn't seem to support the notion of listening for
+     * long presses on individual buttons. Thus, this work around where we add a top level
+     * [com.badlogic.gdx.InputProcessor] which listens for long presses. When received, we
+     * ask the child class if they want to process it. To do this, they need to manually
+     * ask each of the relevant actors if they are interested in it, e.g. using
+     * [Actor.screenToLocalCoordinates]. We don't have enough information to do that ourselves,
+     * because we don't know what actors exist on the child classes stage.
+     */
+    protected open fun onLongPress(screenX: Float, screenY: Float): Boolean {
+        return false;
+    }
+
     override fun show() {
 
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
-        Gdx.input.inputProcessor = InputMultiplexer(stage, object : InputAdapter() {
+        Gdx.input.inputProcessor = InputMultiplexer(
+            GestureDetector(object : GestureAdapter() {
+                override fun longPress(x: Float, y: Float): Boolean {
+                    return onLongPress(x, y)
+                }
+            }),
+            stage,
+            object : InputAdapter() {
 
-            override fun keyDown(keycode: Int): Boolean {
-                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
-                    game.showMenu()
-                    return true
+                override fun keyDown(keycode: Int): Boolean {
+                    if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
+                        game.showMenu()
+                        return true
+                    }
+
+                    return false
                 }
 
-                return false
             }
-
-        })
+        )
 
     }
 
