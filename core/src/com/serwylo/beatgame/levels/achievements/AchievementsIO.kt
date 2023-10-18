@@ -4,6 +4,19 @@ import com.badlogic.gdx.Gdx
 import com.google.gson.Gson
 import com.serwylo.beatgame.levels.Level
 
+fun deleteAchievementsForLevel(level: Level) {
+
+    Gdx.app.log(LOGGER, "Deleting achievements for level ${level.getId()}")
+
+    val toPersist = loadPersistedAchievements().deleteForLevel(level)
+    val json = Gson().toJson(toPersist)
+
+    prefs()
+        .putString("achievements", json)
+        .flush()
+
+}
+
 fun saveAchievements(level: Level, achievements: List<AchievementType>) {
 
     Gdx.app.log(LOGGER, "Saving achievements: ${achievements.map { it.id }.joinToString(", ")}")
@@ -69,6 +82,10 @@ private data class PersistedAchievements(
                 .map { PersistedAchievement(it.id, level.getId()) }
 
         return PersistedAchievements(achievements.plus(toAdd))
+    }
+
+    fun deleteForLevel(level: Level): PersistedAchievements {
+        return PersistedAchievements(achievements.filter { it.levelId != level.getId() })
     }
 
     fun forLevel(level: Level): List<PersistedAchievement> {

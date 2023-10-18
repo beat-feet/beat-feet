@@ -24,6 +24,11 @@ fun loadHighScore(level: Level): HighScore {
     }
 }
 
+fun deleteHighScoresForLevel(level: Level) {
+    prefs().remove(level.getId())
+    prefs().flush()
+}
+
 fun saveHighScore(level: Level, score: Score, force: Boolean = false): HighScore {
     val highest = loadHighScore(level)
 

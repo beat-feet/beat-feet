@@ -6,6 +6,11 @@ import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Since
 import com.mpatric.mp3agic.Mp3File
+import com.serwylo.beatgame.BeatFeetGame
+import com.serwylo.beatgame.levels.achievements.clearAllAchievements
+import com.serwylo.beatgame.levels.achievements.deleteAchievementsForLevel
+import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
@@ -13,6 +18,9 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.FilenameFilter
 
 
 private const val TAG = "customLevels"
@@ -21,13 +29,13 @@ private const val CUSTOM_LEVELS_JSON_VERSION = 1.0
 
 private val gson = GsonBuilder().setPrettyPrinting().setVersion(CUSTOM_LEVELS_JSON_VERSION).create()
 
-fun loadCustomWorld(): World? {
+fun loadCustomWorld(): World {
     val file = customWorldFile()
     return if (!file.exists() && LegacyCustomLevel.getMp3File().exists()) {
         Gdx.app.log(TAG, "Existing custom level exists, so will create a custom world for the first time.")
         createCustomWorld()
     } else if (!file.exists()) {
-        null
+        createCustomWorld()
     } else {
         Gdx.app.log(TAG, "Loading custom world from ${file.path()}")
         val dto = gson.fromJson(file.readString(), CustomWorldDTO::class.java)
@@ -104,11 +112,6 @@ fun customLevelDataFile(level: CustomLevel): FileHandle {
         .child("${level.getId()}.json")
 }
 
-fun customMp3File(level: CustomLevel): FileHandle {
-    return Gdx.files.local("custom-world")
-        .child("${level.getId()}.mp3")
-}
-
 fun customMp3File(levelId: String): FileHandle {
     return Gdx.files.local("custom-world")
         .child("${levelId}.mp3")
@@ -134,6 +137,24 @@ fun copyExternalMp3ToGameFolder(sourceMp3: FileHandle): CustomWorldDTO.CustomLev
     )
 }
 
+suspend fun deleteCustomLevel(level: CustomLevel): CustomWorld = withContext(Dispatchers.IO) {
+    val jsonFile = customWorldFile()
+    val existingWorldDto = gson.fromJson(jsonFile.readString(), CustomWorldDTO::class.java)
+    val newWorldDto = existingWorldDto.copy(levels = existingWorldDto.levels.filter { it.id != level.getId() })
+    jsonFile.writeString(gson.toJson(newWorldDto), false)
+
+    if (level.getLevelDataFile().exists()) {
+        level.getLevelDataFile().delete()
+    }
+
+    level.getMp3File().delete()
+
+    deleteAchievementsForLevel(level)
+    deleteHighScoresForLevel(level)
+
+    newWorldDto.toCustomWorld()
+}
+
 fun addCustomLevel(sourceMp3: FileHandle): CustomWorld {
     val jsonFile = customWorldFile()
     val existingWorldDto = gson.fromJson(jsonFile.readString(), CustomWorldDTO::class.java)
@@ -142,6 +163,30 @@ fun addCustomLevel(sourceMp3: FileHandle): CustomWorld {
     jsonFile.writeString(gson.toJson(newWorldDto), false)
 
     return newWorldDto.toCustomWorld()
+}
+
+fun onAddNewLevel(game: BeatFeetGame, onAdded: (world: CustomWorld) -> Unit) {
+    val conf = NativeFileChooserConfiguration()
+    conf.directory = Gdx.files.absolute(System.getProperty("user.home"));
+
+    // Filter out all files which do not have the .ogg extension and are not of an audio MIME type - belt and braces
+    conf.mimeFilter = "audio/*"
+    conf.nameFilter = FilenameFilter { dir, name -> name.endsWith("mp3") }
+    conf.title = "Choose MP3 file";
+
+
+    game.platformListener.fileChooser().chooseFile(conf, object : NativeFileChooserCallback {
+        override fun onFileChosen(file: FileHandle) {
+            val world = addCustomLevel(file)
+            onAdded(world)
+        }
+
+        override fun onCancellation() {
+        }
+
+        override fun onError(exception: Exception) {
+        }
+    })
 }
 
 data class CustomWorldDTO(
