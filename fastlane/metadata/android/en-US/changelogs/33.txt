@@ -1,0 +1,7 @@
+Improvement: Allow deleting custom levels.
+
+Remaining known limitations of custom levels:
+ * Levels are slow to generate, fail on lower end devices
+ * UX is a clunky when adding a new world, UI is not yet internationalised
+
+The custom levels feature is still in beta. Any feedback or bug reports welcome.
