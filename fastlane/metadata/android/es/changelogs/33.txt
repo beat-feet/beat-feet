@@ -1,0 +1,7 @@
+Mejoras: Permitir borrar los niveles personalizados.
+
+Limitaciones conocidas de los niveles personalizados:
+ * Los niveles se generan lentamente, fallan en dispositivos de gama baja.
+ * La interfaz de usuario no está todavía internacionalizada.
+
+La función de los niveles personalizados aún está en fase beta. Cualquier comentario o informe de errores es bienvenido.
