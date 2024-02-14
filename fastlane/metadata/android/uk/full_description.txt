@@ -11,3 +11,5 @@
 Будь-які побажання та зауваження можна надсилати на <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
 
 Будь ласка, підтримайте подальшу розробку на <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a> або <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
+
+Анти-функції: NonFreeNet – додаткові рівні завантажуються з репозиторію GitHub.
