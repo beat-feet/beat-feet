@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlinVersion = '1.5.20'
+    ext.kotlinVersion = '1.6.21'
 
     repositories {
         mavenLocal()
@@ -10,7 +10,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
@@ -36,6 +36,7 @@ allprojects {
         mavenCentral()
         gradlePluginPortal()
         google()
+        maven { url 'https://jitpack.io' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
@@ -121,7 +122,7 @@ project(":core") {
         api "io.github.libktx:ktx-actors:$ktxVersion"
         api "io.github.libktx:ktx-async:$ktxVersion"
 
-        implementation 'com.gmail.blueboxware:libgdxpluginannotations:1.16'
+        implementation 'com.github.blueboxware:libgdxplugin:1.23.1'
         implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.0'
         implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.0'
         implementation 'com.google.code.gson:gson:2.8.6'
