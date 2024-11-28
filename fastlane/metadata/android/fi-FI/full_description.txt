@@ -1,0 +1,15 @@
+Hyppää tiesi kaupunkien läpi, joista jokainen syntyy automaattisesti musiikin tahdista.
+
+Iske liikaa rakennuksiin, niin kuolet. Hyppää onnistuneesti katolta katolle ja katso tulosi kohoavan!
+
+Pelaa kymmeniä tasoja tai luo omia MP3-tiedostojasi mukautettujen maailmojen luomiseen.
+
+Ei mainoksia. Ei pelin sisäisiä ostoksia. Vain hyvää musiikkia ja hauskoja hetkiä.
+
+Jokainen taso koostuu esteistä, jotka vastaavat taustalla soivaa musiikkia. Joka kerta kun pelaat samalla tasolla, esteiden koko on sama, mutta maailmalla on erilainen tyyli. Ei kahta samannäköistä istuntoa.
+
+Kaikki palaute on erittäin tervetullutta <a href="https://github.com/beat-game/beat-game/discussions">GitHubissa</a>.
+
+Tue jatkokehitystä <a href="https://github.com/sponsors/pserwylo>GitHubin sponsoreissa</a> tai <a href="https://liberapay.com/BeatFeet/">Liberapayssa</a >.
+
+Vastaominaisuudet: NonFreeNet — lisätasoja ladataan GitHubin tietovarastoista.
