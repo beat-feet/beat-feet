@@ -11,3 +11,5 @@
 Любые отзывы приветствуются на <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
 
 Пожалуйста, поддержите дальнейшее развитие на <a href="https://github.com/sponsors/pserwylo>GitHub sponsors</a> или <a href="https://liberapay.com/BeatFeet/">Liberapay</a>.
+
+Анти-возможности: Несвобода в сети — дополнительные уровни загружаются из репозитория на GitHub.
