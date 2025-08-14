@@ -1,7 +1,6 @@
 Salta com vulguis per les ciutats, cadascuna generada automàticament al ritme de la música.
 
-Si topes amb massa edificis moriràs.
-Salta amb èxit d'un terrat a l'altre i veuràs el marcador pujar!
+Si topes amb massa edificis moriràs.Salta amb èxit d'un terrat a l'altre i veuràs el marcador pujar!
 
 Juga un grapat de nivells o usa els teus propis MP3 per generar mons personalitzats.
 
