@@ -1,0 +1,15 @@
+跳跃穿越城市，每个城市都会自动根据音乐节拍生成。
+
+撞到太多建筑，你会死。成功地从屋顶跳到屋顶，看到你的分数飙升！
+
+你可以玩数十个关卡，或者用你自己的MP3文件生成自定义世界。
+
+本游戏没有广告。没有游戏内购买。只是美妙的音乐和愉快的时光。
+
+每个关卡由与背景音乐对应的障碍物组成。每次玩同一个关卡，障碍物大小相同，但世界风格却不同。没有两个时间段的关卡会完全相同。
+
+欢迎在 <a href=“https://github.com/beat-game/beat-game/discussions”>GitHub</a> 提供反馈。
+
+请通过我们进一步开发邮箱为 <a href=“https://github.com/sponsors/pserwylo>GitHub sponsors</a> 或 <a href=”“https://liberapay.com/BeatFeet/”>Liberapay</a>支持我们开发。
+
+反功能：非FreeNet——额外关卡可从GitHub仓库下载。
