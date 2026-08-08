@@ -11,3 +11,5 @@ Cada fase consiste em obstáculos que correspondem à música de fundo. Toda vez
 Qualquer comentário é bem vindo no <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
 
 Ajude para o desenvolvimento futuro do jogo em <a href="https://github.com/beat-game/beat-game/discussions">GitHub</a>.
+
+Recursos Restritivos: Conexão Privativa — fases adicionais são baixadas de um repositório externo no GitHub.
